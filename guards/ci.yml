@@ -1,0 +1,20 @@
+# Armature CI — independent off-machine check on every push/PR. Copy to
+# .github/workflows/ci.yml during setup and fill the [FILL] slots for your stack.
+name: armature-ci
+on:
+  push: { branches: ["**"] }
+  pull_request: {}
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # [FILL during setup: set up your runtime, e.g. actions/setup-java or setup-node]
+      - name: Secret scan
+        run: |
+          # [FILL during setup: run your secret scanner, e.g. gitleaks]
+          echo "configure a secret scanner here"
+      - name: Build & test
+        run: |
+          # [FILL during setup: your BUILD_CMD and TEST_CMD from guards/guards.config]
+          echo "configure build/test here"

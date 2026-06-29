@@ -1,0 +1,21 @@
+# Secrets — NEVER commit
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+secrets/
+# Local data
+data/*
+!data/.gitkeep
+# Build / deps (add your stack's outputs during setup)
+build/
+dist/
+node_modules/
+.gradle/
+*.apk
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+*.swp

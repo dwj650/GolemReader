@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+# Armature pre-commit guard (universal). Reads guards/guards.config.
+set -euo pipefail
+ROOT="$(git rev-parse --show-toplevel)"
+CFG="$ROOT/guards/guards.config"
+if [ ! -f "$CFG" ]; then echo "Armature: guards/guards.config missing — run guards/install-guards.sh"; exit 1; fi
+# shellcheck disable=SC1090
+source "$CFG"
+
+skip(){ printf '  - %s (skipped: %s)\n' "$1" "$2"; }
+fail(){ echo ""; echo "BLOCKED by Armature guard: $1"; echo ""; exit 1; }
+is_set(){ [ -n "${1:-}" ] && [ "${1}" != "[FILL during setup]" ]; }
+
+echo "Armature guards:"
+
+# 1) never commit to the main branch
+BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+if [ "$BRANCH" = "${MAIN_BRANCH:-main}" ]; then
+  fail "you're on '$BRANCH'. Work happens on a branch. Run:  git switch -c my-change"
+fi
+echo "  - on a working branch ($BRANCH)"
+
+# 2) secret scan
+if is_set "${SECRET_SCAN_CMD:-}"; then
+  if eval "$SECRET_SCAN_CMD"; then echo "  - no secrets found"; else fail "a possible secret was found in your staged changes. Remove it; secrets go in .env (gitignored)."; fi
+else
+  skip "secret scan" "SECRET_SCAN_CMD not set in guards.config"
+fi
+
+# 3) docs-with-code: if code changed, state/registers must change too
+CHANGED="$(git diff --cached --name-only || true)"
+if echo "$CHANGED" | grep -q "^${CODE_PREFIX:-src/}"; then
+  PATTERN="$(echo "${STATE_PATHS:-state/current-state.md}" | sed 's/[[:space:]]\+/|/g')"
+  if echo "$CHANGED" | grep -Eq "($PATTERN)"; then echo "  - code change accompanied by state/register update"
+  else fail "you changed code but not current-state/registers. Update them in the SAME commit (Armature: docs with code)."; fi
+fi
+
+# 4) test gate
+if is_set "${TEST_CMD:-}"; then
+  if [ "${TEST_CMD}" = "NO_AUTOMATED_TESTS" ]; then
+    if echo "$CHANGED" | grep -q "^${CODE_PREFIX:-src/}" && ! echo "$CHANGED" | grep -q "ledgers/testing.md"; then
+      fail "no automated tests for this project, so a code commit must include a recorded validation result (update ledgers/testing.md)."
+    fi
+    echo "  - on-device project: validation record required (ok)"
+  else
+    echo "  - running check: $TEST_CMD"
+    if eval "$TEST_CMD"; then echo "  - check passed"; else fail "the check failed. Fix it before committing."; fi
+  fi
+else
+  skip "test gate" "TEST_CMD not set in guards.config"
+fi
+
+echo "Armature guards passed."

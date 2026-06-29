@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Armature pre-push guard (universal). A last check before code leaves your machine.
+set -euo pipefail
+ROOT="$(git rev-parse --show-toplevel)"
+CFG="$ROOT/guards/guards.config"; [ -f "$CFG" ] && source "$CFG" || true
+if [ -n "${SECRET_SCAN_CMD:-}" ] && [ "${SECRET_SCAN_CMD}" != "[FILL during setup]" ]; then
+  echo "Armature pre-push: secret scan…"
+  eval "$SECRET_SCAN_CMD" || { echo "BLOCKED: possible secret in history being pushed."; exit 1; }
+fi
+echo "Armature pre-push: ok."
