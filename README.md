@@ -1,4 +1,4 @@
-# [FILL: Project Name]
+# Golem Reader
 
 An **Armature** project. Armature is a methodology for building software solo with AI;
 the canonical reference is `process/methodology.md` (which points to the full spec).

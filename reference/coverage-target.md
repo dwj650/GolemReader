@@ -1,16 +1,25 @@
 ---
 id: COVERAGE-TARGET
 tier: reference
-status: template
-updated: [FILL: YYYY-MM-DD]
-if-incomplete: "Set at G0. The /coverage summary reports against this."
+status: committed
+updated: 2026-06-28
+if-incomplete: "Return to state/current-state.md."
 ---
-# Coverage target — declared at Foundation (G0)
-Not blanket "100%": a clear standard for this project's risk.
+# Coverage target & test taxonomy (D28 / D29)
 
-- **Must be automatically tested:** [FILL]
-- **May be agent-verified:** [FILL]
-- **Acceptable to leave to a guided manual check:** [FILL]
+**Four-bucket taxonomy (D28)** — every feature's acceptance is stated in four buckets:
+1. **Presence & wiring** — is it there, reachable, switched on at the right time?
+2. **Behavior & limits** — does it obey the rules and stay inside allowances?
+3. **Cost & budget** — does it stay within speed/memory/battery/storage allowances?
+4. **Result** — does the end output match what we wanted?
 
-Confidence levels reported per result: High (automated test) · Medium (verified once,
-not automated) · Low (one-time eyeball / partial).
+**Coverage mapping (D29) — how each kind of claim is verified:**
+| Claim kind | Verification form |
+|---|---|
+| Logic / pure functions | **Automated** unit tests |
+| Device / system behavior | **Agent-run** on-device, recorded |
+| Perceptual (audio quality) | **Guided-manual** (by ear) |
+| Numbers / budgets | **Local-measured** where a real number exists, else **system-tagged** to the integrated listen-loop budget (F-001 T-001-C1) |
+
+**Integrated budget pass condition (F-001 T-001-C1):** no thermal throttling · no system
+CPU-usage warnings · no visibly-watchable battery drain · while sustaining target audio quality.

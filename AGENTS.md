@@ -5,7 +5,10 @@
 > Cursor, etc.). `CLAUDE.md` just points here.
 
 ## What this project is
-[FILL: one or two plain sentences — what this software does and who it is for.]
+Golem Reader — a native Android (Kotlin) streaming text-to-speech audiobook app. It treats
+a book's text as a real-time audio stream (synthesized on-device with sherpa-onnx; Kokoro
+and Piper voices) with a synchronized reading highlight. Primary target device: Samsung
+Galaxy S23 Ultra. For: readers who want high-quality, fully on-device long-session listening.
 
 ## How to work with this operator (IMPORTANT)
 The operator is the **client**; you are the **firm**. The full Armature process runs
@@ -35,14 +38,15 @@ decision.
 Read these from `guards/guards.config` (filled during setup):
 - Test/check command: see `TEST_CMD`
 - Build command: see `BUILD_CMD`
-[FILL during setup: copy the key commands here for quick reference.]
+Stack: native Android, Kotlin, Gradle wrapper (`./gradlew`). Device target: S23 Ultra.
 
 ## Where things live (pointers — cite IDs, not paths)
 - Source of truth for "now": `state/current-state.md`
 - ID registry (ID → path): `process/index.md`
 - Active version/phase/step: `state/active/`
 - Decisions: `foundation/design-charter.md` (locked) + `ledgers/decision-log.md` (all)
-- Features: `reference/feature-matrix.md`
+- Authority spec (full decision text D1–D76): `foundation/design-spec.md`
+- Features: `reference/feature-matrix.md`  ·  Requirements: `reference/requirements/`
 - Registers: `ledgers/` (known-issues, tech-debt, testing, cleanup, improvement)
 - Principles to honor: `reference/principles-register.md`
 - Full methodology: `process/methodology.md`
