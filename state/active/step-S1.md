@@ -1,13 +1,13 @@
 ---
 id: S1
 tier: state
-status: draft
-updated: 2026-06-29
-cross-refs: [P1, D77, D31, F-057]
+status: done
+updated: 2026-06-30
+cross-refs: [P1, D77, D78, D31, F-057]
 if-incomplete: "Return to state/current-state.md."
 ---
 # Step S1 — Project bootstrap (toolchain heartbeat)
-Phase: P1  ·  Feature(s): none (infrastructure)  ·  current-rung: Orient
+Phase: P1  ·  Feature(s): none (infrastructure)  ·  current-rung: Closeout
 Branch: `s1-project-bootstrap`  (the guards block commits to main — ALL work for this step happens on this branch)
 
 ## Statement of Work
@@ -21,6 +21,8 @@ Stand up a minimal native Android app (Kotlin + Jetpack Compose) that builds, in
 - `.gitignore`: add Android/Gradle entries (`/build`, `/app/build`, `.gradle/`, `local.properties`, `.idea/`, `*.iml`, `.cxx/`, `/captures`)
 - `ledgers/decision-log.md`: append **D77** (bootstrap stack) using `templates/decision.md`
 - `ledgers/testing.md`: record the smoke-test result (`T-S1-smoke`)
+- `ledgers/known-issues.md`: record the D78 gate-check template defect found during G3
+- `guards/gate-check.sh`: corrected G3 report control flow accepted under D78
 - `state/current-state.md`: advance to "S1 done → next S2"
 - `state/active/step-S1.md`: this file — set `status: done` and fill Verify/Closeout at the end
 
@@ -35,13 +37,16 @@ Stand up a minimal native Android app (Kotlin + Jetpack Compose) that builds, in
 ## Decisions in play
 - **D77 (operator-delegated) — bootstrap stack.** UI = Jetpack Compose + Material3; package/namespace = `com.golemreader` (applicationId `com.golemreader`); `minSdk = 29`; `compileSdk`/`targetSdk` = the current stable level the installed Android Studio defaults to; Kotlin + Android Gradle Plugin versions = those bundled with current stable Android Studio; Gradle **Kotlin DSL** (`.kts`).
   - *Reasoning:* Compose is the current-standard Android UI toolkit and is the right base for the custom synchronized-highlight rendering coming later (PR-1/PR-4); `minSdk 29` covers the S23 Ultra comfortably while keeping modern media/foreground-service APIs available; `com.golemreader` is simple and trivial to change now but painful later, so it is fixed at bootstrap.
+- **D78 (operator-delegated) — gate-check control-flow fix.** Accept the corrected
+  `guards/gate-check.sh` so G3 reports only real failures and treats the unconfigured
+  secret scanner as SKIP, matching the guard README and pre-commit hook policy.
 - Establishes the floor that F-057 (S2) and the listen-loop spine build on; implements no feature decision.
 
 ## Acceptance criteria (what "done" means)
-- [ ] **Presence & wiring** — `./gradlew assembleDebug` prints **BUILD SUCCESSFUL**; the app installs and launches on the S23 Ultra showing a placeholder screen reading "Golem Reader".
-- [ ] **Behavior & limits** — `./gradlew testDebugUnitTest` runs and the one smoke test **passes**.
-- [ ] **Cost & budget** — N/A at bootstrap (no listen-loop yet); recorded as contributor-N/A in `ledgers/testing.md`.
-- [ ] **Result** — a fresh clone can build, test, and run the heartbeat; `guards.config` now runs the real test command, so the next `app/` commit is gated by it.
+- [x] **Presence & wiring** — `./gradlew assembleDebug` prints **BUILD SUCCESSFUL**; the app installs and launches on the S23 Ultra showing a placeholder screen reading "Golem Reader".
+- [x] **Behavior & limits** — `./gradlew testDebugUnitTest` runs and the one smoke test **passes**.
+- [x] **Cost & budget** — N/A at bootstrap (no listen-loop yet); recorded as contributor-N/A in `ledgers/testing.md`.
+- [x] **Result** — a fresh clone can build, test, and run the heartbeat; `guards.config` now runs the real test command, so the next `app/` commit is gated by it.
 
 ## Test posture
 - Form: **automated** (one JVM unit test) + **agent-run / guided-manual** (launch on the device, verified by eye).
@@ -55,12 +60,14 @@ Stand up a minimal native Android app (Kotlin + Jetpack Compose) that builds, in
 - [x] (non-trivial) operator approved — S1 approved 2026-06-29
 
 ## Rung tracker
-- [ ] Orient  - [ ] Scope  - [ ] Inspect  - [ ] Change
-- [ ] Verify  - [ ] Record  - [ ] Commit (G3, guarded)  - [ ] Closeout
+- [x] Orient  - [x] Scope  - [x] Inspect  - [x] Change
+- [x] Verify  - [x] Record  - [x] Commit (G3, guarded)  - [x] Closeout
 
 ## Verify result
-- Result: [pass|fail]  ·  Confidence: [high|medium|low]  ·  T-id: T-S1-smoke
-- Notes: [FILL by agent]
+- Result: pass  ·  Confidence: high  ·  T-id: T-S1-smoke
+- Notes: `./gradlew assembleDebug` and `./gradlew testDebugUnitTest` passed. The debug APK
+  installed and launched on attached device `R5CW72ZRMWP`; screenshot showed the placeholder
+  screen reading "Golem Reader".
 
 ## Closeout
-- Committed: [branch s1-project-bootstrap / sha]  ·  Next step: **S2 — Storage substrate (F-057)**
+- Committed: branch `s1-project-bootstrap` / S1 project bootstrap commit  ·  Next step: **S2 — Storage substrate (F-057)**

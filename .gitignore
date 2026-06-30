@@ -9,14 +9,19 @@ secrets/
 data/*
 !data/.gitkeep
 # Build / deps (add your stack's outputs during setup)
-build/
+/build
+/app/build
 dist/
 node_modules/
 .gradle/
+local.properties
 *.apk
+.cxx/
+/captures
 # Editor / OS
 .vscode/
 .idea/
+*.iml
 .DS_Store
 *.swp
 .obsidian/

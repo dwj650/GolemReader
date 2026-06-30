@@ -2,7 +2,7 @@
 id: KNOWN-ISSUES
 tier: ledger
 status: active
-updated: 2026-06-28
+updated: 2026-06-30
 if-incomplete: "Full open-boundary roster is design-spec.md Appendix A (every OB + owner)."
 ---
 # Known issues & open boundaries
@@ -22,3 +22,11 @@ Appendix A**. None block design; each resolves at build or later grooming. The
 | OB-015-1 | Brief-hold starvation a11y announcement | build |
 
 > KI-### entries (defects found during build) append below via templates/issue.md.
+
+- **KI-S1-001 — Upstream gate-check template control-flow defect.**
+  During S1, `guards/gate-check.sh` emitted both PASS and FAIL rows for passing checks
+  because the `row()` helper returned the nonzero status of `[ "$2" = "FAIL" ]` on PASS
+  rows, which triggered the `cmd && row PASS || row FAIL` fallback. It also treated the
+  intentionally deferred `SECRET_SCAN_CMD` as a hard G3 failure, conflicting with the
+  pre-commit hook and guard README policy. Corrected locally under D78; upstream template
+  cleanup remains owed if this Armature template is reused.
