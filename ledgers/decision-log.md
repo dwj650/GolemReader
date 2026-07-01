@@ -196,3 +196,44 @@ rejected by D35 because those spine entries can carry book content.
 ## Consequences
 The recipe is permanent for app identity v1. Any ambiguity in the recipe is a Design Zone
 halt condition, not an implementation choice.
+
+# Decision D85 — No machine-specific paths in committed config
+- Date: 2026-07-01  ·  Status: locked  ·  Maps to phase: P1
+- Operator-delegated? no
+
+## Context
+S2 was built on the T14; Android Studio wrote that machine's absolute Java home and Android
+SDK dir into the committed gradle.properties. On p1 those paths do not exist, so Gradle
+failed before compiling.
+## Decision
+The committed gradle.properties carries no machine-specific absolute paths. Each machine
+supplies its Android SDK via local.properties (gitignored) and its Java home via user-level
+~/.gradle/gradle.properties. Neither is committed.
+## Reasoning
+Absolute machine paths in shared config break every other machine; per-machine files are the
+standard Gradle/Android mechanism and keep the repo portable.
+## Alternatives considered
+Committing per-machine profile pairs was rejected as fragile and non-standard.
+## Consequences
+The repo builds on p1, the T14, and future machines without editing shared config.
+
+# Decision D86 — Build/test JDK is OpenJDK 21
+- Date: 2026-07-01  ·  Status: locked  ·  Maps to phase: P1
+- Operator-delegated? no
+
+## Context
+Robolectric sandboxing for Android SDK 36 requires Java 21. p1 had only Java 17 (starts
+Gradle, cannot run the Room/migration tests). The T14 had been passing only via Android
+Studio's bundled JBR 21 — an implicit dependency exposed once D85 removed it.
+## Decision
+The project's build/test JDK is OpenJDK 21, provisioned per machine and selected via the
+per-machine ~/.gradle/gradle.properties java home. p1 installed openjdk-21-jdk.
+## Reasoning
+The unit/Robolectric suite must simulate the app's actual target (SDK 36), which mandates
+Java 21. Making it explicit prevents silent reliance on a bundled JBR.
+## Alternatives considered
+Pinning tests to an older SDK (34) to run under Java 17 was rejected: lower test fidelity
+than the app's real target.
+## Consequences
+Every build machine needs Java 21; the T14 needs its java-home pointed at a JDK 21 when next
+used. No app runtime behavior changes.
