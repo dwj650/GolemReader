@@ -67,3 +67,67 @@ PASS report before commit.
 ## Consequences
 S1 can complete with G3 evidence. The upstream Armature template defect is recorded in
 `ledgers/known-issues.md` for later template cleanup.
+
+# Decision D79 — S2 test-runtime posture
+- Date: 2026-06-30  ·  Status: locked  ·  Maps to phase: P1
+- Operator-delegated? no
+
+## Context
+S2 needs storage invariants and Room migrations to sit in the commit gate where possible,
+while device-only behaviors still need the S23.
+## Decision
+Run pure-logic tests as JVM unit tests under `./gradlew testDebugUnitTest`. Run Room
+build/init and the migration harness via Robolectric in the JVM source set. Run restart,
+process-death, and real Settings cache-clear checks on the S23.
+## Reasoning
+The highest-risk storage rules are deterministic and should be gate-enforced. Android OS
+cache behavior and process lifetime need the real target device.
+## Alternatives considered
+Putting every Room test in `androidTest` was rejected because it would remove migration
+coverage from the commit gate unless Robolectric proved incompatible.
+## Consequences
+S2 has fast JVM coverage for substrate invariants and separate recorded S23 verification
+for OS/user behavior.
+
+# Decision D80 — F-057 substrate table + demonstration migration
+- Date: 2026-06-30  ·  Status: locked  ·  Maps to phase: P1
+- Operator-delegated? no
+
+## Context
+F-057 must stand up the precious database before the first feature-owned precious table
+arrives in S3.
+## Decision
+Create an F-057-owned `db_meta` table and a demonstration v1 to v2 migration on that
+table. Commit exported Room schemas under `app/schemas/`.
+## Reasoning
+`db_meta` makes the database valid and openable now without stealing schema ownership from
+later features. The demonstration migration proves the D31 harness before real precious
+feature tables depend on it.
+## Alternatives considered
+Waiting until F-020 for the first migration was rejected because S2 explicitly owns the
+storage substrate and D31 harness. Adding feature tables in S2 was rejected as out of scope.
+## Consequences
+Future precious tables inherit a working Room schema-export and migration-test pattern.
+
+# Decision D81 — KSP under AGP built-in Kotlin
+- Date: 2026-06-30  ·  Status: locked  ·  Maps to phase: P1
+- Operator-delegated? no
+
+## Context
+The first S2 attempt used a Kotlin-matched KSP line that failed under AGP 9.2.1 built-in
+Kotlin with a `kotlin.sourceSets` error.
+## Decision
+Use KSP 2.3.5 from the latest stable 2.3.x line, declared in the top-level build file, while
+keeping Kotlin/KGP at 2.2.10. Do not use the temporary `android.disallowKotlinSourceSets=false`
+fallback unless the latest stable 2.3.x still fails.
+## Reasoning
+KSP 2.3.x is decoupled from the Kotlin compiler version and supports the AGP built-in
+Kotlin source registration path. KSP 2.3.5 resolved the toolchain conflict without a Kotlin
+stack bump and without the deprecated Gradle property.
+## Alternatives considered
+Setting `android.disallowKotlinSourceSets=false` was retained only as a bounded fallback and
+was not used. Bumping Kotlin/Compose to the 2.3 line was deferred as a separate stack
+decision.
+## Consequences
+S2 can use Room/KSP on AGP 9.2.1 with Kotlin/KGP 2.2.10. No TD-001 was created because the
+fallback was not used.
