@@ -2,7 +2,7 @@
 id: KNOWN-ISSUES
 tier: ledger
 status: active
-updated: 2026-06-30
+updated: 2026-07-01
 if-incomplete: "Full open-boundary roster is design-spec.md Appendix A (every OB + owner)."
 ---
 # Known issues & open boundaries
@@ -30,3 +30,10 @@ Appendix A**. None block design; each resolves at build or later grooming. The
   intentionally deferred `SECRET_SCAN_CMD` as a hard G3 failure, conflicting with the
   pre-commit hook and guard README policy. Corrected locally under D78; upstream template
   cleanup remains owed if this Armature template is reused.
+
+- **KI-S3-001 — Device test-services UID gap blocks `MANAGE_EXTERNAL_STORAGE` grant.**
+  During S3's device run on the S23, `ExternalCacheClearDeviceTest` (S2/F-057) was
+  SKIPPED: `androidx.test.services` had no UID on-device, so the test couldn't set
+  `MANAGE_EXTERNAL_STORAGE`. S3's own device suite passed; build was SUCCESSFUL.
+  Not blocking S4 (no S4 component depends on this permission path). Owner: build /
+  whenever a step next depends on verified external-cache-clear behavior on-device.

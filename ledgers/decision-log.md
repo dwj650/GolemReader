@@ -237,3 +237,30 @@ than the app's real target.
 ## Consequences
 Every build machine needs Java 21; the T14 needs its java-home pointed at a JDK 21 when next
 used. No app runtime behavior changes.
+
+# Decision D87 — S4 single-chapter text pipeline boundary
+- Date: 2026-07-01  ·  Status: locked  ·  Maps to phase: P1
+- Operator-delegated? yes — AI recorded the already-approved S4 boundary, reasoning below
+
+## Context
+S4 needs enough F-018/F-027/F-028 behavior to turn one real EPUB chapter into indexed
+display/spoken sentence records, while later walking-skeleton steps still own playback,
+highlighting, normalization rule content, and multi-chapter flow.
+## Decision
+Limit S4 to a single-chapter text pipeline: reuse `EpubStructuralReader` for spine order,
+extract XHTML text into typed structural tokens, pre-clean, segment, fork display/spoken
+renderings, assign the composite sentence index, and route the output as rebuildable cache
+data. Explicitly defer image extraction under F-018 R10 until F-074 has a built surface.
+## Reasoning
+The walking skeleton needs a real sentence stream before synthesis, but does not yet need
+continuous chapter traversal or image handling. Keeping image extraction out avoids building
+a storage/UI surface before there is a consumer.
+## Alternatives considered
+Combining multi-chapter looping with S4 was rejected because S6 owns continuous playback.
+Adding image extraction now was rejected because F-074 has no current presentation surface.
+Adding F-029 normalization content or F-043 rule resolution was rejected because S4 only
+needs observable empty rule slots.
+## Consequences
+S5 can consume the first synthesized sentence from a proven text pipeline. Later steps must
+connect continuous playback, richer normalization/rules, and any image extraction without
+changing the S4 parser boundary.

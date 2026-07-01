@@ -97,6 +97,39 @@ if-incomplete: "Coverage policy is reference/coverage-target.md."
   Confidence: medium.
 - **T-020 contributor tag** — N/A for the integrated listen-loop budget: F-020 runs at
   import time, not on the steady playback path.
+- **T-018-P1 / T-018-B1 / T-018-B2** — JVM extraction of
+  `fixtures/text/tom-sawyer.epub` chapter 1 through `EpubStructuralReader`: ordered text
+  comes out, markup is stripped, and chapter boundary / heading / paragraph tokens are
+  preserved. Passed under `./gradlew testDebugUnitTest` on 2026-07-01. Confidence: high.
+- **T-018-P3 / T-027-P4** — Pipeline cache placement resolves through the existing
+  F-057 placement rule to `StorageTier.Rebuildable`, not precious. Passed under
+  `./gradlew testDebugUnitTest` on 2026-07-01. Confidence: high.
+- **T-018-B4 / T-018-B5 / T-018-B6** — Declared non-UTF-8 XHTML encoding is respected,
+  Tom Sawyer chapter extraction is deterministic, and a malformed spine content-document is
+  flagged without aborting a later good chapter. Passed under `./gradlew testDebugUnitTest`
+  on 2026-07-01. Confidence: high.
+- **T-027-P1 / T-027-P3 / T-027-B2 / T-027-B3 / T-027-B4 / T-027-B5 / T-027-B6 / T-027-B8**
+  — Tom Sawyer chapter 1 runs through parse -> pre-clean -> segment -> display/spoken fork
+  with shared `SentenceIndex` values, observable no-op rule slots, display quotes retained,
+  spoken quotes removed, no phonemes, and F-029 absent. Passed under
+  `./gradlew testDebugUnitTest` on 2026-07-01. Confidence: high.
+- **T-027-B1** — Pre-clean performs NFC normalization, whitespace normalization,
+  zero-width/directional control stripping, and smart quote / dash straightening. Passed
+  under `./gradlew testDebugUnitTest` on 2026-07-01. Confidence: high.
+- **T-028-P1 / T-028-B1 / T-028-B2 / T-028-B3 / T-028-B4 / T-028-B5 / T-028-B7 / T-028-B9**
+  — BreakIterator segmentation plus thin corrections covers clean prose, `St.`
+  abbreviation, decimals, ellipsis, byte-for-byte reassembly, over-long clause sub-splits,
+  complete clause tags, determinism, and terminal/sub-split tags. Passed under
+  `./gradlew testDebugUnitTest` on 2026-07-01. Confidence: high.
+- **T-018-R1 / T-027-R1 / T-028-R1** — S23 device smoke: the same Tom Sawyer EPUB fixture
+  was pushed to `/sdcard/Android/media/com.golemreader/fixtures/text/tom-sawyer.epub`;
+  chapter 1 extracted, cleaned, segmented, and forked with no crash under
+  `./gradlew connectedDebugAndroidTest` on SM-S918U on 2026-07-01. The known
+  `ExternalCacheClearDeviceTest` service-UID gap skipped two S2 tests as logged in
+  KI-S3-001; S4's device test passed. Confidence: medium.
+- **T-028-C1 / S4 cost reading** — S23 Tom Sawyer chapter-1 text pipeline measurement:
+  wall-clock 409 ms; memory before=2,778,288 bytes, after=2,921,648 bytes,
+  delta=143,360 bytes. No threshold. Confidence: medium.
 
 ## Resolved tool versions for S2
 - KSP Gradle plugin: `com.google.devtools.ksp:2.3.5` (**D81 primary path**, no

@@ -1,13 +1,13 @@
 ---
 id: S4
 tier: state
-status: draft
+status: complete
 updated: 2026-07-01
 cross-refs: [P1, D82, D83, D84, D87, F-018, F-027, F-028]
 if-incomplete: "Return to state/current-state.md."
 ---
 # Step S4 — Text → sentences (F-018 thin + F-027 + F-028)
-Phase: P1  ·  Feature(s): F-018 (thin), F-027, F-028  ·  current-rung: Orient
+Phase: P1  ·  Feature(s): F-018 (thin), F-027, F-028  ·  current-rung: Closeout
 
 ## Statement of Work
 Given one chapter of a real EPUB, produce an ordered list of clean, indexed sentences —
@@ -99,36 +99,36 @@ surface is built).
 
 ## Acceptance criteria (what "done" means)
 **F-018 (thin: R1–R9, R10 explicitly excluded)**
-- [ ] T-018-P1 — real chapter → ordered text out, via reused `EpubStructuralReader`.
-- [ ] T-018-P3 — output placement resolves to rebuildable, not precious.
-- [ ] T-018-B1 — markup stripped, text content preserved.
-- [ ] T-018-B2 — block structure (paragraph/heading/chapter) preserved as typed tokens.
-- [ ] T-018-B4 — declared encoding respected (non-UTF-8 fixture, if used, extracts correctly).
-- [ ] T-018-B5 — reparse determinism: same source parsed twice → byte-identical text.
-- [ ] T-018-B6 — a malformed/missing chapter is flagged, not fatal.
+- [x] T-018-P1 — real chapter → ordered text out, via reused `EpubStructuralReader`.
+- [x] T-018-P3 — output placement resolves to rebuildable, not precious.
+- [x] T-018-B1 — markup stripped, text content preserved.
+- [x] T-018-B2 — block structure (paragraph/heading/chapter) preserved as typed tokens.
+- [x] T-018-B4 — declared encoding respected (non-UTF-8 fixture, if used, extracts correctly).
+- [x] T-018-B5 — reparse determinism: same source parsed twice → byte-identical text.
+- [x] T-018-B6 — a malformed/missing chapter is flagged, not fatal.
 
 **F-027**
-- [ ] T-027-P1 — pipeline runs end to end on a fixture chapter; no stage skipped.
-- [ ] T-027-P3 — the three rule-application points exist and are reachable (no-op in S4).
-- [ ] T-027-P4 — output lands in the rebuildable tier.
-- [ ] T-027-B1 — pre-clean correctness (NFC, whitespace, zero-width/directional strip, smart-quote/dash straighten).
-- [ ] T-027-B2 / T-027-B8 — display[i], spoken[i], and the composite `(chapter, sentence)` index agree across all three.
-- [ ] T-027-B3 — fork correctness: display keeps quotation marks; spoken is plain words; same index.
-- [ ] T-027-B4 — rule points are observable, not silently swallowed, even as no-ops.
-- [ ] T-027-B5 — spoken rendering is plain words/respellings only, no phonemes.
-- [ ] T-027-B6 — pipeline produces a valid spoken rendering with F-029 absent (proves the decoupling — genuinely testable in S4 since F-029 doesn't exist yet).
+- [x] T-027-P1 — pipeline runs end to end on a fixture chapter; no stage skipped.
+- [x] T-027-P3 — the three rule-application points exist and are reachable (no-op in S4).
+- [x] T-027-P4 — output lands in the rebuildable tier.
+- [x] T-027-B1 — pre-clean correctness (NFC, whitespace, zero-width/directional strip, smart-quote/dash straighten).
+- [x] T-027-B2 / T-027-B8 — display[i], spoken[i], and the composite `(chapter, sentence)` index agree across all three.
+- [x] T-027-B3 — fork correctness: display keeps quotation marks; spoken is plain words; same index.
+- [x] T-027-B4 — rule points are observable, not silently swallowed, even as no-ops.
+- [x] T-027-B5 — spoken rendering is plain words/respellings only, no phonemes.
+- [x] T-027-B6 — pipeline produces a valid spoken rendering with F-029 absent (proves the decoupling — genuinely testable in S4 since F-029 doesn't exist yet).
 
 **F-028**
-- [ ] T-028-P1 / T-028-B1 — correct sentence boundaries on clean prose fixture.
-- [ ] T-028-B2 — thin rules prevent false splits (abbreviation, decimal, ellipsis cases).
-- [ ] T-028-B3 — reassembling segments reproduces input text byte-for-byte (no alteration).
-- [ ] T-028-B4 — an over-long sentence sub-splits at clause boundaries, not mid-clause.
-- [ ] T-028-B5 — clause tags `(parent sentence ordinal, clause ordinal)` correct and complete.
-- [ ] T-028-B7 — determinism: same input + locale → identical boundaries twice.
-- [ ] T-028-B9 — every segment tagged sentence-terminal or clause-sub-split; a sub-split is never tagged terminal.
+- [x] T-028-P1 / T-028-B1 — correct sentence boundaries on clean prose fixture.
+- [x] T-028-B2 — thin rules prevent false splits (abbreviation, decimal, ellipsis cases).
+- [x] T-028-B3 — reassembling segments reproduces input text byte-for-byte (no alteration).
+- [x] T-028-B4 — an over-long sentence sub-splits at clause boundaries, not mid-clause.
+- [x] T-028-B5 — clause tags `(parent sentence ordinal, clause ordinal)` correct and complete.
+- [x] T-028-B7 — determinism: same input + locale → identical boundaries twice.
+- [x] T-028-B9 — every segment tagged sentence-terminal or clause-sub-split; a sub-split is never tagged terminal.
 
 **Cross-cutting / result (agent-run, on S23)**
-- [ ] One real chapter from a real EPUB, on-device: extracts, cleans, segments, and
+- [x] One real chapter from a real EPUB, on-device: extracts, cleans, segments, and
       forks correctly with no crash (combines T-018-R1 / T-027-R1 / T-028-R1 intent).
       Record wall-clock time and peak memory for the chapter — no fixed budget yet
       (Budget TBD per the requirement docs); just record honest numbers.
@@ -143,16 +143,16 @@ surface is built).
   code outside `EpubTextExtractor`.
 
 ## Entry gate (G2)
-- [ ] Prior step closed — S3 merged to main at commit `9157df7`.
-- [ ] current-state fresh — pulled 2026-07-01, confirms S4 is next.
-- [ ] Scope + non-goals declared — above.
-- [ ] Operator approved — pending (this document).
+- [x] Prior step closed — S3 merged to main at commit `9157df7`.
+- [x] current-state fresh — pulled 2026-07-01, confirms S4 is next.
+- [x] Scope + non-goals declared — above.
+- [x] Operator approved — direct operator instruction, 2026-07-01.
 
 ## Rung tracker
-- [ ] Orient — read current-state + this step; log the known issue below; confirm
+- [x] Orient — read current-state + this step; log the known issue below; confirm
       location; wait for operator acknowledgment.
-- [ ] Scope  - [ ] Inspect  - [ ] Change
-- [ ] Verify  - [ ] Record  - [ ] Commit (G3, guarded)  - [ ] Closeout
+- [x] Scope  - [x] Inspect  - [x] Change
+- [x] Verify  - [x] Record  - [x] Commit (G3, guarded)  - [x] Closeout
 
 ## Known issue to log at Orient
 Append to `ledgers/known-issues.md`:
@@ -165,8 +165,11 @@ Append to `ledgers/known-issues.md`:
 > whenever a step next depends on verified external-cache-clear behavior on-device.
 
 ## Verify result
-- Result: [pass|fail]  ·  Confidence: [high|medium|low]  ·  T-id: [T-…]
-- Notes: [FILL by Codex]
+- Result: pass  ·  Confidence: high for JVM logic, medium for S23 measurement  ·  T-id: T-018/T-027/T-028
+- Notes: `./gradlew testDebugUnitTest`, `./gradlew assembleDebug`, and
+  `./gradlew connectedDebugAndroidTest` passed on 2026-07-01. S23 chapter-1 measurement:
+  409 ms; memory before=2,778,288 bytes, after=2,921,648 bytes, delta=143,360 bytes.
+  Existing `ExternalCacheClearDeviceTest` permission-path checks skipped per KI-S3-001.
 
 ## Closeout
-- Committed: [branch / sha]  ·  Next step: S5 (F-048, F-008 — first synthesized sentence)
+- Committed: `s4-text-pipeline` / git HEAD  ·  Next step: S5 (F-048, F-008 — first synthesized sentence)
