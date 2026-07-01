@@ -11,6 +11,8 @@ import androidx.room.Query
 import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.golemreader.identity.BookIdentityDao
+import com.golemreader.identity.BookIdentityEntity
 
 @Entity(tableName = "db_meta")
 data class DbMetaEntity(
@@ -35,12 +37,16 @@ interface DbMetaDao {
 }
 
 @Database(
-    entities = [DbMetaEntity::class],
+    entities = [
+        DbMetaEntity::class,
+        BookIdentityEntity::class,
+    ],
     version = PreciousDatabase.SCHEMA_VERSION,
     exportSchema = true,
 )
 abstract class PreciousDatabase : RoomDatabase() {
     abstract fun dbMetaDao(): DbMetaDao
+    abstract fun bookIdentityDao(): BookIdentityDao
 
     object Migrations {
         val V1_TO_V2 = object : Migration(1, 2) {
@@ -50,9 +56,25 @@ abstract class PreciousDatabase : RoomDatabase() {
                 )
             }
         }
+
+        val V2_TO_V3 = object : Migration(2, 3) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS book_identity (
+                        hash TEXT NOT NULL,
+                        algorithm TEXT NOT NULL,
+                        recipe_version INTEGER NOT NULL,
+                        created_at_epoch_ms INTEGER NOT NULL DEFAULT 0,
+                        PRIMARY KEY(hash)
+                    )
+                    """.trimIndent(),
+                )
+            }
+        }
     }
 
     companion object {
-        const val SCHEMA_VERSION = 2
+        const val SCHEMA_VERSION = 3
     }
 }

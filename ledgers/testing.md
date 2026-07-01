@@ -2,7 +2,7 @@
 id: TESTING
 tier: ledger
 status: active
-updated: 2026-06-30
+updated: 2026-07-01
 if-incomplete: "Coverage policy is reference/coverage-target.md."
 ---
 # Testing register
@@ -58,6 +58,45 @@ if-incomplete: "Coverage policy is reference/coverage-target.md."
   precious footprint per book remain agent-run measurement items for a later build pass.
 - **T-057-C3** — Registered contributor to the integrated listen-loop system-budget test at
   end of T3; no solo number for S2.
+- **T-020-P1** — EPUB structural reader resolves `valid.epub` spine order exactly:
+  chapter-1, chapter-2, chapter-3. Passed under `./gradlew testDebugUnitTest` on
+  2026-07-01. Confidence: high.
+- **T-020-P2** — D84 hasher returns fixed SHA-256 digest
+  `a8e69c8b4b53fb33e34bc2ef16b950f27a1d51a225d2fec4b249f642391565ac` for the known
+  `valid.epub` fixture. Passed under `./gradlew testDebugUnitTest` on 2026-07-01.
+  Confidence: high.
+- **T-020-P3** — `book_identity` builds at Room schema v3, is present in exported schema
+  `app/schemas/com.golemreader.storage.PreciousDatabase/3.json`, and reads empty on first
+  run. Passed under `./gradlew testDebugUnitTest` on 2026-07-01. Confidence: high.
+- **T-020-B1 / B2 / B3** — Identity is deterministic, independent of ZIP compression, and
+  unchanged when non-spine cover/CSS bytes change. Passed under `./gradlew testDebugUnitTest`
+  on 2026-07-01. Confidence: high.
+- **T-020-B4 / B5 / B6** — Identity changes when spine content changes, when spine order
+  changes, and between genuinely distinct books. Passed under `./gradlew testDebugUnitTest`
+  on 2026-07-01. Confidence: high.
+- **T-020-B7** — Malformed EPUBs without `META-INF/container.xml` or with an empty spine
+  throw typed `EpubStructuralException` errors and write no identity. Passed under
+  `./gradlew testDebugUnitTest` on 2026-07-01. Confidence: high.
+- **D35 coverage** — `linear="no"` spine itemrefs are included: `with-appendix.epub` resolves
+  the appendix in order and hashes to
+  `f2f29b161f698ebafaa28c889da1ba905f83b51c1d38cfebe68855424959377b`, differing from
+  `valid.epub`. Passed under `./gradlew testDebugUnitTest` on 2026-07-01. Confidence: high.
+- **T-020-B8** — D31 first feature-table exercise: v2 `db_meta` rows survive V2→V3,
+  `book_identity` is created and usable, and a destructive V2→V3 variant is rejected by
+  Room validation. Passed under `./gradlew testDebugUnitTest` on 2026-07-01. Confidence:
+  high.
+- **T-020-R1 / R2 / R3** — S23 device checks: registering the same EPUB twice returns the
+  same hash and known status on the second add; a different EPUB creates a second identity;
+  and a written identity reads back after database close/reopen. Passed via
+  `./gradlew connectedDebugAndroidTest` on SM-S918U on 2026-07-01. Confidence: medium.
+- **T-020-C1** — S23 import-time hash measurement: 3,147,653-byte EPUB hashed in 6 ms.
+  Recorded from `BookIdentityDevice` log after `./gradlew connectedDebugAndroidTest` on
+  SM-S918U on 2026-07-01. No threshold. Confidence: medium.
+- **T-020-C2** — S23 streamed-hashing memory reading for the same 3,147,653-byte EPUB:
+  before=5,886,576 bytes, after=5,804,656 bytes, delta=-81,920 bytes. No threshold.
+  Confidence: medium.
+- **T-020 contributor tag** — N/A for the integrated listen-loop budget: F-020 runs at
+  import time, not on the steady playback path.
 
 ## Resolved tool versions for S2
 - KSP Gradle plugin: `com.google.devtools.ksp:2.3.5` (**D81 primary path**, no

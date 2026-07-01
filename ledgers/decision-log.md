@@ -2,7 +2,7 @@
 id: DECISION-LOG
 tier: ledger
 status: active
-updated: 2026-06-30
+updated: 2026-07-01
 if-incomplete: "The locked register is foundation/design-charter.md; full text in foundation/design-spec.md."
 ---
 # Decision log (all decisions, over time)
@@ -131,3 +131,68 @@ decision.
 ## Consequences
 S2 can use Room/KSP on AGP 9.2.1 with Kotlin/KGP 2.2.10. No TD-001 was created because the
 fallback was not used.
+
+# Decision D82 — P1 ladder renumbering
+- Date: 2026-06-30  ·  Status: locked  ·  Maps to phase: P1
+- Operator-delegated? no
+
+## Context
+S2 delivered storage only, leaving book identity as the next dependency in the walking
+skeleton. The phase ladder needed to reflect the actual build order without mixing identity
+and thin text extraction in one step.
+## Decision
+Renumber the P1 ladder so S3 is F-020 Book identity, and S4 is Text → sentences
+(F-018 thin + F-027 + F-028).
+## Reasoning
+Book identity is the stable key for later text, state, and catalog records. Keeping it as its
+own step makes the first feature-owned precious table and D31 migration exercise small and
+verifiable.
+## Alternatives considered
+Combining identity with text extraction was rejected because it would blur the D84 permanent
+fingerprint recipe with the separate parser/text pipeline.
+## Consequences
+State and phase records name S3 as Book identity and S4 as Text → sentences.
+
+# Decision D83 — S3 identity-only boundary
+- Date: 2026-06-30  ·  Status: locked  ·  Maps to phase: P1
+- Operator-delegated? no
+
+## Context
+F-020 needs EPUB structure to find spine documents, but F-018 owns content extraction and the
+plain-text parser that will feed sentence segmentation.
+## Decision
+S3 performs structural EPUB reading only: container → OPF → manifest/spine → decompressed
+spine entry streams. It does not parse chapter XHTML into text, create sentence records, or
+link multiple source files to one book.
+## Reasoning
+The identity hash depends on raw decompressed spine bytes before parsing. Delaying text
+extraction avoids coupling the permanent identity recipe to parser behavior.
+## Alternatives considered
+Parsing one chapter during S3 was rejected as premature scope overlap with S4.
+## Consequences
+S4 owns thin text extraction and sentence segmentation on top of the identity substrate.
+
+# Decision D84 — Permanent book identity fingerprint recipe
+- Date: 2026-06-30  ·  Status: locked  ·  Maps to phase: P1
+- Operator-delegated? no
+
+## Context
+Golem Reader needs a permanent content fingerprint that recognizes the same EPUB across
+renames and ZIP repackaging while not confusing distinct books.
+## Decision
+Compute identity from every OPF spine itemref in document order, including `linear="no"`.
+For each referenced content-document entry, feed an 8-byte big-endian decompressed byte
+length followed by that entry's decompressed bytes into SHA-256. Exclude container/package
+metadata and all non-spine manifest items such as covers, images, CSS, and fonts. Store
+records with `algorithm = "SHA-256"` and `recipe_version = 1`.
+## Reasoning
+Raw decompressed content bytes make ZIP packaging irrelevant while preserving content,
+order, and document-boundary sensitivity. The length prefix avoids separator ambiguity.
+Algorithm and recipe version make any future app-wide recipe change explicit.
+## Alternatives considered
+Hashing ZIP bytes was rejected because repackaging would change identity. Hashing rendered
+or parsed text was rejected because parser behavior can change. Ignoring `linear="no"` was
+rejected by D35 because those spine entries can carry book content.
+## Consequences
+The recipe is permanent for app identity v1. Any ambiguity in the recipe is a Design Zone
+halt condition, not an implementation choice.
