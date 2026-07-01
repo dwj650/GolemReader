@@ -264,3 +264,48 @@ needs observable empty rule slots.
 S5 can consume the first synthesized sentence from a proven text pipeline. Later steps must
 connect continuous playback, richer normalization/rules, and any image extraction without
 changing the S4 parser boundary.
+
+# Decision D88 — S5 test-asset handling
+- Date: 2026-07-01  ·  Status: locked  ·  Maps to phase: P1
+- Operator-delegated? no
+
+## Context
+S5 needs sherpa-onnx and two local neural voice packages to prove first audio on the S23,
+but those binaries are large machine/device test assets rather than source code.
+## Decision
+S5 test-asset handling: local-only `.aar`, adb-push models, nothing large committed to git.
+## Reasoning
+The repository should record how to reproduce the S5 device proof without committing large
+binary libraries or model files. The app code depends on the local `.aar`; the model folders
+are pushed to the S23 for agent-run verification.
+## Alternatives considered
+Committing the `.aar` or voice model folders was rejected because these are large local test
+assets. Downloading them during the build was rejected because S5 verification is explicit
+local setup, not network-dependent build behavior.
+## Consequences
+`app/libs/*.aar` is gitignored, and S5 records the exact device-push commands used for
+verification.
+
+# Decision D89 — S5 voice boundary
+- Date: 2026-07-01  ·  Status: locked  ·  Maps to phase: P1
+- Operator-delegated? no
+
+## Context
+S5 must prove that the `VoiceEngine` abstraction can drive two real engines now, while full
+F-048 voice selection and management features need later UI, persistence, and playback
+infrastructure.
+## Decision
+S5 boundary: two-engine synthesis harness proven now; voice identity, hot-swap,
+persistence, and the Voice Manager UI deferred to a later step.
+## Reasoning
+First audible output is the dependency needed before S6 streaming playback. Building voice
+identity, hot-swap, persistence, or a manager UI now would expand beyond the walking
+skeleton slice and create surfaces with no current host screen.
+## Alternatives considered
+Implementing full F-048 in S5 was rejected because identity, hot-swap, persistence, and UI
+all depend on later playback and surface work. Proving only one engine was rejected because
+it would not validate the shared interface boundary.
+## Consequences
+S5 claims only the two-engine synthesis substrate. Later F-048 work must add identity,
+active-voice state, hot-swap, persistence, and the Voice Manager UI without redefining the
+S5 interface foundation.

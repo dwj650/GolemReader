@@ -22,8 +22,8 @@ if-incomplete: "Return to current-state.md."
 | **S2** | Storage substrate: precious / rebuildable tiers + D31 migration-test harness | F-057 |
 | **S3** | Book identity: EPUB structural spine read + D84 content hash + `book_identity` | F-020 |
 | **S4 — done** | Text → sentences: thin EPUB text extraction + composite index + segmentation | F-018 (thin), F-027, F-028 |
-| **S5 — next** | One voice speaks: voice load + audio pipeline → first synthesized sentence | F-048, F-008 |
-| **S6** | Streaming engine: producer/consumer buffer + intent loop → continuous chapter playback | F-001 |
+| **S5 — done** | One voice speaks: voice load + audio pipeline → first synthesized sentence | F-048, F-008 |
+| **S6 — next** | Streaming engine: producer/consumer buffer + intent loop → continuous chapter playback | F-001 |
 | **S7** | Synchronized highlight follows the audio | F-016 |
 | **S8** | Transport (play/pause/skip) through the MediaSession hub | F-002, F-009 (thin) |
 | **S9** | The two surfaces, minimal: Reading View + Now Playing | F-014, F-015 |

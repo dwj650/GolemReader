@@ -37,3 +37,10 @@ Appendix A**. None block design; each resolves at build or later grooming. The
   `MANAGE_EXTERNAL_STORAGE`. S3's own device suite passed; build was SUCCESSFUL.
   Not blocking S4 (no S4 component depends on this permission path). Owner: build /
   whenever a step next depends on verified external-cache-clear behavior on-device.
+
+- **KI-S5-001 — Piper segment-final `:`/`;` artifact is expected and unfixed in S5.**
+  F-008's core hygiene is engine-blind by design (D40); the Piper-specific `:`/`;`
+  segment-final clip fix (D23f) belongs to the F-045 Piper quirk pack, which does not
+  exist yet. If S5's test sentence ends in or contains a `:`/`;` that triggers this
+  artifact on Piper output, it will be audible. This is not a regression and not in scope
+  to fix here. Owner: whenever F-044/F-045 (rule-packs, voice-bound packs) are built.
