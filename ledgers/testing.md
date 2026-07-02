@@ -174,6 +174,24 @@ if-incomplete: "Coverage policy is reference/coverage-target.md."
   `/sdcard/Android/media/com.golemreader/`. A fresh rerun first failed because APK install
   churn cleared the fixture from the app media folder; restoring the same test assets
   resolved it with no code change. Confidence: medium.
+- **T-002-P1 / T-002-B1 / T-002-B2 / T-002-B3 / T-009-P1 / T-009-B1** — S8 JVM
+  transport/session coverage: `TransportCommands` route play/pause/resume/stop through
+  the single in-app `TransportHub`; two callers using the same hub produce identical
+  desired-state writes; `PlaybackSession` drives producer/consumer while playing, pauses
+  without flushing or aborting, resumes at the same cursor, aborts to a seek target, and
+  stops by stopping the producer, flushing the buffer, flushing the sink, and ending the
+  session. RED first failed on missing S8 APIs and then on missing stop-buffer flushing;
+  GREEN passed under `./gradlew testDebugUnitTest` on 2026-07-02. Confidence: high.
+- **S8 orchestrator device proof** — S23 wall-clock transport check:
+  `PlaybackSessionDeviceTest` installed the app/test APKs, restored
+  `tom-sawyer.epub` to `/sdcard/Android/media/com.golemreader/fixtures/text/`, started a
+  real `PlaybackSession` thread over a Tom Sawyer chapter-5/6 passage, and issued
+  play/pause/resume/seek/stop over elapsed time through the hub/commands. Direct
+  instrumentation returned `OK (1 test)` via
+  `adb shell am instrument -w -e class com.golemreader.playback.PlaybackSessionDeviceTest com.golemreader.test/androidx.test.runner.AndroidJUnitRunner`
+  on SM-S918U on 2026-07-02. A direct `connectedDebugAndroidTest` run first failed after
+  APK install churn cleared the fixture from app media; restoring the fixture after install
+  resolved the environment issue with no code change. Confidence: medium.
 
 ## Resolved tool versions for S2
 - KSP Gradle plugin: `com.google.devtools.ksp:2.3.5` (**D81 primary path**, no

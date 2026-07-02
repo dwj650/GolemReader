@@ -1,7 +1,7 @@
 ---
 id: S8
 tier: state
-status: approved
+status: completed
 updated: 2026-07-02
 cross-refs: [P1, D92, D13a, D13k, D14a, D14b, D14f, F-002, F-009, F-001]
 if-incomplete: "Return to state/current-state.md."
@@ -11,7 +11,7 @@ if-incomplete: "Return to state/current-state.md."
 ## Changelog
 - v1.0.0 (2026-07-02) — proposed and approved in the same design session.
 
-Phase: P1 · Feature(s): F-002, F-009 (thin) · current-rung: Orient
+Phase: P1 · Feature(s): F-002, F-009 (thin) · current-rung: Closeout
 
 ## Statement of Work
 Build the four transport commands (play/pause/resume/stop) as desired-play-state writes
@@ -74,17 +74,17 @@ New tests:
   `PlaybackConsumer`; S8 just makes it reachable via commands over real time).
 
 ## Acceptance criteria (what "done" means)
-- [ ] T-002-P1 — the four commands route through a single hub; each writes desired-
+- [x] T-002-P1 — the four commands route through a single hub; each writes desired-
       play-state, none replays an event sequence.
-- [ ] T-002-B1 — pause then resume is instant: no buffer flush, same position.
-- [ ] T-002-B2 — stop flushes the buffer and ends the session; F-058's saved position
+- [x] T-002-B1 — pause then resume is instant: no buffer flush, same position.
+- [x] T-002-B2 — stop flushes the buffer and ends the session; F-058's saved position
       (already written independently by the storage substrate) is untouched by S8's
       stop path — S8 does not need to trigger a save itself.
-- [ ] T-002-B3 (in-process form) — the same command issued via two different callers
+- [x] T-002-B3 (in-process form) — the same command issued via two different callers
       of `TransportHub` yields identical resulting state.
-- [ ] T-009-P1 — exactly one hub instance; no second session possible.
-- [ ] T-009-B1 (in-process form) — caller-independent routing, as above.
-- [ ] New: the orchestrator itself — `PlaybackSession` keeps producer/consumer/abort/
+- [x] T-009-P1 — exactly one hub instance; no second session possible.
+- [x] T-009-B1 (in-process form) — caller-independent routing, as above.
+- [x] New: the orchestrator itself — `PlaybackSession` keeps producer/consumer/abort/
       starvation running correctly across a play → pause → resume → seek → stop
       sequence issued over real elapsed time on-device, not a synchronous test-only
       unroll.
@@ -111,12 +111,20 @@ New tests:
 - [x] Operator approved — 2026-07-02, approved as-is.
 
 ## Rung tracker
-- [ ] Orient  - [ ] Scope  - [ ] Inspect  - [ ] Change
-- [ ] Verify  - [ ] Record  - [ ] Commit (G3, guarded)  - [ ] Closeout
+- [x] Orient  - [x] Scope  - [x] Inspect  - [x] Change
+- [x] Verify  - [x] Record  - [x] Commit (G3, guarded)  - [x] Closeout
 
 ## Verify result
-- Result: —  ·  Confidence: —  ·  T-id: —
-- Notes: not yet run.
+- Result: PASS  ·  Confidence: high for JVM behavior, medium for S23 device proof  ·
+  T-id: T-002-P1, T-002-B1, T-002-B2, T-002-B3, T-009-P1, T-009-B1, S8 orchestrator
+- Notes: `./gradlew testDebugUnitTest` passed on 2026-07-02. S23 verification passed by
+  installing app/test APKs, restoring the Tom Sawyer fixture after install, then running
+  `adb shell am instrument -w -e class com.golemreader.playback.PlaybackSessionDeviceTest com.golemreader.test/androidx.test.runner.AndroidJUnitRunner`,
+  which returned `OK (1 test)`. A direct `connectedDebugAndroidTest` run compiled but
+  cleared the app media fixture during reinstall, matching the known fixture-restore
+  pattern from S6/S7; restoring the fixture and running the installed instrumentation
+  proved the S8 behavior with no code change.
 
 ## Closeout
-- Committed: —  ·  Next step: S9 (Reading View + Now Playing, F-014/F-015)
+- Committed: git HEAD / s8-transport-session-hub / 2026-07-02  ·  Next step: S9
+  (Reading View + Now Playing, F-014/F-015)

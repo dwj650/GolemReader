@@ -7,26 +7,25 @@ if-incomplete: "You are at the source of truth. If something isn't here, it isn'
 ---
 # Current state — THE source of truth for "now"
 
-- **Active version:** V0 (foundation)   **Phase:** P1 — Walking Skeleton   **Step:** S8 (next)   **current-rung:** —
-- **Last committed:** s7-highlight-signal / S7 synchronized highlight signal / git HEAD / 2026-07-02
+- **Active version:** V0 (foundation)   **Phase:** P1 — Walking Skeleton   **Step:** S9 (next)   **current-rung:** —
+- **Last committed:** s8-transport-session-hub / S8 transport commands + thin hub / git HEAD / 2026-07-02
 - **Coverage target:** see reference/coverage-target.md   ·   **Test posture (active step):** automated + agent-run device
 
 ## What's happening right now
-S7 synchronized highlight signal is complete and committed. The app now has
-`com.golemreader.highlight`: `HighlightClock` computes highlight timing from real rendered
-sample lengths, `HighlightIndexMapper` resolves the shared `SentenceIndex` back to the
-`SentenceRecord` clause tag, `HighlightStateEmitter` exposes the current readable highlight
-state plus V1 glow parameters, and `HighlightSync` snaps the state to abort/seek/skip targets.
-`PlaybackConsumer` now reports segment-start audio to the signal path before sink playback,
-and `AbortController.changeTarget()` notifies highlight sync without changing the existing
-stop/flush/flush/set/re-render order.
+S8 transport commands + thin hub is complete and committed. The app now has
+`com.golemreader.transport`: one in-app `TransportHub` singleton and thin
+`TransportCommands` wrappers for play/pause/resume/stop, all writing desired playback state
+through the hub. The app also has `PlaybackSession`, a dedicated-thread orchestrator that
+keeps the S6 `IntentLoop`, `PlaybackProducer`, `PlaybackConsumer`, `AbortController`, and
+`StarvationState` path alive over real time.
 
-Verification passed on 2026-07-02: `./gradlew testDebugUnitTest` and the S23
-`HighlightSyncDeviceTest`. The S23 test restored the Tom Sawyer fixture plus Kokoro/Piper
-test voices to `/sdcard/Android/media/com.golemreader/`, then played a real cross-chapter
-Tom Sawyer passage through both engines. Both engines emitted the same highlight index track
-(`5:217 -> 6:0`), with logged transition drift within the recorded 250 ms tolerance
-(latest run: Kokoro 209 ms, Piper 77 ms).
+Verification passed on 2026-07-02: `./gradlew testDebugUnitTest`, then on the S23
+`./gradlew installDebug installDebugAndroidTest`, fixture restore to
+`/sdcard/Android/media/com.golemreader/fixtures/text/tom-sawyer.epub`, and direct
+instrumentation:
+`adb shell am instrument -w -e class com.golemreader.playback.PlaybackSessionDeviceTest com.golemreader.test/androidx.test.runner.AndroidJUnitRunner`.
+The device test ran a real Tom Sawyer playback session over wall-clock time through
+play -> pause -> resume -> seek -> stop and returned `OK (1 test)`.
 
 ## Open items needing attention
 - T-057-C1 and T-057-C2 remain owed agent-run measurements; T-057-C3 remains a contributor
@@ -39,6 +38,8 @@ Tom Sawyer passage through both engines. Both engines emitted the same highlight
 - T-001-C1 remains deferred until end of T3; S6 records no final battery/thermal threshold.
 - T-016-R1 remains deferred in its literal visual form until S9 per D91; S7 supplied the
   log-based proxy check against real audio sample boundaries.
+- Full Android MediaSessionService, lock-screen/notification, audio-focus, background
+  survival, and resume-after-kill routing remain deferred after S8 per D92.
 
 ## Next action
-Start **Step S8 — transport controls through MediaSession hub (F-002/F-009)**.
+Start **Step S9 — Reading View + Now Playing (F-014/F-015)**.
