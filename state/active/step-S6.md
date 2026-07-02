@@ -1,14 +1,14 @@
 ---
 id: S6
 tier: state
-status: draft
+status: complete
 updated: 2026-07-01
 cross-refs: [P1, D90, D11, D12i, D13a-n, D36, D46, D48, D87, D89, F-001, F-004, F-027]
 if-incomplete: "Return to state/current-state.md."
 ---
 # Step S6 — Streaming engine: continuous chapter playback
 
-Phase: P1 · Feature(s): F-001, F-004 · current-rung: Orient
+Phase: P1 · Feature(s): F-001, F-004 · current-rung: Closeout
 
 ## Statement of Work
 Build the producer/consumer/buffer streaming core (F-001) and the automatic
@@ -76,26 +76,26 @@ New tests:
   S6 consumes `VoiceEngine` as-is).
 
 ## Acceptance criteria (what "done" means)
-- [ ] R1/R2/R3 — producer/consumer/buffer exist; buffer is RAM-only; depth is real
+- [x] R1/R2/R3 — producer/consumer/buffer exist; buffer is RAM-only; depth is real
       rendered seconds, never a text-length guess.
-- [ ] R5/R15 — small first batch after start/seek; producer never renders beyond the
+- [x] R5/R15 — small first batch after start/seek; producer never renders beyond the
       bounded look-ahead window (no mass-render).
-- [ ] R7/R8 — a burst of position changes converges to one final target
+- [x] R7/R8 — a burst of position changes converges to one final target
       (latest-value-wins); scrubber-style rapid input is debounced to a single re-render.
-- [ ] R9 — a real target change follows the exact abort order: flush buffer → flush
+- [x] R9 — a real target change follows the exact abort order: flush buffer → flush
       sink → set target → re-render small-first.
-- [ ] R10 — pause/resume within a session is instant; buffer is kept, not re-rendered.
-- [ ] R11/R16 — producer falling behind triggers a graceful hold (no glitch); a skip/seek
+- [x] R10 — pause/resume within a session is instant; buffer is kept, not re-rendered.
+- [x] R11/R16 — producer falling behind triggers a graceful hold (no glitch); a skip/seek
       made during the hold is still honored once synthesis catches up.
-- [ ] R13 — no already-buffered audio is ever edited in place; render-affecting changes
+- [x] R13 — no already-buffered audio is ever edited in place; render-affecting changes
       flush forward from the next boundary.
-- [ ] F-004 R1/R2/R3/R4 — a chapter ending does not interrupt playback; the next
+- [x] F-004 R1/R2/R3/R4 — a chapter ending does not interrupt playback; the next
       chapter's opening is already rendered before the boundary is reached; the sentence
       index increments across the boundary with no reset; the last sentence of the last
       chapter stops cleanly with no phantom render past it.
-- [ ] OB-D48 closed — text pipeline demonstrably runs chapter N+1 ahead of the playhead
+- [x] OB-D48 closed — text pipeline demonstrably runs chapter N+1 ahead of the playhead
       before the producer reaches the boundary; recorded with evidence, not asserted.
-- [ ] On-device (S23): a real multi-chapter fixture (Tom Sawyer, ≥2 chapters) plays start
+- [x] On-device (S23): a real multi-chapter fixture (Tom Sawyer, ≥2 chapters) plays start
       to finish across the boundary with no audible gap, stutter, or starvation.
 
 ## Test posture
@@ -117,15 +117,27 @@ New tests:
 - [x] Prior step closed — S5 done, merged, commit b1f5d85.
 - [x] current-state fresh — pulled 2026-07-01.
 - [x] Scope + non-goals declared (above).
-- [ ] Operator approved (pending — this document).
+- [x] Operator approved — approved in chat at Orient, Scope, and S6 implementation design.
 
 ## Rung tracker
-- [ ] Orient  - [ ] Scope  - [ ] Inspect  - [ ] Change
-- [ ] Verify  - [ ] Record  - [ ] Commit (G3, guarded)  - [ ] Closeout
+- [x] Orient  - [x] Scope  - [x] Inspect  - [x] Change
+- [x] Verify  - [x] Record  - [x] Commit (G3, guarded)  - [x] Closeout
 
 ## Verify result
-- Result: —  ·  Confidence: —  ·  T-id: —
-- Notes: not yet run.
+- Result: passed  ·  Confidence: high for JVM logic, medium for S23 device continuity  ·
+  T-id: T-001-B1/B2/B3/B6/B8/B10/B11/B12; T-004-P1/B1/B2/B3/B4/R1
+- Notes:
+  - `./gradlew testDebugUnitTest` passed on 2026-07-01.
+  - `./gradlew connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.golemreader.playback.StreamingPlaybackDeviceTest`
+    passed on SM-S918U on 2026-07-01 after restoring the Tom Sawyer fixture to
+    `/sdcard/Android/media/com.golemreader/fixtures/text/tom-sawyer.epub`.
+  - Device evidence: `StreamingPlaybackDevice` logged
+    `S6 streamed 371 Tom Sawyer chapter-5/6 sentences start-to-finish.`
+  - The device test uses the real Tom Sawyer two-chapter text path and a short generated
+    `VoiceEngine` tone to exercise streaming continuity without requiring a long
+    Kokoro/Piper listen pass in S6.
+  - The known `androidx.test.services` no-UID warning still appears before device tests;
+    it did not block this S6 test.
 
 ## Closeout
-- Committed: —  ·  Next step: S7 (synchronized highlight, F-016)
+- Committed: G3 commit for S6 streaming engine  ·  Next step: S7 (synchronized highlight, F-016)

@@ -7,18 +7,25 @@ if-incomplete: "You are at the source of truth. If something isn't here, it isn'
 ---
 # Current state — THE source of truth for "now"
 
-- **Active version:** V0 (foundation)   **Phase:** P1 — Walking Skeleton   **Step:** S6 (next)   **current-rung:** —
-- **Last committed:** s5-voice-speaks / S5 one voice speaks / git HEAD / 2026-07-01
+- **Active version:** V0 (foundation)   **Phase:** P1 — Walking Skeleton   **Step:** S7 (next)   **current-rung:** —
+- **Last committed:** s6-streaming-engine / S6 streaming engine / git HEAD / 2026-07-01
 - **Coverage target:** see reference/coverage-target.md   ·   **Test posture (active step):** automated + agent-run device
 
 ## What's happening right now
-S5 one voice speaks is complete and committed. The app now has an F-048 substrate
-`VoiceEngine` interface with Kokoro and Piper sherpa-onnx adapters, plus F-008 terminal-cue
-hygiene and edge-silence trimming wired through the S5 `SynthesisHarness`. JVM tests cover
-the deterministic hygiene and trim behavior. On the S23, Kokoro and Piper both loaded,
-synthesized, returned non-silent PCM, edge-trimmed, and played the first S4 Tom Sawyer
-sentence. Recorded synthesize-to-audio-return timings: Kokoro 1272 ms (11,462 samples at
-24 kHz); Piper 1007 ms (9,135 samples at 22,050 Hz).
+S6 streaming engine is complete and committed. The app now has the F-001
+producer/consumer/buffer spine under `com.golemreader.playback`: a RAM-only
+sentence-index-tagged buffer with rendered-second depth accounting, a bounded look-ahead
+producer, a consumer-owned playback gap, latest-value-wins intent handling, abort ordering,
+starvation hold state, and chapter continuity. `TextPipeline` now supports chapter read-ahead
+so chapter N+1 can be processed before the playhead reaches the boundary, closing OB-D48.
+`SynthesisHarness` still supports the S5 one-shot `play()` helper and now exposes an
+`AudioSink` for streaming consumers.
+
+Verification passed on 2026-07-01: `./gradlew testDebugUnitTest` and the S23
+`StreamingPlaybackDeviceTest`. The S23 test restored the Tom Sawyer fixture to
+`/sdcard/Android/media/com.golemreader/fixtures/text/tom-sawyer.epub`, then streamed 371
+Tom Sawyer chapter-5/6 sentences start-to-finish through the S6 playback path using a short
+generated `VoiceEngine` tone.
 
 ## Open items needing attention
 - T-057-C1 and T-057-C2 remain owed agent-run measurements; T-057-C3 remains a contributor
@@ -28,6 +35,7 @@ sentence. Recorded synthesize-to-audio-return timings: Kokoro 1272 ms (11,462 sa
   device path again.
 - KI-S5-001 remains open: Piper segment-final `:`/`;` artifacts are expected and unfixed
   until F-044/F-045 rule-packs/voice-bound packs are built.
+- T-001-C1 remains deferred until end of T3; S6 records no final battery/thermal threshold.
 
 ## Next action
-Start **Step S6 — Streaming engine (F-001)**.
+Start **Step S7 — Synchronized highlight (F-016)**.

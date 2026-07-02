@@ -3,6 +3,7 @@ package com.golemreader.audio
 import android.media.AudioAttributes
 import android.media.AudioFormat
 import android.media.AudioTrack
+import com.golemreader.playback.AudioSink
 import com.golemreader.text.SentenceRecord
 import com.golemreader.voice.SynthesizedAudio
 import com.golemreader.voice.VoiceEngine
@@ -27,34 +28,11 @@ class SynthesisHarness(
     }
 
     fun play(audio: SynthesizedAudio) {
-        if (audio.samples.isEmpty()) return
-        val pcm16 = audio.samples.toPcm16()
-        val track = AudioTrack.Builder()
-            .setAudioAttributes(
-                AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_MEDIA)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
-                    .build(),
-            )
-            .setAudioFormat(
-                AudioFormat.Builder()
-                    .setSampleRate(audio.sampleRateHz)
-                    .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
-                    .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
-                    .build(),
-            )
-            .setBufferSizeInBytes(pcm16.size)
-            .setTransferMode(AudioTrack.MODE_STATIC)
-            .build()
-        try {
-            track.write(pcm16, 0, pcm16.size)
-            track.play()
-            val durationMillis = (audio.samples.size * 1000L) / audio.sampleRateHz
-            Thread.sleep(durationMillis.coerceAtLeast(1L))
-            track.stop()
-        } finally {
-            track.release()
-        }
+        createAudioSink().play(audio)
+    }
+
+    fun createAudioSink(): AudioSink {
+        return AudioTrackSink()
     }
 
     private fun FloatArray.toPcm16(): ByteArray {
@@ -66,5 +44,40 @@ class SynthesisHarness(
             bytes[index * 2 + 1] = ((value.toInt() shr 8) and 0xFF).toByte()
         }
         return bytes
+    }
+
+    private inner class AudioTrackSink : AudioSink {
+        override fun play(audio: SynthesizedAudio) {
+            if (audio.samples.isEmpty()) return
+            val pcm16 = audio.samples.toPcm16()
+            val track = AudioTrack.Builder()
+                .setAudioAttributes(
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                        .build(),
+                )
+                .setAudioFormat(
+                    AudioFormat.Builder()
+                        .setSampleRate(audio.sampleRateHz)
+                        .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
+                        .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
+                        .build(),
+                )
+                .setBufferSizeInBytes(pcm16.size)
+                .setTransferMode(AudioTrack.MODE_STATIC)
+                .build()
+            try {
+                track.write(pcm16, 0, pcm16.size)
+                track.play()
+                val durationMillis = (audio.samples.size * 1000L) / audio.sampleRateHz
+                Thread.sleep(durationMillis.coerceAtLeast(1L))
+                track.stop()
+            } finally {
+                track.release()
+            }
+        }
+
+        override fun flush() = Unit
     }
 }

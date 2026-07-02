@@ -130,6 +130,33 @@ if-incomplete: "Coverage policy is reference/coverage-target.md."
 - **T-028-C1 / S4 cost reading** — S23 Tom Sawyer chapter-1 text pipeline measurement:
   wall-clock 409 ms; memory before=2,778,288 bytes, after=2,921,648 bytes,
   delta=143,360 bytes. No threshold. Confidence: medium.
+- **T-001-B1 / B2 / B3 / B6 / B8 / B11 / B12** — S6 JVM playback spine coverage:
+  rendered-second buffer depth, RAM-only copy behavior, latest-value-wins intent debounce,
+  pause/resume without target re-render, abort ordering, starvation hold with live intent,
+  no in-place mutation of buffered audio, and end-of-book clean stop. Passed under
+  `./gradlew testDebugUnitTest` on 2026-07-01. Confidence: high.
+- **T-004-P1 / B1 / B2 / B4** — S6 JVM chapter-continuity coverage: chapter boundary is
+  not an interrupt, composite sentence indexes advance from chapter 5 to chapter 6 without
+  reset, and no phantom sentence is exposed after the final sentence. Passed under
+  `./gradlew testDebugUnitTest` on 2026-07-01. Confidence: high.
+- **OB-D48 closure evidence** — `TextPipeline.processChapterWithReadAhead()` processed
+  Tom Sawyer chapter 6 while chapter 5 was the active chapter and recorded
+  `processed chapter 6 ahead of boundary 5`; covered by `TextPipelineReadAheadTest` under
+  `./gradlew testDebugUnitTest` on 2026-07-01. Confidence: high.
+- **T-001-B10 / T-004-B3 / T-004-R1** — S23 device streaming check: the Tom Sawyer EPUB
+  fixture was restored to `/sdcard/Android/media/com.golemreader/fixtures/text/tom-sawyer.epub`;
+  `StreamingPlaybackDeviceTest` streamed 371 chapter-5/6 sentences start-to-finish through
+  the S6 producer/buffer/consumer path with no starvation. Passed via
+  `./gradlew connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.golemreader.playback.StreamingPlaybackDeviceTest`
+  on SM-S918U on 2026-07-01. Device audio used a short generated `VoiceEngine` tone rather
+  than Kokoro/Piper to keep the agent-run boundary test bounded; S5 separately proved both
+  real engines synthesize and play one sentence. Confidence: medium.
+- **S6 verify note** — The first rerun of `StreamingPlaybackDeviceTest` failed because the
+  Tom Sawyer fixture was absent from the S23 media path after install/test churn. Restoring
+  the fixture with `adb push app/src/test/resources/fixtures/text/tom-sawyer.epub
+  /sdcard/Android/media/com.golemreader/fixtures/text/tom-sawyer.epub` resolved the
+  environment issue; the same device test then passed. The known `androidx.test.services`
+  no-UID warning from KI-S3-001 still appears before device tests and did not block S6.
 
 ## Resolved tool versions for S2
 - KSP Gradle plugin: `com.google.devtools.ksp:2.3.5` (**D81 primary path**, no

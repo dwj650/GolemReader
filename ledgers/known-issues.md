@@ -18,7 +18,6 @@ Appendix A**. None block design; each resolves at build or later grooming. The
 | OB-002-1 | Media3 resume-after-kill wiring + Android-17 hardening | build |
 | OB-008-1 | Per-engine trim numbers + V1 Piper pack contents (ear-tuned) | build (with F-045) |
 | OB-D44 | F-028 sentence-terminal vs clause sub-split tag shape | F-028 / build |
-| OB-D48 | Cross-chapter text-ahead wiring confirmation | build |
 | OB-015-1 | Brief-hold starvation a11y announcement | build |
 
 > KI-### entries (defects found during build) append below via templates/issue.md.
@@ -44,3 +43,9 @@ Appendix A**. None block design; each resolves at build or later grooming. The
   exist yet. If S5's test sentence ends in or contains a `:`/`;` that triggers this
   artifact on Piper output, it will be audible. This is not a regression and not in scope
   to fix here. Owner: whenever F-044/F-045 (rule-packs, voice-bound packs) are built.
+
+- **Resolved in S6 — OB-D48 cross-chapter text-ahead wiring confirmation.**
+  `TextPipeline.processChapterWithReadAhead()` now returns the active chapter plus bounded
+  next-chapter results before the producer reaches the boundary. Evidence recorded in
+  `ledgers/testing.md`: Tom Sawyer chapter 6 was processed ahead of chapter 5's boundary,
+  and the S23 streamed 371 chapter-5/6 sentences through the S6 playback path.

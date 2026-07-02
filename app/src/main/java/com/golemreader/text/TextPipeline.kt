@@ -17,6 +17,36 @@ class TextPipeline(
         locale: Locale = Locale.getDefault(),
     ): TextPipelineChapterResult {
         val chapter = extractor.extract(book).chapters.first { it.chapterOrdinal == chapterOrdinal }
+        return processChapter(chapter, bookHash, locale)
+    }
+
+    fun processChapterWithReadAhead(
+        book: File,
+        bookHash: String,
+        chapterOrdinal: Int,
+        lookAheadChapterCount: Int,
+        locale: Locale = Locale.getDefault(),
+    ): TextPipelineReadAheadResult {
+        val parsed = extractor.extract(book)
+        val lastOrdinal = chapterOrdinal + lookAheadChapterCount.coerceAtLeast(0)
+        val chapters = parsed.chapters
+            .filter { it.chapterOrdinal in chapterOrdinal..lastOrdinal }
+            .map { chapter -> processChapter(chapter, bookHash, locale) }
+        val evidence = chapters
+            .drop(1)
+            .map { chapter -> "processed chapter ${chapter.chapterOrdinal} ahead of boundary $chapterOrdinal" }
+
+        return TextPipelineReadAheadResult(
+            chapters = chapters,
+            readAheadEvidence = evidence,
+        )
+    }
+
+    private fun processChapter(
+        chapter: ChapterParseResult,
+        bookHash: String,
+        locale: Locale,
+    ): TextPipelineChapterResult {
         require(!chapter.failed) {
             "Chapter ${chapter.entryName} failed to parse: ${chapter.failureMessage}"
         }
@@ -35,7 +65,7 @@ class TextPipeline(
                         sentences += SentenceRecord(
                             index = SentenceIndex(
                                 bookHash = bookHash,
-                                chapterOrdinal = chapterOrdinal,
+                                chapterOrdinal = chapter.chapterOrdinal,
                                 sentenceOrdinal = sentences.size,
                             ),
                             display = display,
@@ -48,7 +78,7 @@ class TextPipeline(
             }
 
         return TextPipelineChapterResult(
-            chapterOrdinal = chapterOrdinal,
+            chapterOrdinal = chapter.chapterOrdinal,
             storageTier = StoragePlacementRule.tierFor(StoredDataType.PipelineCacheEntry),
             sentences = sentences,
             ruleTrace = ruleTrace,
@@ -68,4 +98,12 @@ class TextPipeline(
         trim()
             .filterNot { it == '"' || it == '\'' || it == '[' || it == ']' }
             .replace(Regex("\\s+"), " ")
+}
+
+data class TextPipelineReadAheadResult(
+    val chapters: List<TextPipelineChapterResult>,
+    val readAheadEvidence: List<String>,
+) {
+    val orderedSentences: List<SentenceRecord>
+        get() = chapters.flatMap { it.sentences }
 }
