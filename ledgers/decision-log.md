@@ -422,3 +422,38 @@ app open and on-screen — not backgrounded, not through a screen lock, not surv
 app kill, not pausing politely for a phone call. That is a genuine, deliberate
 narrowing of what phase-acceptance proves, not a hidden gap. F-010/F-011/F-012/F-013
 remain fully specified and ready to build as their own step once P1 closes.
+
+# Decision D93 — S9 scope boundary
+- Date: 2026-07-02  ·  Status: locked  ·  Maps to phase: P1
+- Operator-delegated? no — operator directly approved the proposed scope
+
+## Context
+F-015's v1.0.1 delta (D51) specs Now Playing as a "hub" hosting two content slots
+(F-073 embedded sync-preview, F-075 action-row) it does not own the content of — the
+spec's own test (T-015-P3) already scopes slot *content* out. F-014's tap-to-inspect
+host point (R5) invokes F-043, which has not been built in any step to date. Both
+views are also part of a three-surface "gesture grammar" topology (D52, with a third
+surface, Image Viewer/F-074, not in P1 scope at all).
+
+## Decision
+S9 scope: Reading View (display text + highlight rendering + scroll-follow) and Now
+Playing (transport buttons + buffering indicator + position), both minimal per
+phase-index's own wording. F-073/F-075 slots are reserved empty, no content built.
+F-014's tap-to-inspect touch point is skipped entirely (not stubbed) since F-043
+doesn't exist to invoke. Navigation between the two screens uses the simplest
+mechanism that reaches both (in-app screen-switch state), not the full D52 gesture
+grammar. Image Viewer (F-074) is out of scope entirely.
+
+## Reasoning
+Building F-073/F-075's actual content would mean building two more full features
+inside a step named for two others. A tap-to-inspect host point with nothing behind it
+is dead UI, not a real seam — worse than not building it, since it would look
+functional and not be. Full gesture-grammar polish is real, separate design work; a
+plain screen-switch reaches both surfaces with much less scope, matching "minimal" as
+phase-index itself describes S9.
+
+## Consequences
+Now Playing's F-073/F-075 slots will visually be empty space until those features are
+built in later steps. Reading View has no tap-to-inspect affordance yet — not a
+regression, since it never existed before S9. Swipe gestures between screens are not
+part of G4's phase-acceptance demonstration; a simpler switch is.
