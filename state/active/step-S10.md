@@ -12,7 +12,7 @@ if-incomplete: "Return to state/current-state.md."
 - v1.0.0 (2026-07-02) — proposed and approved in the same design session, in response
   to a G4 halt report.
 
-Phase: P1 · Feature(s): none new — wiring existing pieces together · current-rung: Orient
+Phase: P1 · Feature(s): none new — wiring existing pieces together · current-rung: Commit
 
 ## Statement of Work
 Make the real app actually run the real pipeline for one book. On launch, load a
@@ -66,14 +66,14 @@ New tests:
   only. Locked, operator-approved, arising directly from a Codex halt report.
 
 ## Acceptance criteria
-- [ ] `BookBootstrap` produces a non-empty sentence list from a real fixture EPUB.
-- [ ] The produced `TransportHub` has a real `PlaybackSession` attached (not the
+- [x] `BookBootstrap` produces a non-empty sentence list from a real fixture EPUB.
+- [x] The produced `TransportHub` has a real `PlaybackSession` attached (not the
       unattached default).
-- [ ] `HighlightStateEmitter` and `StarvationState` passed to `GolemReaderApp` are the
+- [x] `HighlightStateEmitter` and `StarvationState` passed to `GolemReaderApp` are the
       same instances the session updates — not fresh, disconnected ones.
-- [ ] On-device: launching the real app shows real book text in Reading View
+- [x] On-device: launching the real app shows real book text in Reading View
       immediately (not an empty screen).
-- [ ] On-device: pressing Play in the real Now Playing screen starts real audio and
+- [x] On-device: pressing Play in the real Now Playing screen starts real audio and
       the highlight advances — through the actual launched app.
 
 ## Test posture
@@ -95,12 +95,18 @@ New tests:
 - [x] Operator approved — 2026-07-02, approved as-is.
 
 ## Rung tracker
-- [ ] Orient  - [ ] Scope  - [ ] Inspect  - [ ] Change
-- [ ] Verify  - [ ] Record  - [ ] Commit (G3, guarded)  - [ ] Closeout
+- [x] Orient  - [x] Scope  - [x] Inspect  - [x] Change
+- [x] Verify  - [x] Record  - [ ] Commit (G3, guarded)  - [ ] Closeout
 
 ## Verify result
-- Result: —  ·  Confidence: —  ·  T-id: —
-- Notes: not yet run.
+- Result: pass  ·  Confidence: high for JVM wiring, medium for S23 real launch/audio  ·  T-id: T-S10
+- Notes: RED first failed on missing `BookBootstrap`. GREEN passed with
+  `./gradlew testDebugUnitTest`; `./gradlew assembleDebugAndroidTest` passed.
+  On the S23, the Tom Sawyer fixture was already present, Piper assets were restored to
+  `/sdcard/Android/media/com.golemreader/test-voices/piper/`, `./gradlew installDebug
+  installDebugAndroidTest` passed, and direct instrumentation
+  `adb shell am instrument -w -e class com.golemreader.BootstrapLaunchDeviceTest com.golemreader.test/androidx.test.runner.AndroidJUnitRunner`
+  returned `OK (1 test)`. Bootstrap uses the S5 Piper adapter.
 
 ## Closeout
 - Committed: —  ·  Next step: resume G4 (state/active/step-G4.md, already written)
