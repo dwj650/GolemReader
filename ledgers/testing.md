@@ -157,6 +157,23 @@ if-incomplete: "Coverage policy is reference/coverage-target.md."
   /sdcard/Android/media/com.golemreader/fixtures/text/tom-sawyer.epub` resolved the
   environment issue; the same device test then passed. The known `androidx.test.services`
   no-UID warning from KI-S3-001 still appears before device tests and did not block S6.
+- **T-016-P1 / B1 / B2 / B3 / B4 / B5 / B7** — S7 JVM highlight signal coverage:
+  `HighlightClock` derives duration from `samples.size / sampleRateHz`, the mapper resolves
+  clause tags from shared `SentenceRecord` data, the emitter exposes readable current state
+  with size/contrast/fade parameters, `PlaybackConsumer` reports segment start before sink
+  playback, and `AbortController.changeTarget()` notifies highlight sync without changing
+  the existing abort order. RED failed first on missing S7 API/hooks; GREEN passed under
+  `./gradlew testDebugUnitTest` on 2026-07-02. Confidence: high.
+- **T-016-B6 / R1 proxy per D91** — S23 real-engine highlight timing check:
+  `HighlightSyncDeviceTest` played a Tom Sawyer cross-chapter passage through Kokoro and
+  Piper using the S6 producer/buffer/consumer path. Both engines emitted the same index track
+  (`5:217 -> 6:0`). Boundary tolerance was recorded at 250 ms; latest measured
+  second-boundary drift was 209 ms for Kokoro and 77 ms for Piper. Passed via
+  `./gradlew connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.golemreader.highlight.HighlightSyncDeviceTest`
+  on SM-S918U on 2026-07-02 after restoring the fixture and test voices to
+  `/sdcard/Android/media/com.golemreader/`. A fresh rerun first failed because APK install
+  churn cleared the fixture from the app media folder; restoring the same test assets
+  resolved it with no code change. Confidence: medium.
 
 ## Resolved tool versions for S2
 - KSP Gradle plugin: `com.google.devtools.ksp:2.3.5` (**D81 primary path**, no

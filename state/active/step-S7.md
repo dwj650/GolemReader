@@ -1,7 +1,7 @@
 ---
 id: S7
 tier: state
-status: approved
+status: complete
 updated: 2026-07-02
 cross-refs: [P1, D91, D1, D4b, D12c, D13, F-016, F-001, F-027, F-028]
 if-incomplete: "Return to state/current-state.md."
@@ -11,7 +11,7 @@ if-incomplete: "Return to state/current-state.md."
 ## Changelog
 - v1.0.0 (2026-07-02) — proposed and approved in the same design session.
 
-Phase: P1 · Feature(s): F-016 · current-rung: Orient
+Phase: P1 · Feature(s): F-016 · current-rung: Closeout
 
 ## Statement of Work
 Build the highlight-position signal (F-016): as each sentence (or clause, for a
@@ -71,25 +71,25 @@ New tests:
   (seek/skip/abort re-target — S7 rides S6's existing `AbortController`).
 
 ## Acceptance criteria (what "done" means)
-- [ ] T-016-P1 — clock, mapper, and emitter are present; a host can read the current
+- [x] T-016-P1 — clock, mapper, and emitter are present; a host can read the current
       index.
-- [ ] T-016-B1 — highlight index advances on real per-sentence audio boundaries, not a
+- [x] T-016-B1 — highlight index advances on real per-sentence audio boundaries, not a
       character/word estimate.
-- [ ] T-016-B2 — a clause-split sentence highlights clause-by-clause, each tagged to
+- [x] T-016-B2 — a clause-split sentence highlights clause-by-clause, each tagged to
       its parent sentence index.
-- [ ] T-016-B3 — display index, audio index, and highlight index all resolve to the
+- [x] T-016-B3 — display index, audio index, and highlight index all resolve to the
       same sentence number for a given passage.
-- [ ] T-016-B4 — seek/skip/chapter-change snaps the highlight to the new target
+- [x] T-016-B4 — seek/skip/chapter-change snaps the highlight to the new target
       (rides `AbortController.changeTarget()`).
-- [ ] T-016-B5 — behavior under the one-call-per-segment path is confirmed; note: this
+- [x] T-016-B5 — behavior under the one-call-per-segment path is confirmed; note: this
       is the currently-active default (aggregation is off per OB-001-1), so this
       collapses into the same check as T-016-B1 rather than needing a separate
       injected-fallback test.
-- [ ] T-016-B6 — same passage, both engines (Kokoro, Piper) → same index track.
-- [ ] T-016-B7 — the emitted state carries size/contrast/fade fields; V1 defaults
+- [x] T-016-B6 — same passage, both engines (Kokoro, Piper) → same index track.
+- [x] T-016-B7 — the emitted state carries size/contrast/fade fields; V1 defaults
       reproduce the V1 look-equivalent values; changing a field changes the emitted
       value with no audio re-render.
-- [ ] R1 (proxy, per D91) — on-device log of highlight timestamps lines up with real
+- [x] R1 (proxy, per D91) — on-device log of highlight timestamps lines up with real
       audio sample boundaries across a multi-chapter play-through, within a tight
       tolerance Codex proposes and records.
 
@@ -112,12 +112,27 @@ New tests:
 - [x] Operator approved — 2026-07-02, approved as-is.
 
 ## Rung tracker
-- [ ] Orient  - [ ] Scope  - [ ] Inspect  - [ ] Change
-- [ ] Verify  - [ ] Record  - [ ] Commit (G3, guarded)  - [ ] Closeout
+- [x] Orient  - [x] Scope  - [x] Inspect  - [x] Change
+- [x] Verify  - [x] Record  - [x] Commit (G3, guarded)  - [x] Closeout
 
 ## Verify result
-- Result: —  ·  Confidence: —  ·  T-id: —
-- Notes: not yet run.
+- Result: passed  ·  Confidence: high for JVM signal logic, medium for S23 real-engine
+  timing  ·  T-id: T-016-P1/B1/B2/B3/B4/B5/B6/B7; R1 proxy per D91
+- Notes:
+  - RED: `./gradlew testDebugUnitTest` failed first on missing `HighlightClock`,
+    `HighlightIndexMapper`, `HighlightStateEmitter`, `HighlightSync`, and playback hooks.
+  - GREEN: `./gradlew testDebugUnitTest` passed on 2026-07-02.
+  - Device: `./gradlew connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.golemreader.highlight.HighlightSyncDeviceTest`
+    passed on SM-S918U on 2026-07-02 after restoring Tom Sawyer plus Kokoro/Piper test
+    voice assets to `/sdcard/Android/media/com.golemreader/`. A fresh rerun first failed
+    because APK install churn cleared the fixture from the app media folder; restoring the
+    same test assets resolved it with no code change.
+  - Device evidence: the cross-chapter passage emitted the same index track for Kokoro
+    and Piper: `5:217 -> 6:0`.
+  - Proposed/recorded tolerance: 250 ms from each sample-derived boundary. Latest fresh
+    run measured second-boundary drift at 209 ms for Kokoro and 77 ms for Piper.
+  - The known `androidx.test.services` no-UID warning still appears before device tests;
+    it did not block this S7 test.
 
 ## Closeout
-- Committed: —  ·  Next step: S8 (transport controls through MediaSession hub, F-002/F-009)
+- Committed: G3 commit for S7 synchronized highlight signal  ·  Next step: S8 (transport controls through MediaSession hub, F-002/F-009)

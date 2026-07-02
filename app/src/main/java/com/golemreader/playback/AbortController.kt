@@ -8,8 +8,10 @@ class AbortController(
     private val flushAudioSink: () -> Unit,
     private val setTarget: (SentenceIndex) -> Unit,
     private val rerenderSmallFirst: () -> Unit,
+    private val onTargetChanged: (SentenceIndex) -> Unit = {},
 ) {
     fun changeTarget(target: SentenceIndex) {
+        onTargetChanged(target)
         stopProducer()
         flushBuffer()
         flushAudioSink()

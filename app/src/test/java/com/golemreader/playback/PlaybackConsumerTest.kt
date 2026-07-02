@@ -44,10 +44,31 @@ class PlaybackConsumerTest {
         assertEquals(listOf(75L), sleeps)
     }
 
-    private class RecordingAudioSink : AudioSink {
+    @Test
+    fun consumerReportsSegmentStartBeforeSinkPlayback() {
+        val buffer = StreamingBuffer()
+        val events = mutableListOf<String>()
+        val sink = RecordingAudioSink(onPlay = { events += "sink:${it.sentenceIndex.sentenceOrdinal}" })
+        val consumer = PlaybackConsumer(
+            buffer = buffer,
+            audioSink = sink,
+            starvationState = StarvationState(),
+            onSegmentStarted = { events += "highlight:${it.sentenceIndex.sentenceOrdinal}" },
+        )
+
+        buffer.enqueue(audio(sentence = 2))
+
+        assertTrue(consumer.playNext())
+        assertEquals(listOf("highlight:2", "sink:2"), events)
+    }
+
+    private class RecordingAudioSink(
+        private val onPlay: (SynthesizedAudio) -> Unit = {},
+    ) : AudioSink {
         val played = mutableListOf<SentenceIndex>()
 
         override fun play(audio: SynthesizedAudio) {
+            onPlay(audio)
             played += audio.sentenceIndex
         }
 

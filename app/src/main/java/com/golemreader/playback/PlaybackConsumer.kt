@@ -13,6 +13,7 @@ class PlaybackConsumer(
     private val starvationState: StarvationState,
     private val interSentenceGapMillis: Long = 0,
     private val sleep: (Long) -> Unit = { Thread.sleep(it) },
+    private val onSegmentStarted: (SynthesizedAudio) -> Unit = {},
 ) {
     fun playNext(): Boolean {
         val item = buffer.poll()
@@ -22,6 +23,7 @@ class PlaybackConsumer(
         }
 
         starvationState.onAudioRefilled()
+        onSegmentStarted(item.audio)
         audioSink.play(item.audio)
         if (interSentenceGapMillis > 0) {
             sleep(interSentenceGapMillis)
