@@ -384,3 +384,41 @@ confirmation that log-based checking already provides with equal or better preci
 ## Consequences
 T-016-R1 stays open on paper until S9; S7's closeout will note it as "confirmed by proxy
 (log-based), full visual confirmation carried to S9" rather than closed outright.
+
+# Decision D92 — S8 scope boundary
+- Date: 2026-07-02  ·  Status: locked  ·  Maps to phase: P1
+- Operator-delegated? no — operator directly approved the proposed scope
+
+## Context
+"Transport controls" was originally one feature (F-002 v1.0.0). D62's ownership map
+later split it into five: F-002 (the four commands), F-009 (the MediaSession hub),
+F-012 (audio-focus/becoming-noisy policy), F-010 (background foreground-service
+lifecycle), F-011 (lock-screen/notification surface), and F-013 (resume-after-kill).
+F-002 is tagged build-tier T3 ("listen-loop spine," the tier S1-S7 have built);
+F-009/F-010/F-011/F-012/F-013 are tagged T5 ("system integration") — a later,
+distinct tier. Phase-index names only F-002 and "F-009 (thin)" for S8.
+
+## Decision
+S8 scope: F-002's four commands (play/pause/resume/stop, writing desired-play-state)
+plus a thin F-009 — an in-app command hub and the orchestrator that keeps S6's
+IntentLoop/PlaybackProducer/PlaybackConsumer/AbortController/StarvationState running
+as a live, continuously-active session, rather than the manual/synchronous wiring S6's
+own device test used. No real Android `MediaSessionService`, no lock screen, no audio-
+focus handling, no background survival past the app being open, no resume-after-kill.
+F-010, F-011, F-012, F-013, and full Media3 integration for F-009 are deferred to a
+dedicated later step, after G4.
+
+## Reasoning
+F-002/F-009-thin is what phase-index already named for S8, and the T3/T5 build-tier
+split is itself evidence the original design intended a walking-skeleton-appropriate
+narrowing here, not accidental scope creep. Building the full T5 system-integration set
+now would roughly triple S8's size for behaviors (lock screen, focus courtesy, kill-
+survival) that matter for a polished app but not for proving the listen-loop spine
+converges to real command input.
+
+## Consequences
+G4's "plays one book end-to-end" promise, once reached, will be demonstrated with the
+app open and on-screen — not backgrounded, not through a screen lock, not surviving an
+app kill, not pausing politely for a phone call. That is a genuine, deliberate
+narrowing of what phase-acceptance proves, not a hidden gap. F-010/F-011/F-012/F-013
+remain fully specified and ready to build as their own step once P1 closes.
