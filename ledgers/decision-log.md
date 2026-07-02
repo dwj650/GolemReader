@@ -351,3 +351,36 @@ S6's acceptance test is a real multi-chapter on-device listen-through, not a sin
 chapter proof. The text pipeline (F-027/TextPipeline.kt) gains ahead-of-playhead
 scheduling it didn't have after S4. Later steps (S7 highlight, S8 transport) build on a
 genuinely continuous stream rather than a single-chapter stub.
+
+
+# Decision D91 — S7 test-posture boundary
+- Date: 2026-07-02  ·  Status: locked  ·  Maps to phase: P1
+- Operator-delegated? no — operator directly approved the proposed scope
+
+## Context
+F-016 (R7) explicitly emits a highlight-position signal; it does not render pixels.
+Rendering is F-014's job, and F-014 is scoped to S9, not S7. The spec's own on-device
+result test (T-016-R1) is phrased as a visual check ("the highlight visibly tracks the
+voice"), which has no surface to run against until F-014 exists.
+
+## Decision
+S7's on-device confirmation is **log-based**: the highlight signal's timestamped index
+changes are recorded and cross-checked against the real audio's per-sentence sample
+boundaries (the same data F-001 already exposes), rather than an eyes-on-screen check.
+The full visual "watch it glow in sync" confirmation (T-016-R1 as literally written) is
+deferred to S9, once Reading View exists to render onto.
+
+## Reasoning
+The rigor is unchanged — log-based comparison against real sample-length boundaries is
+at least as precise as an eye check, arguably more so. Deferring only the *medium* of
+confirmation (logs now, pixels later) avoids either building throwaway UI in S7 or
+leaving F-016 unverified until S9.
+
+## Alternatives considered
+Building a minimal throw-away rendering harness in S7 just to satisfy T-016-R1 literally
+was rejected: it would duplicate work S9 does properly with the real Reading View, for a
+confirmation that log-based checking already provides with equal or better precision.
+
+## Consequences
+T-016-R1 stays open on paper until S9; S7's closeout will note it as "confirmed by proxy
+(log-based), full visual confirmation carried to S9" rather than closed outright.
