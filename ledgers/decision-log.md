@@ -522,3 +522,44 @@ exists; the bootstrap only has to call them in the right order, once, in one pla
 G4's completion SOW is unblocked once S10 lands — the same demonstration task can
 proceed using the real app instead of a test harness. S10 becomes the tenth and final
 build step before G4's on-device work resumes.
+
+# Decision D97 — S11 inserted: end-of-book clean stop defect
+- Date: 2026-07-02  ·  Status: locked  ·  Maps to phase: P1
+- Operator-delegated? no — operator-approved via direct instruction to fix and proceed
+
+## Context
+G4's real, unattended end-to-end run (a short complete public-domain book, per the
+G4 SOW's recommendation) reached the true final sentence and then repeated it
+indefinitely instead of stopping. Diagnosis: `PlaybackSession.runOneIteration()`
+treats a null result from `nextAfter(cursor)` as "no change" (stays on the same
+cursor) rather than "this was the last sentence, stop." Because the render loop
+re-invokes `producer.renderLookAheadFrom(renderCursor)` every tick regardless, and
+that call re-enqueues the target sentence's audio every time it's called, a stuck
+cursor produces an unbounded stream of duplicate final-sentence audio. F-004 R4
+("end-of-book stops cleanly, no phantom render") was tested in S6 against
+`ChapterContinuity.isEndOfBook()` directly, in isolation — but neither S8's
+`PlaybackSession` nor S10's `BookBootstrap` ever wired that detector into the live
+loop. `BookBootstrap` additionally builds its own ad-hoc next-sentence map via
+`zipWithNext` rather than reusing `ChapterContinuity`.
+
+## Decision
+Insert **S11 — End-of-book clean stop** before G4 resumes again. Fix
+`PlaybackSession` so reaching the true last sentence (no next sentence available)
+transitions the session to a stopped state — no further render/enqueue calls, sink
+flushed cleanly, loop thread exits. Reuse `ChapterContinuity` in `BookBootstrap`
+rather than the ad-hoc `zipWithNext` map, so the same purpose-built detector S6 wrote
+is what's actually driving the live app, not a duplicate implementation.
+
+## Reasoning
+This is a defect, not a scope question — the required behavior was already specified
+(F-004 R4) and already had a tested detector; the gap is a wiring gap between two
+steps built afterward. Fixing it in `PlaybackSession` fixes it for every caller
+(bootstrap now, and any future caller), rather than patching around it only in
+`BookBootstrap`.
+
+## Consequences
+G4's demonstration is blocked a second time, briefly, for a real fix rather than a
+scope negotiation. Once S11 lands, G4 resumes with the same SOW, unchanged. The
+`zipWithNext`-based `nextAfter` in `BookBootstrap` is replaced with
+`ChapterContinuity`-backed logic as part of this fix, closing the duplicate-
+implementation gap at the same time.
