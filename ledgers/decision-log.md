@@ -591,3 +591,5 @@ scope negotiation. Once S11 lands, G4 resumes with the same SOW, unchanged. The
 `zipWithNext`-based `nextAfter` in `BookBootstrap` is replaced with
 `ChapterContinuity`-backed logic as part of this fix, closing the duplicate-
 implementation gap at the same time.
+
+
