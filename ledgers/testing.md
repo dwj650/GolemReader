@@ -212,6 +212,23 @@ if-incomplete: "Coverage policy is reference/coverage-target.md."
   Direct instrumentation returned `OK (1 test)` via
   `adb shell am instrument -w -e class com.golemreader.ui.ReadingAndNowPlayingDeviceTest com.golemreader.test/androidx.test.runner.AndroidJUnitRunner`
   on SM-S918U on 2026-07-02. Confidence: medium.
+- **T-S10 bootstrap wiring** — JVM app-bootstrap coverage:
+  `BookBootstrapTest` runs the real Tom Sawyer fixture through identity + text pipeline,
+  creates a real session attached to `TransportHub`, confirms no autoplay before Play,
+  then presses Play through `NowPlayingTransportControls` and observes the shared
+  `HighlightStateEmitter` advance from the same playback path. RED first failed on
+  missing `BookBootstrap`; GREEN passed under `./gradlew testDebugUnitTest` on
+  2026-07-02. Confidence: high.
+- **T-S10 launch device proof** — S23 real app launch + real Play path:
+  `BootstrapLaunchDeviceTest` launches `MainActivity`, confirms the Reading View renders
+  real Tom Sawyer rows immediately, presses Play through the real Now Playing controls,
+  returns to Reading, and observes a visible highlight emitted by the real session. The
+  bootstrap uses the S5 Piper adapter; Piper assets were restored to
+  `/sdcard/Android/media/com.golemreader/test-voices/piper/`. `./gradlew
+  assembleDebugAndroidTest` and `./gradlew installDebug installDebugAndroidTest` passed;
+  direct instrumentation returned `OK (1 test)` via
+  `adb shell am instrument -w -e class com.golemreader.BootstrapLaunchDeviceTest com.golemreader.test/androidx.test.runner.AndroidJUnitRunner`
+  on SM-S918U on 2026-07-02. Confidence: medium.
 
 ## Resolved tool versions for S2
 - KSP Gradle plugin: `com.google.devtools.ksp:2.3.5` (**D81 primary path**, no

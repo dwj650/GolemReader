@@ -516,3 +516,37 @@ otherwise met its acceptance bar.
 The Phase P1 acceptance document records PR-7 as open, with accessibility named as
 priority work for the phase that follows. Any future phase's G1 entry must show
 accessibility work scoped in, or the gap becomes a repeated, unaddressed finding.
+# Decision D96 — S10 inserted: app bootstrap, before G4 resumes
+- Date: 2026-07-02  ·  Status: locked  ·  Maps to phase: P1
+- Operator-delegated? no — operator directly approved
+
+## Context
+Codex halted on the G4 completion SOW: `MainActivity`/`GolemReaderApp` launch with
+empty defaults (`sentences = emptyList()`, an unattached `TransportCommands`, a fresh
+unwired `HighlightStateEmitter`). Every prior step (S6-S9) proved its piece correctly,
+but always by wiring `PlaybackSession`/`TransportHub`/the two screens together inside
+a test class. Nothing has ever connected the real app's launch path to a real book.
+G4's SOW explicitly requires the demonstration to use the real app, not a test
+harness, so this gap blocks G4 rather than being an oversight in G4's own scope.
+
+## Decision
+Insert **S10 — App bootstrap** before G4 resumes: on launch, load one hardcoded
+fixture book through the existing pipeline (identity → text → a real
+`PlaybackSession` wired to `TransportHub`), and pass live state into `GolemReaderApp`
+instead of empty defaults. No book picker, no library browsing (F-019, separate,
+later). The app does not auto-play on launch — a person or agent presses Play through
+the real Now Playing controls, so S8's transport work is also demonstrated for the
+first time outside a test.
+
+## Reasoning
+Codex correctly identified this as new production wiring and a real design decision
+(where does the book come from, how does the app decide to load it) — outside G4's
+declared demonstration/archive-only scope, and correctly halted rather than guessing.
+The fix is small and self-contained: every piece it needs (the `asDriver()` adapters,
+`TransportHub.attach()`, the two screens' existing constructor parameters) already
+exists; the bootstrap only has to call them in the right order, once, in one place.
+
+## Consequences
+G4's completion SOW is unblocked once S10 lands — the same demonstration task can
+proceed using the real app instead of a test harness. S10 becomes the tenth and final
+build step before G4's on-device work resumes.
