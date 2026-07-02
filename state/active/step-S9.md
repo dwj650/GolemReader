@@ -1,9 +1,9 @@
 ---
 id: S9
 tier: state
-status: approved
+status: completed
 updated: 2026-07-02
-cross-refs: [P1, D93, D1, D4b, D13k, D50, F-014, F-015, F-016, F-001, F-002]
+cross-refs: [P1, D93, D94, D1, D4b, D13k, D50, F-014, F-015, F-016, F-001, F-002]
 if-incomplete: "Return to state/current-state.md."
 ---
 # Step S9 — Reading View + Now Playing
@@ -11,7 +11,7 @@ if-incomplete: "Return to state/current-state.md."
 ## Changelog
 - v1.0.0 (2026-07-02) — proposed and approved in the same design session.
 
-Phase: P1 · Feature(s): F-014, F-015 · current-rung: Orient
+Phase: P1 · Feature(s): F-014, F-015 · current-rung: Closeout
 
 ## Statement of Work
 Build the two host screens that make S6-S8's invisible work visible: Reading View
@@ -63,6 +63,12 @@ New tests:
   visibly on-screen and advances with the voice; transport buttons control a live
   session; the buffering indicator appears if triggered.
 
+D94 scope expansion:
+- `app/build.gradle.kts` — test-only dependency expansion for real Compose UI
+  assertions: `androidTestImplementation("androidx.compose.ui:ui-test-junit4")` and
+  `debugImplementation("androidx.compose.ui:ui-test-manifest")`, with the existing
+  Compose BOM added to androidTest. No production dependency change.
+
 ## Non-goals — explicitly NOT touched
 - F-073 (embedded sync-preview) and F-075 (action-row) slot *content* — slots
   reserved empty per D93.
@@ -77,27 +83,30 @@ New tests:
 - **D93 (this step)** — S9 scope boundary: slots reserved not filled, tap-to-inspect
   skipped, plain screen-switch instead of full gesture grammar. Locked, operator-
   approved.
+- **D94 (verify expansion)** — S9 may add Compose UI test-only dependencies in
+  `app/build.gradle.kts` to prove Reading View highlight rendering in the real semantics
+  tree. Locked, operator-approved.
 - D1/D4b (shared sentence index — Reading View's highlight and Now Playing's position
   both read the same index S7/S6 already established), D13k (pause/resume keeps
   buffer — Now Playing's controls don't need to handle a "re-render" state), D50
   (re-follow on next advance, pinned V1 scroll behavior).
 
 ## Acceptance criteria (what "done" means)
-- [ ] T-014-P1 — Reading View renders display text and subscribes to F-016's
+- [x] T-014-P1 — Reading View renders display text and subscribes to F-016's
       highlight signal.
-- [ ] T-014-B1 — display text keeps quotes/punctuation (uses `.display`, not
+- [x] T-014-B1 — display text keeps quotes/punctuation (uses `.display`, not
       `.spoken`).
-- [ ] T-014-B2 — highlighted sentence matches the audio's sentence (shared index).
-- [ ] T-014-B3 — scroll-follow keeps the highlight in view; manual scroll-away
+- [x] T-014-B2 — highlighted sentence matches the audio's sentence (shared index).
+- [x] T-014-B3 — scroll-follow keeps the highlight in view; manual scroll-away
       tolerated, re-centres on next advance (D50).
-- [ ] T-015-P1/P3 — Now Playing renders book/position/controls; F-073/F-075 slots are
+- [x] T-015-P1/P3 — Now Playing renders book/position/controls; F-073/F-075 slots are
       present and positioned, empty.
-- [ ] T-015-B (transport) — the four buttons drive a live session via
+- [x] T-015-B (transport) — the four buttons drive a live session via
       `TransportCommands`, matching S8's behavior exactly (no new command logic here).
-- [ ] New: buffering indicator reflects `StarvationState.isBuffering` correctly and
+- [x] New: buffering indicator reflects `StarvationState.isBuffering` correctly and
       clears on refill; has a non-motion (text/state) form.
-- [ ] New: both screens are reachable from a running app via the screen-switch.
-- [ ] On-device (S23): a real read-along — highlighted text visibly advances with the
+- [x] New: both screens are reachable from a running app via the screen-switch.
+- [x] On-device (S23): a real read-along — highlighted text visibly advances with the
       voice across a passage; transport buttons control the same live session S8
       proved; buffering indicator appears under an artificially throttled run.
 
@@ -121,12 +130,27 @@ New tests:
 - [x] Operator approved — 2026-07-02, approved as-is.
 
 ## Rung tracker
-- [ ] Orient  - [ ] Scope  - [ ] Inspect  - [ ] Change
-- [ ] Verify  - [ ] Record  - [ ] Commit (G3, guarded)  - [ ] Closeout
+- [x] Orient  - [x] Scope  - [x] Inspect  - [x] Change
+- [x] Verify  - [x] Record  - [x] Commit (G3, guarded)  - [x] Closeout
 
 ## Verify result
-- Result: —  ·  Confidence: —  ·  T-id: —
-- Notes: not yet run.
+- Result: PASS  ·  Confidence: high for JVM behavior, medium for S23 device proof  ·
+  T-id: T-014-P1, T-014-B1, T-014-B2, T-014-B3, T-015-P1/P3, T-015-B, S9 buffering/reachability
+- Notes: RED first failed under `./gradlew testDebugUnitTest` on missing S9 UI APIs.
+  GREEN passed under `./gradlew testDebugUnitTest` on 2026-07-02. After D94 approved
+  test-only Compose UI dependencies, `./gradlew assembleDebugAndroidTest` passed,
+  `./gradlew installDebug installDebugAndroidTest` passed, the Tom Sawyer fixture was
+  restored to `/sdcard/Android/media/com.golemreader/fixtures/text/tom-sawyer.epub`, and
+  direct S23 instrumentation:
+  `adb shell am instrument -w -e class com.golemreader.ui.ReadingAndNowPlayingDeviceTest com.golemreader.test/androidx.test.runner.AndroidJUnitRunner`
+  returned `OK (1 test)`. That test now asserts against the rendered Compose semantics
+  tree: the `reading-highlight` node is displayed for the current Tom Sawyer sentence,
+  then the emitter advances and a later Tom Sawyer sentence is displayed/highlighted.
+- Polling bridge note: Reading View and Now Playing use a 100 ms `LaunchedEffect` polling
+  loop to copy `HighlightStateEmitter.currentState()` and `StarvationState.isBuffering`
+  into Compose state. This is intentionally local to S9 and can be replaced by Flow or
+  another observable state source in a later step.
 
 ## Closeout
-- Committed: —  ·  Next step: G4 (Phase acceptance gate — plays one book end-to-end)
+- Committed: git HEAD / s9-reading-nowplaying / 2026-07-02  ·  Next step: G4 (Phase
+  acceptance gate — plays one book end-to-end)

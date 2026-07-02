@@ -192,6 +192,26 @@ if-incomplete: "Coverage policy is reference/coverage-target.md."
   on SM-S918U on 2026-07-02. A direct `connectedDebugAndroidTest` run first failed after
   APK install churn cleared the fixture from app media; restoring the fixture after install
   resolved the environment issue with no code change. Confidence: medium.
+- **T-014-P1 / T-014-B1 / T-014-B2 / T-015-P1/P3 / S9 buffering** — JVM Reading View
+  and Now Playing coverage: display rows use `SentenceRecord.display` with quotes and
+  punctuation intact, highlight rows map from the shared `SentenceIndex` exposed by
+  `HighlightStateEmitter`, Now Playing transport controls forward play/pause/resume/stop
+  through `TransportCommands`, and the buffering indicator exposes a visible
+  `Catching up...` text state only while `StarvationState.isBuffering` is true. RED first
+  failed on missing S9 UI APIs; GREEN passed under `./gradlew testDebugUnitTest` on
+  2026-07-02. Confidence: high.
+- **T-014-B3 / T-015-B / S9 device proof** — S23 read-along, rendered Reading View, and transport check:
+  `ReadingAndNowPlayingDeviceTest` installed app/test APKs, restored `tom-sawyer.epub` to
+  `/sdcard/Android/media/com.golemreader/fixtures/text/`, started a real `PlaybackSession`
+  over a Tom Sawyer passage, emitted highlight state from actual segment starts, verified
+  the rendered Compose semantics tree displays a `reading-highlight` node for the current
+  Tom Sawyer sentence and then a later highlighted sentence after emitter advance, drove
+  pause/resume/stop through `NowPlayingTransportControls` -> `TransportCommands`, and
+  verified the buffering text appears and clears. D94 added only test dependencies:
+  `androidx.compose.ui:ui-test-junit4` for androidTest and `ui-test-manifest` for debug.
+  Direct instrumentation returned `OK (1 test)` via
+  `adb shell am instrument -w -e class com.golemreader.ui.ReadingAndNowPlayingDeviceTest com.golemreader.test/androidx.test.runner.AndroidJUnitRunner`
+  on SM-S918U on 2026-07-02. Confidence: medium.
 
 ## Resolved tool versions for S2
 - KSP Gradle plugin: `com.google.devtools.ksp:2.3.5` (**D81 primary path**, no

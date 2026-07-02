@@ -70,7 +70,11 @@ dependencies {
     testImplementation("org.robolectric:robolectric:4.16")
 
     androidTestImplementation("androidx.room:room-testing:2.8.4")
+    androidTestImplementation(composeBom)
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     androidTestImplementation("androidx.test:core-ktx:1.7.0")
     androidTestImplementation("androidx.test.ext:junit-ktx:1.3.0")
     androidTestImplementation("androidx.test:runner:1.7.0")
+
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
 }

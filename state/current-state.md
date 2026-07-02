@@ -7,25 +7,33 @@ if-incomplete: "You are at the source of truth. If something isn't here, it isn'
 ---
 # Current state — THE source of truth for "now"
 
-- **Active version:** V0 (foundation)   **Phase:** P1 — Walking Skeleton   **Step:** S9 (next)   **current-rung:** —
-- **Last committed:** s8-transport-session-hub / S8 transport commands + thin hub / git HEAD / 2026-07-02
+- **Active version:** V0 (foundation)   **Phase:** P1 — Walking Skeleton   **Step:** G4 (next)   **current-rung:** —
+- **Last committed:** s9-reading-nowplaying / S9 Reading View + Now Playing / git HEAD / 2026-07-02
 - **Coverage target:** see reference/coverage-target.md   ·   **Test posture (active step):** automated + agent-run device
 
 ## What's happening right now
-S8 transport commands + thin hub is complete and committed. The app now has
-`com.golemreader.transport`: one in-app `TransportHub` singleton and thin
-`TransportCommands` wrappers for play/pause/resume/stop, all writing desired playback state
-through the hub. The app also has `PlaybackSession`, a dedicated-thread orchestrator that
-keeps the S6 `IntentLoop`, `PlaybackProducer`, `PlaybackConsumer`, `AbortController`, and
-`StarvationState` path alive over real time.
+S9 Reading View + Now Playing is complete and committed. The app now has a minimal
+visible Reading View that renders `SentenceRecord.display`, highlights the shared
+sentence index from `HighlightStateEmitter.currentState()`, and scroll-follows highlight
+advance. The app also has a minimal Now Playing screen with book/position text, four
+transport buttons wired through `TransportCommands`, empty reserved slots for F-073/F-075,
+and a visible text buffering indicator backed by `StarvationState.isBuffering`.
 
-Verification passed on 2026-07-02: `./gradlew testDebugUnitTest`, then on the S23
-`./gradlew installDebug installDebugAndroidTest`, fixture restore to
+Because the existing highlight and buffering sources are synchronous getters, S9 uses a
+local 100 ms Compose polling bridge in the two screens. This should be replaced by a real
+observable source only if a later step needs it.
+
+Verification passed on 2026-07-02: RED first failed on missing S9 UI APIs, then
+`./gradlew testDebugUnitTest` passed. D94 approved adding Compose UI test-only
+dependencies in `app/build.gradle.kts`; `./gradlew assembleDebugAndroidTest` passed.
+On the S23, `./gradlew installDebug installDebugAndroidTest` passed, the Tom Sawyer
+fixture was restored to
 `/sdcard/Android/media/com.golemreader/fixtures/text/tom-sawyer.epub`, and direct
 instrumentation:
-`adb shell am instrument -w -e class com.golemreader.playback.PlaybackSessionDeviceTest com.golemreader.test/androidx.test.runner.AndroidJUnitRunner`.
-The device test ran a real Tom Sawyer playback session over wall-clock time through
-play -> pause -> resume -> seek -> stop and returned `OK (1 test)`.
+`adb shell am instrument -w -e class com.golemreader.ui.ReadingAndNowPlayingDeviceTest com.golemreader.test/androidx.test.runner.AndroidJUnitRunner`
+returned `OK (1 test)`. The device test asserts against the rendered Compose semantics
+tree that the highlighted Tom Sawyer sentence is displayed, then advances and displays a
+later highlighted sentence.
 
 ## Open items needing attention
 - T-057-C1 and T-057-C2 remain owed agent-run measurements; T-057-C3 remains a contributor
@@ -36,10 +44,8 @@ play -> pause -> resume -> seek -> stop and returned `OK (1 test)`.
 - KI-S5-001 remains open: Piper segment-final `:`/`;` artifacts are expected and unfixed
   until F-044/F-045 rule-packs/voice-bound packs are built.
 - T-001-C1 remains deferred until end of T3; S6 records no final battery/thermal threshold.
-- T-016-R1 remains deferred in its literal visual form until S9 per D91; S7 supplied the
-  log-based proxy check against real audio sample boundaries.
 - Full Android MediaSessionService, lock-screen/notification, audio-focus, background
   survival, and resume-after-kill routing remain deferred after S8 per D92.
 
 ## Next action
-Start **Step S9 — Reading View + Now Playing (F-014/F-015)**.
+Start **G4 — Phase acceptance gate: plays one book end-to-end**.

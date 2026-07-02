@@ -457,3 +457,33 @@ Now Playing's F-073/F-075 slots will visually be empty space until those feature
 built in later steps. Reading View has no tap-to-inspect affordance yet — not a
 regression, since it never existed before S9. Swipe gestures between screens are not
 part of G4's phase-acceptance demonstration; a simpler switch is.
+
+# Decision D94 — S9 Compose UI test scope expansion
+- Date: 2026-07-02  ·  Status: locked  ·  Maps to phase: P1
+- Operator-delegated? no — operator directly approved the scope expansion
+
+## Context
+S9's Step SOW required an on-device read-along proof that the highlighted Reading View
+sentence is visibly on-screen and advances with the voice. The first S9 device proof
+verified the live playback state feeding Reading View helpers, Now Playing controls, and
+buffering state, but did not assert against rendered Compose UI. The project did not yet
+include Compose UI test dependencies, and adding them required touching
+`app/build.gradle.kts`, which was outside D93's original file scope.
+
+## Decision
+S9 scope expands to include `app/build.gradle.kts` for test-only Compose UI support:
+`androidTestImplementation("androidx.compose.ui:ui-test-junit4")`, the existing Compose
+BOM on androidTest, and `debugImplementation("androidx.compose.ui:ui-test-manifest")`.
+No production dependency changes are allowed under this expansion.
+
+## Reasoning
+The visible-on-screen requirement is a real S9 acceptance criterion, not a later polish
+item. A Compose semantics-tree assertion is the narrowest way to prove the actual rendered
+Reading View highlights and advances on device without expanding product behavior or
+introducing a production dependency.
+
+## Consequences
+S9's device test now uses Compose UI testing to assert that the `reading-highlight`
+semantics node is displayed for the current Tom Sawyer sentence, then advances to a later
+displayed sentence after the highlight emitter changes. The build gains test-only Compose
+testing artifacts, but runtime app dependencies and app behavior remain unchanged.
