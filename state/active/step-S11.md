@@ -1,7 +1,7 @@
 ---
 id: S11
 tier: state
-status: approved
+status: completed
 updated: 2026-07-02
 cross-refs: [P1, D97, D13k, F-001, F-004]
 if-incomplete: "Return to state/current-state.md."
@@ -13,7 +13,7 @@ if-incomplete: "Return to state/current-state.md."
   to a G4 halt report describing an infinite end-of-book audio repeat.
 
 Phase: P1 · Feature(s): none new — fixing a defect in existing F-001/F-004 behavior ·
-current-rung: Orient
+current-rung: Closeout
 
 ## Statement of Work
 Fix a real defect found by G4's on-device demonstration: on reaching the true last
@@ -68,10 +68,10 @@ New/updated tests:
   completion is a new, distinct path, not a redefinition of user-initiated stop).
 
 ## Acceptance criteria
-- [ ] A JVM test drives a session through a short bounded list to its true last
+- [x] A JVM test drives a session through a short bounded list to its true last
       sentence: the final sentence plays exactly once, the session stops cleanly, and
       no further render/enqueue call happens afterward.
-- [ ] `BookBootstrap`'s next-sentence logic is `ChapterContinuity`-backed; the old
+- [x] `BookBootstrap`'s next-sentence logic is `ChapterContinuity`-backed; the old
       `zipWithNext` map is gone, not just unused.
 - [ ] On-device (folded into G4's resumed demonstration, not a separate device test
       here): a real complete book played end-to-end stops cleanly at the true last
@@ -89,12 +89,16 @@ New/updated tests:
       proceed.
 
 ## Rung tracker
-- [ ] Orient  - [ ] Scope  - [ ] Inspect  - [ ] Change
-- [ ] Verify  - [ ] Record  - [ ] Commit (G3, guarded)  - [ ] Closeout
+- [x] Orient  - [x] Scope  - [x] Inspect  - [x] Change
+- [x] Verify  - [x] Record  - [x] Commit (G3, guarded)  - [x] Closeout
 
 ## Verify result
-- Result: —  ·  Confidence: —  ·  T-id: —
-- Notes: not yet run.
+- Result: pass  ·  Confidence: high  ·  T-id: T-S11 end-of-book clean stop
+- Notes: RED first failed as expected because `PlaybackSession` did not yet accept an
+  `isEndOfBook` predicate. GREEN focused check passed:
+  `./gradlew testDebugUnitTest --tests com.golemreader.playback.PlaybackSessionTest --tests com.golemreader.bootstrap.BookBootstrapTest`.
+  Full configured check passed: `./gradlew testDebugUnitTest`. Configured build passed:
+  `./gradlew assembleDebug`.
 
 ## Closeout
-- Committed: —  ·  Next step: resume G4 (state/active/step-G4.md, unchanged)
+- Committed: git HEAD  ·  Next step: resume G4 (state/active/step-G4.md, unchanged)

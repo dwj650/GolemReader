@@ -55,6 +55,14 @@ class BookBootstrapTest {
         result.session.join(timeoutMillis = 2_000)
     }
 
+    @Test
+    fun nextSentenceWiringUsesChapterContinuityInsteadOfZipWithNextMap() {
+        val source = projectFile("app/src/main/java/com/golemreader/bootstrap/BookBootstrap.kt").readText()
+
+        assertTrue(source.contains("ChapterContinuity"))
+        assertFalse(source.contains("zipWithNext"))
+    }
+
     private class RecordingAudioSink : AudioSink {
         private val played = mutableListOf<SentenceIndex>()
 
@@ -105,6 +113,11 @@ class BookBootstrapTest {
         ) { "Missing text fixture: $name" }
         return File(resource.toURI())
     }
+
+    private fun projectFile(relativePath: String): File =
+        generateSequence(File("").absoluteFile) { it.parentFile }
+            .map { File(it, relativePath) }
+            .first { it.exists() }
 
     private fun await(condition: () -> Boolean): Boolean {
         val deadline = System.currentTimeMillis() + 3_000
