@@ -7,23 +7,23 @@ if-incomplete: "You are at the source of truth. If something isn't here, it isn'
 ---
 # Current state — THE source of truth for "now"
 
-- **Active version:** V0 (foundation)   **Phase:** P1 — Walking Skeleton   **Step:** G4 (next)   **current-rung:** —
-- **Last committed:** s11-end-of-book-stop / S11 End-of-book clean stop / git HEAD / 2026-07-02
+- **Active version:** V0 (foundation)   **Phase:** P1 — Walking Skeleton   **Step:** G4 (accepted)   **current-rung:** Closeout
+- **Last committed:** g4-phase-acceptance / G4 Phase acceptance archive / git HEAD / 2026-07-02
 - **Coverage target:** see reference/coverage-target.md   ·   **Test posture (active step):** automated + agent-run device
 
 ## What's happening right now
-S11 End-of-book clean stop is implemented and ready for G4 to resume. The live
-`PlaybackSession` now receives `ChapterContinuity` end-of-book detection from
-`BookBootstrap`; once the producer has rendered the true final sentence, later ticks do
-not re-render or re-enqueue it, and once the consumer actually plays that final sentence
-the session runs the same teardown sequence as stop (`producer.stop()`, buffer flush,
-sink flush, `isRunning = false`). `BookBootstrap` no longer keeps a private
-`zipWithNext` next-sentence map.
+G4 Phase acceptance is complete. On 2026-07-02, the real app on the S23 Ultra played
+the staged complete short public-domain book content ("The Gift of the Magi") through
+the actual `MainActivity` / `BookBootstrap` / `PlaybackSession` / Reading View / Now
+Playing path. Playback was unattended after the Play press, reached the true final
+sentence, stopped naturally, and stayed stopped during the post-completion check. The
+baseline package is archived at `archive/V0-P1/` with build metadata, run log,
+test-summary pointer, and screenshots.
 
-Verification passed on 2026-07-02: RED first failed on missing
-`PlaybackSession.isEndOfBook`, then the focused S11 JVM tests passed. Full configured
-verification also passed: `./gradlew testDebugUnitTest` and `./gradlew assembleDebug`.
-The real on-device proof remains part of resumed G4, per S11's test posture.
+S11's end-of-book fix was confirmed in place before the run: `PlaybackSession` now uses
+`isEndOfBook` to prevent final-sentence re-render/re-enqueue and to run clean teardown
+after the final played sentence, and `BookBootstrap` wires `nextAfter` and end-of-book
+detection through `ChapterContinuity` instead of the old private `zipWithNext` map.
 
 ## Open items needing attention
 - T-057-C1 and T-057-C2 remain owed agent-run measurements; T-057-C3 remains a contributor
@@ -38,4 +38,4 @@ The real on-device proof remains part of resumed G4, per S11's test posture.
   survival, and resume-after-kill routing remain deferred after S8 per D92.
 
 ## Next action
-Resume **G4 — Phase acceptance gate: plays one book end-to-end**.
+Kick off **P2 G1** with accessibility prioritized per D95 / IMP-004.

@@ -33,8 +33,8 @@ A meaningful build (Gate G1 in, G4 out).
       actual repo as of commit 890a2b8.
 - [x] **Docs/state reconciled** — no drift found between registers and code across
       the full S1-S9 review.
-- [ ] **Baseline archived** — pending: real on-device end-to-end demonstration +
-      screenshots, packaged to `archive/V0-P1/` (this step's remaining work).
+- [x] **Baseline archived** — real on-device end-to-end demonstration + screenshots
+      packaged to `archive/V0-P1/`.
 - [x] **Build matches prototype** *(reinterpreted)* — no visual-only G0 prototype was
       ever produced for this project (`foundation/prototype/` is empty); the Design
       Spec v0.6.0 is this project's own declared single authority, and every step's

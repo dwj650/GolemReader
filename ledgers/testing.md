@@ -237,6 +237,17 @@ if-incomplete: "Coverage policy is reference/coverage-target.md."
   `ChapterContinuity` and the old `zipWithNext` helper is absent. RED first failed on
   missing `PlaybackSession.isEndOfBook`; GREEN passed under `./gradlew testDebugUnitTest`
   on 2026-07-02. Confidence: high.
+- **G4 phase acceptance device proof** — S23 real end-to-end app demonstration:
+  the debug APK from commit `5517726` was installed on SM-S918U, launched through
+  `MainActivity`, and played the staged complete public-domain short book content
+  "The Gift of the Magi" through the real `BookBootstrap` / `PlaybackSession` /
+  Reading View / Now Playing path. After pressing Play at 2026-07-02T00:56:57-07:00,
+  playback was unattended to natural completion. Completion was first observed at
+  2026-07-02T01:07:28-07:00 when the app process remained alive and the
+  `GolemPlaybackSession` thread was absent; it remained absent at 01:08:46 after a
+  post-completion wait. Required screenshots and run metadata are archived in
+  `archive/V0-P1/`. No end-of-book repeat, uncaught starvation/stall, or fatal app log
+  was observed. Confidence: medium.
 
 ## Resolved tool versions for S2
 - KSP Gradle plugin: `com.google.devtools.ksp:2.3.5` (**D81 primary path**, no

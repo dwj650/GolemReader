@@ -2,14 +2,14 @@
 id: PHASE-INDEX
 tier: state
 status: active
-updated: 2026-07-01
+updated: 2026-07-02
 if-incomplete: "Return to current-state.md."
 ---
 # Phase index
 
 | Phase | Version | Goal (meaningful build) | Status |
 |-------|---------|-------------------------|--------|
-| **P1** | V0 | **Walking skeleton** — load one EPUB, stream it as speech with synchronized highlight and basic transport, in both views | **active** |
+| **P1** | V0 | **Walking skeleton** — load one EPUB, stream it as speech with synchronized highlight and basic transport, in both views | **accepted** |
 | P2+ | V1 | Widen each tier to full V1 (full normalization/rules, surfaces, persistence, accessibility, onboarding) | planned |
 
 ## Phase P1 — Walking Skeleton — proposed Step ladder (vertical slice, bottom-up)
@@ -27,6 +27,6 @@ if-incomplete: "Return to current-state.md."
 | **S7** | Synchronized highlight follows the audio | F-016 |
 | **S8** | Transport (play/pause/skip) through the MediaSession hub | F-002, F-009 (thin) |
 | **S9** | The two surfaces, minimal: Reading View + Now Playing | F-014, F-015 |
-| **G4** | Phase acceptance: plays one book end-to-end; registers current; baseline archived | — |
+| **G4 — done** | Phase acceptance: plays one book end-to-end; registers current; baseline archived | — |
 
 *Retro (IMP-ids): (none yet)*

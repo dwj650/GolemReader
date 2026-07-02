@@ -1,7 +1,7 @@
 ---
 id: G4
 tier: state
-status: approved
+status: accepted
 updated: 2026-07-02
 cross-refs: [P1, D95, PR-1..PR-7]
 if-incomplete: "Return to state/active/phase-P1.md."
@@ -62,13 +62,13 @@ way.
 - D95 (G4 accepted with PR-7 recorded, not blocking).
 
 ## Acceptance criteria
-- [ ] A complete book played start to finish, unattended, through the real app UI,
+- [x] A complete book played start to finish, unattended, through the real app UI,
       with no manual intervention and no uncaught starvation/stall.
-- [ ] At least two real screenshots captured (Reading View highlight, Now Playing
+- [x] At least two real screenshots captured (Reading View highlight, Now Playing
       transport state).
-- [ ] `archive/V0-P1/` created with build-metadata, test-summary, screenshots, and
+- [x] `archive/V0-P1/` created with build-metadata, test-summary, screenshots, and
       run-log.
-- [ ] Registers updated to reflect G4 accepted.
+- [x] Registers updated to reflect G4 accepted.
 
 ## Test posture
 - Form: agent-run (device), unattended real-world run — this is itself the test; no
@@ -79,4 +79,9 @@ way.
 - [x] D95 locked, operator-approved.
 
 ## Closeout
-- Committed: —  ·  Next: Phase P2 kickoff (accessibility prioritized per D95's IMP-004)
+- Result: pass. On 2026-07-02, the real app on SM-S918U played the staged complete
+  short public-domain book content ("The Gift of the Magi") through the actual UI and
+  live playback path. Playback was unattended after Play, reached natural completion,
+  and the `GolemPlaybackSession` thread remained absent during the post-completion
+  check. Archive: `archive/V0-P1/`.
+- Committed: git HEAD  ·  Next: Phase P2 kickoff (accessibility prioritized per D95's IMP-004)
