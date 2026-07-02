@@ -309,3 +309,45 @@ it would not validate the shared interface boundary.
 S5 claims only the two-engine synthesis substrate. Later F-048 work must add identity,
 active-voice state, hot-swap, persistence, and the Voice Manager UI without redefining the
 S5 interface foundation.
+
+# Decision D90 — S6 scope boundary
+- Date: 2026-07-01  ·  Status: locked  ·  Maps to phase: P1
+- Operator-delegated? no — operator directly approved the proposed scope
+
+## Context
+S6 is specified on the phase-index ladder as F-001 only, but F-001 explicitly does not
+own chapter-to-chapter continuity — that behavior is a separate thin feature, F-004,
+which rides entirely on F-001's buffer. Separately, D87 deliberately limited S4 to a
+single chapter, deferring multi-chapter text-ahead processing to S6; F-001's own delta
+flags this as OB-D48, an explicit dependency that the producer's cross-chapter
+pre-render is only valid because the text pipeline has the next chapter ready in time.
+
+## Decision
+S6 scope: build F-001's core producer/consumer/buffer/intent-loop spine, F-004's four
+cross-chapter continuity rules, and the text-pipeline extension that runs chapter N+1
+ahead of the playhead before the producer reaches the boundary (closing OB-D48).
+Explicitly deferred: aggregation/batching + slice-verification (C-001-6, stays off per
+OB-001-1's locked default), the final integrated battery/thermal budget thresholds
+(T-001-C1's real numbers, which land at end of T3), and position persistence across app
+kill (F-058).
+
+## Reasoning
+Building F-001 without F-004's rules would leave S6's own stated deliverable —
+continuous chapter playback — unbuilt at the seam. Building F-001/F-004 without the
+text-ahead wiring would pass isolated tests but glitch or stall the first time a real
+multi-chapter book is tested end-to-end, since the cross-chapter pre-render's legality
+depends on that wiring existing (D48). Deferred items each have a locked default or a
+later, more appropriate convergence point already recorded elsewhere in the ledger.
+
+## Alternatives considered
+Scoping S6 to F-001 only (as phase-index literally lists) was rejected: it would produce
+a step that "passes" in isolation but cannot demonstrate its own promise on a real book.
+Building the aggregation/batching path now was rejected: the locked default is
+one-call-per-segment until a build-phase ear A/B decides otherwise (OB-001-1); building
+unused fallback machinery early adds scope with no current consumer.
+
+## Consequences
+S6's acceptance test is a real multi-chapter on-device listen-through, not a single-
+chapter proof. The text pipeline (F-027/TextPipeline.kt) gains ahead-of-playhead
+scheduling it didn't have after S4. Later steps (S7 highlight, S8 transport) build on a
+genuinely continuous stream rather than a single-chapter stub.
