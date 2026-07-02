@@ -129,17 +129,57 @@ class PlaybackSessionTest {
         assertFalse(session.isRunning)
     }
 
+    @Test
+    fun naturalEndPlaysFinalSentenceOnceAndStopsWithoutRenderingAgain() {
+        val first = index(0)
+        val final = index(1)
+        val producer = RecordingProducer(renderedPerCall = 2)
+        val consumer = RecordingConsumer(playResults = ArrayDeque(listOf(true, true, true)))
+        var bufferFlushCount = 0
+        val session = PlaybackSession(
+            intentLoop = IntentLoop(debounceMillis = 0),
+            producer = producer,
+            consumer = consumer,
+            abortController = RecordingAbortController(),
+            starvationState = StarvationState(),
+            initialTarget = first,
+            flushBuffer = { bufferFlushCount += 1 },
+            nextAfter = { index ->
+                when (index) {
+                    first -> final
+                    final -> null
+                    else -> error("Unexpected sentence index: $index")
+                }
+            },
+            isEndOfBook = { it == final },
+        )
+
+        session.runOneIteration()
+        session.runOneIteration()
+        session.runOneIteration()
+
+        assertEquals(listOf(first), producer.lookAheadTargets)
+        assertEquals(2, consumer.playCount)
+        assertEquals(1, producer.stopCount)
+        assertEquals(1, bufferFlushCount)
+        assertEquals(1, consumer.flushCount)
+        assertFalse(session.isRunning)
+    }
+
     private class RecordingProducer(
         private val renderedPerCall: Int,
     ) : PlaybackProducerDriver {
         val lookAheadTargets = mutableListOf<SentenceIndex>()
+        var stopCount = 0
 
         override fun renderLookAheadFrom(target: SentenceIndex): Int {
             lookAheadTargets += target
             return renderedPerCall
         }
 
-        override fun stop() = Unit
+        override fun stop() {
+            stopCount += 1
+        }
     }
 
     private class RecordingConsumer(

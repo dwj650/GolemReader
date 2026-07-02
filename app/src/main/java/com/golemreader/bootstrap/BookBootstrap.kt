@@ -11,6 +11,7 @@ import com.golemreader.identity.BookIdentityService
 import com.golemreader.identity.EpubStructuralReader
 import com.golemreader.playback.AbortController
 import com.golemreader.playback.AudioSink
+import com.golemreader.playback.ChapterContinuity
 import com.golemreader.playback.IntentLoop
 import com.golemreader.playback.PlaybackConsumer
 import com.golemreader.playback.PlaybackProducer
@@ -20,7 +21,6 @@ import com.golemreader.playback.StreamingBuffer
 import com.golemreader.playback.asDriver
 import com.golemreader.text.EpubTextExtractor
 import com.golemreader.text.PreCleanStage
-import com.golemreader.text.SentenceIndex
 import com.golemreader.text.SentenceRecord
 import com.golemreader.text.SentenceSegmenter
 import com.golemreader.text.TextPipeline
@@ -62,6 +62,7 @@ class BookBootstrap(
             lookAheadChapterCount = BOOTSTRAP_LOOK_AHEAD_CHAPTERS,
         ).orderedSentences
         require(sentences.isNotEmpty()) { "Bootstrap EPUB produced no sentences." }
+        val continuity = ChapterContinuity(chapters = listOf(sentences))
 
         val engine = voiceEngineFactory()
         engine.load(context, modelRoot)
@@ -109,7 +110,8 @@ class BookBootstrap(
             starvationState = starvation,
             initialTarget = target,
             flushBuffer = buffer::flush,
-            nextAfter = nextAfter(sentences),
+            nextAfter = { index -> continuity.nextAfter(index)?.index },
+            isEndOfBook = continuity::isEndOfBook,
             tickMillis = tickMillis,
         )
         val attachedHub = TransportHub.attach(session)
@@ -133,11 +135,6 @@ class BookBootstrap(
         preCleanStage = PreCleanStage(),
         segmenter = SentenceSegmenter(maxSegmentCharacters = 800),
     )
-
-    private fun nextAfter(sentences: List<SentenceRecord>): (SentenceIndex) -> SentenceIndex? {
-        val nextIndexes = sentences.zipWithNext { current, next -> current.index to next.index }.toMap()
-        return { index -> nextIndexes[index] }
-    }
 
     private class InMemoryBookIdentityDao : BookIdentityDao {
         private val records = linkedMapOf<String, BookIdentityEntity>()

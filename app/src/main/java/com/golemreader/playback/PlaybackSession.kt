@@ -28,6 +28,7 @@ class PlaybackSession(
     private val nextAfter: (SentenceIndex) -> SentenceIndex? = { index ->
         index.copy(sentenceOrdinal = index.sentenceOrdinal + 1)
     },
+    private val isEndOfBook: (SentenceIndex) -> Boolean = { false },
     private val tickMillis: Long = 10L,
     private val nowMillis: () -> Long = { System.currentTimeMillis() },
     private val sleepMillis: (Long) -> Unit = { Thread.sleep(it) },
@@ -41,6 +42,7 @@ class PlaybackSession(
 
     private var playbackCursor: SentenceIndex = initialTarget
     private var renderCursor: SentenceIndex = initialTarget
+    private var hasRenderedEndOfBook: Boolean = false
 
     fun start() {
         if (loopThread != null) return
@@ -63,10 +65,7 @@ class PlaybackSession(
 
         val intent = intentLoop.consumeReadyIntent(nowMillis())
         if (intent.desiredPlayState == PlayState.Stopped) {
-            producer.stop()
-            flushBuffer()
-            consumer.flushSink()
-            isRunning = false
+            finishSession()
             return
         }
 
@@ -75,6 +74,7 @@ class PlaybackSession(
             abortController.changeTarget(target)
             playbackCursor = target
             renderCursor = target
+            hasRenderedEndOfBook = false
         }
 
         if (intent.desiredPlayState == PlayState.Paused) {
@@ -82,12 +82,18 @@ class PlaybackSession(
             return
         }
 
-        val rendered = producer.renderLookAheadFrom(renderCursor)
-        repeat(rendered) {
-            renderCursor = nextAfter(renderCursor) ?: renderCursor
+        if (!hasRenderedEndOfBook) {
+            val rendered = producer.renderLookAheadFrom(renderCursor)
+            repeat(rendered) {
+                advanceRenderCursor()
+            }
         }
 
         if (consumer.playNext()) {
+            if (isEndOfBook(playbackCursor)) {
+                finishSession()
+                return
+            }
             playbackCursor = nextAfter(playbackCursor) ?: playbackCursor
         }
 
@@ -114,6 +120,22 @@ class PlaybackSession(
 
     override fun seekTo(sentenceIndex: SentenceIndex) {
         intentLoop.seekTo(sentenceIndex, nowMillis())
+    }
+
+    private fun advanceRenderCursor() {
+        if (hasRenderedEndOfBook) return
+        if (isEndOfBook(renderCursor)) {
+            hasRenderedEndOfBook = true
+            return
+        }
+        renderCursor = nextAfter(renderCursor) ?: renderCursor
+    }
+
+    private fun finishSession() {
+        producer.stop()
+        flushBuffer()
+        consumer.flushSink()
+        isRunning = false
     }
 }
 

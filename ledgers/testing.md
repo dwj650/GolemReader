@@ -229,6 +229,14 @@ if-incomplete: "Coverage policy is reference/coverage-target.md."
   direct instrumentation returned `OK (1 test)` via
   `adb shell am instrument -w -e class com.golemreader.BootstrapLaunchDeviceTest com.golemreader.test/androidx.test.runner.AndroidJUnitRunner`
   on SM-S918U on 2026-07-02. Confidence: medium.
+- **T-S11 end-of-book clean stop** — JVM regression coverage:
+  `PlaybackSessionTest` drives a two-sentence session through the true final sentence and
+  confirms the final sentence is rendered once, played once, and followed by the same
+  producer/buffer/sink teardown used by stop; a later tick performs no extra render or
+  playback. `BookBootstrapTest` confirms live next-sentence wiring now names
+  `ChapterContinuity` and the old `zipWithNext` helper is absent. RED first failed on
+  missing `PlaybackSession.isEndOfBook`; GREEN passed under `./gradlew testDebugUnitTest`
+  on 2026-07-02. Confidence: high.
 
 ## Resolved tool versions for S2
 - KSP Gradle plugin: `com.google.devtools.ksp:2.3.5` (**D81 primary path**, no

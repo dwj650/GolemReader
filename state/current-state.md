@@ -8,26 +8,22 @@ if-incomplete: "You are at the source of truth. If something isn't here, it isn'
 # Current state — THE source of truth for "now"
 
 - **Active version:** V0 (foundation)   **Phase:** P1 — Walking Skeleton   **Step:** G4 (next)   **current-rung:** —
-- **Last committed:** s10-app-bootstrap / S10 App bootstrap + closeout / git HEAD / 2026-07-02
+- **Last committed:** s11-end-of-book-stop / S11 End-of-book clean stop / git HEAD / 2026-07-02
 - **Coverage target:** see reference/coverage-target.md   ·   **Test posture (active step):** automated + agent-run device
 
 ## What's happening right now
-S10 App bootstrap is complete and committed. Launching `MainActivity` now builds a real
-`BookBootstrap` result from the hardcoded Tom Sawyer fixture, computes identity through
-`BookIdentityService`, runs `TextPipeline.processChapterWithReadAhead()`, creates a
-Piper-backed `PlaybackSession`, attaches it to `TransportHub`, starts the session paused,
-and passes the live sentence/highlight/starvation/transport objects into
-`GolemReaderApp`. The app still does not auto-play; pressing Play in Now Playing resumes
-the real session.
+S11 End-of-book clean stop is implemented and ready for G4 to resume. The live
+`PlaybackSession` now receives `ChapterContinuity` end-of-book detection from
+`BookBootstrap`; once the producer has rendered the true final sentence, later ticks do
+not re-render or re-enqueue it, and once the consumer actually plays that final sentence
+the session runs the same teardown sequence as stop (`producer.stop()`, buffer flush,
+sink flush, `isRunning = false`). `BookBootstrap` no longer keeps a private
+`zipWithNext` next-sentence map.
 
-Verification passed on 2026-07-02: RED first failed on missing `BookBootstrap`, then
-`./gradlew testDebugUnitTest` passed. `./gradlew assembleDebugAndroidTest` passed.
-On the S23, the Tom Sawyer fixture was present at
-`/sdcard/Android/media/com.golemreader/fixtures/text/tom-sawyer.epub`, Piper assets were
-restored to `/sdcard/Android/media/com.golemreader/test-voices/piper/`,
-`./gradlew installDebug installDebugAndroidTest` passed, and direct instrumentation:
-`adb shell am instrument -w -e class com.golemreader.BootstrapLaunchDeviceTest com.golemreader.test/androidx.test.runner.AndroidJUnitRunner`
-returned `OK (1 test)`.
+Verification passed on 2026-07-02: RED first failed on missing
+`PlaybackSession.isEndOfBook`, then the focused S11 JVM tests passed. Full configured
+verification also passed: `./gradlew testDebugUnitTest` and `./gradlew assembleDebug`.
+The real on-device proof remains part of resumed G4, per S11's test posture.
 
 ## Open items needing attention
 - T-057-C1 and T-057-C2 remain owed agent-run measurements; T-057-C3 remains a contributor
