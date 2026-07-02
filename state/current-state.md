@@ -7,16 +7,16 @@ if-incomplete: "You are at the source of truth. If something isn't here, it isn'
 ---
 # Current state — THE source of truth for "now"
 
-- **Active version:** V0 (foundation)   **Phase:** P1 — Walking Skeleton   **Step:** S10 — App bootstrap   **current-rung:** Commit
-- **Last committed:** s9-reading-nowplaying / S9 Reading View + Now Playing / git HEAD before S10 / 2026-07-02
+- **Active version:** V0 (foundation)   **Phase:** P1 — Walking Skeleton   **Step:** G4 (next)   **current-rung:** —
+- **Last committed:** s10-app-bootstrap / S10 App bootstrap / 9076959 / 2026-07-02
 - **Coverage target:** see reference/coverage-target.md   ·   **Test posture (active step):** automated + agent-run device
 
 ## What's happening right now
-S10 App bootstrap is implemented and verified, pending commit. Launching `MainActivity`
-now builds a real `BookBootstrap` result from the hardcoded Tom Sawyer fixture, computes
-identity through `BookIdentityService`, runs `TextPipeline.processChapterWithReadAhead()`,
-creates a Piper-backed `PlaybackSession`, attaches it to `TransportHub`, starts the
-session paused, and passes the live sentence/highlight/starvation/transport objects into
+S10 App bootstrap is complete and committed. Launching `MainActivity` now builds a real
+`BookBootstrap` result from the hardcoded Tom Sawyer fixture, computes identity through
+`BookIdentityService`, runs `TextPipeline.processChapterWithReadAhead()`, creates a
+Piper-backed `PlaybackSession`, attaches it to `TransportHub`, starts the session paused,
+and passes the live sentence/highlight/starvation/transport objects into
 `GolemReaderApp`. The app still does not auto-play; pressing Play in Now Playing resumes
 the real session.
 
@@ -42,4 +42,4 @@ returned `OK (1 test)`.
   survival, and resume-after-kill routing remain deferred after S8 per D92.
 
 ## Next action
-Commit **S10 — App bootstrap**, then resume **G4 — Phase acceptance gate: plays one book end-to-end**.
+Resume **G4 — Phase acceptance gate: plays one book end-to-end**.

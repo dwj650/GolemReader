@@ -1,7 +1,7 @@
 ---
 id: S10
 tier: state
-status: approved
+status: complete
 updated: 2026-07-02
 cross-refs: [P1, D96, F-001, F-002, F-009, F-016, F-020, F-027]
 if-incomplete: "Return to state/current-state.md."
@@ -12,7 +12,7 @@ if-incomplete: "Return to state/current-state.md."
 - v1.0.0 (2026-07-02) — proposed and approved in the same design session, in response
   to a G4 halt report.
 
-Phase: P1 · Feature(s): none new — wiring existing pieces together · current-rung: Commit
+Phase: P1 · Feature(s): none new — wiring existing pieces together · current-rung: Closeout
 
 ## Statement of Work
 Make the real app actually run the real pipeline for one book. On launch, load a
@@ -96,7 +96,7 @@ New tests:
 
 ## Rung tracker
 - [x] Orient  - [x] Scope  - [x] Inspect  - [x] Change
-- [x] Verify  - [x] Record  - [ ] Commit (G3, guarded)  - [ ] Closeout
+- [x] Verify  - [x] Record  - [x] Commit (G3, guarded)  - [x] Closeout
 
 ## Verify result
 - Result: pass  ·  Confidence: high for JVM wiring, medium for S23 real launch/audio  ·  T-id: T-S10
@@ -109,4 +109,5 @@ New tests:
   returned `OK (1 test)`. Bootstrap uses the S5 Piper adapter.
 
 ## Closeout
-- Committed: —  ·  Next step: resume G4 (state/active/step-G4.md, already written)
+- Committed: 9076959 (`s10 app bootstrap`)  ·  Next step: resume G4
+  (state/active/step-G4.md, already written)
