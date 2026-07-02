@@ -109,5 +109,5 @@ New tests:
   returned `OK (1 test)`. Bootstrap uses the S5 Piper adapter.
 
 ## Closeout
-- Committed: 9076959 (`s10 app bootstrap`)  ·  Next step: resume G4
+- Committed: 9076959 (`s10 app bootstrap`) + closeout state at git HEAD  ·  Next step: resume G4
   (state/active/step-G4.md, already written)

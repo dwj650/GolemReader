@@ -8,7 +8,7 @@ if-incomplete: "You are at the source of truth. If something isn't here, it isn'
 # Current state — THE source of truth for "now"
 
 - **Active version:** V0 (foundation)   **Phase:** P1 — Walking Skeleton   **Step:** G4 (next)   **current-rung:** —
-- **Last committed:** s10-app-bootstrap / S10 App bootstrap / 9076959 / 2026-07-02
+- **Last committed:** s10-app-bootstrap / S10 App bootstrap + closeout / git HEAD / 2026-07-02
 - **Coverage target:** see reference/coverage-target.md   ·   **Test posture (active step):** automated + agent-run device
 
 ## What's happening right now
