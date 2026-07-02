@@ -487,3 +487,32 @@ S9's device test now uses Compose UI testing to assert that the `reading-highlig
 semantics node is displayed for the current Tom Sawyer sentence, then advances to a later
 displayed sentence after the highlight emitter changes. The build gains test-only Compose
 testing artifacts, but runtime app dependencies and app behavior remain unchanged.
+
+# Decision D95 — G4 accepted with PR-7 gap recorded
+- Date: 2026-07-02  ·  Status: locked  ·  Maps to phase: P1
+- Operator-delegated? no — operator directly decided
+
+## Context
+G4 principle-conformance review found six of seven declared principles (PR-1 through
+PR-6) in solid or deliberately-tracked partial standing. PR-7 (accessibility by
+default — Methodology Core Principle 3.8, "included from the first iteration") has no
+built coverage: F-066 through F-070 have been deferred across every step to date, with
+no explicit prior decision scoping accessibility out of P1.
+
+## Decision
+G4 is accepted with the PR-7 gap explicitly recorded, not hidden. Accessibility
+(F-066-070) is prioritized as early work in the next phase, rather than being treated
+as later polish.
+
+## Reasoning
+The walking skeleton's purpose is proving the architecture, not shipping to real
+users — V1 has not been released and G5 (version release) is the actual gate where
+Core Principle 3.8 must hold without exception. Recording the gap honestly, rather
+than silently passing it or blocking G4 over it, keeps the principle enforced (it's on
+the record, with an owner and a "next" commitment) without halting a phase that has
+otherwise met its acceptance bar.
+
+## Consequences
+The Phase P1 acceptance document records PR-7 as open, with accessibility named as
+priority work for the phase that follows. Any future phase's G1 entry must show
+accessibility work scoped in, or the gap becomes a repeated, unaddressed finding.
