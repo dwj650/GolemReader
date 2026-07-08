@@ -248,6 +248,39 @@ if-incomplete: "Coverage policy is reference/coverage-target.md."
   post-completion wait. Required screenshots and run metadata are archived in
   `archive/V0-P1/`. No end-of-book repeat, uncaught starvation/stall, or fatal app log
   was observed. Confidence: medium.
+- **T-065-P1 / T-065-B4 / R7** — S12 JVM token coverage:
+  `GolemThemeTokensTest` verifies both shipped themes resolve color, typography, shape,
+  elevation, spacing, and motion tokens; the dark theme carries the D98 palette anchors
+  (`#0D0F0C`, `#181C15`, `#D8DDCC`, `#A8CC3A`, `#E8A040`); primary text contrast is
+  at least 4.5:1 in both themes; follow-system resolves from the OS dark flag; and a
+  third in-test value-set can be added without changing screen code. RED first failed
+  on the missing theme API; GREEN passed under `./gradlew testDebugUnitTest` on
+  2026-07-08. Confidence: high.
+- **T-065-P2 / D31** — S12 precious theme setting coverage:
+  `ThemeSettingsRepositoryTest` verifies missing settings default to follow-system and
+  updates persist through the DAO. `PreciousMigrationTest` now covers v3→v4 by building
+  the v3 schema, seeding `db_meta` and `book_identity`, migrating to v4, validating the
+  exported Room schema, proving existing rows survive, and proving the default
+  `theme_settings(theme_choice, follow_system)` row exists. Passed under
+  `./gradlew testDebugUnitTest` on 2026-07-08. Confidence: high.
+- **T-065-B3 / D101** — S12 no-hardcode guard coverage:
+  `NoHardcodeGuardTest` runs `guards/no-hardcode-check.sh` from the repo root and
+  verifies the migrated codebase passes. It then writes a temporary UI violation using
+  `Color(0xFF123456)` outside `com.golemreader.theme` and verifies the guard fails.
+  The same seeded failure was demonstrated manually on 2026-07-08: the guard reported
+  `SeededHardcodeViolation.kt` and exited nonzero; after removing the seed, the guard
+  passed cleanly. Confidence: high.
+- **T-065 picker control** — S12 picker option coverage:
+  `ThemeChoicePickerTest` verifies the unmounted picker control exposes exactly
+  follow-system, light, and dark options. No settings screen/home was added, matching
+  the S12 non-goal. Passed under `./gradlew testDebugUnitTest` on 2026-07-08.
+  Confidence: high.
+- **S12 build check** — `ANDROID_HOME=/home/davidt14/Android/Sdk ./gradlew
+  assembleDebug` passed on 2026-07-08. Confidence: high.
+- **S12 device tier deferred** — Agent-run device verification for live switching,
+  restart survival, system bars, and screenshots of both themes on Reading and Now
+  Playing could not run on 2026-07-08 because `adb devices` listed no attached or
+  authorized devices. Confidence: not executed; blocker is environmental.
 
 ## Resolved tool versions for S2
 - KSP Gradle plugin: `com.google.devtools.ksp:2.3.5` (**D81 primary path**, no

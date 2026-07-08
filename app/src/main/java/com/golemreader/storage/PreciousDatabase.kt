@@ -13,6 +13,8 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.golemreader.identity.BookIdentityDao
 import com.golemreader.identity.BookIdentityEntity
+import com.golemreader.theme.ThemeSettingEntity
+import com.golemreader.theme.ThemeSettingsDao
 
 @Entity(tableName = "db_meta")
 data class DbMetaEntity(
@@ -40,6 +42,7 @@ interface DbMetaDao {
     entities = [
         DbMetaEntity::class,
         BookIdentityEntity::class,
+        ThemeSettingEntity::class,
     ],
     version = PreciousDatabase.SCHEMA_VERSION,
     exportSchema = true,
@@ -47,6 +50,7 @@ interface DbMetaDao {
 abstract class PreciousDatabase : RoomDatabase() {
     abstract fun dbMetaDao(): DbMetaDao
     abstract fun bookIdentityDao(): BookIdentityDao
+    abstract fun themeSettingsDao(): ThemeSettingsDao
 
     object Migrations {
         val V1_TO_V2 = object : Migration(1, 2) {
@@ -72,9 +76,31 @@ abstract class PreciousDatabase : RoomDatabase() {
                 )
             }
         }
+
+        val V3_TO_V4 = object : Migration(3, 4) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS theme_settings (
+                        `key` TEXT NOT NULL,
+                        choice TEXT NOT NULL,
+                        PRIMARY KEY(`key`)
+                    )
+                    """.trimIndent(),
+                )
+                db.execSQL(
+                    """
+                    INSERT OR IGNORE INTO theme_settings (`key`, choice)
+                    VALUES ('theme_choice', 'follow_system')
+                    """.trimIndent(),
+                )
+            }
+        }
+
+        val ALL = arrayOf(V1_TO_V2, V2_TO_V3, V3_TO_V4)
     }
 
     companion object {
-        const val SCHEMA_VERSION = 3
+        const val SCHEMA_VERSION = 4
     }
 }

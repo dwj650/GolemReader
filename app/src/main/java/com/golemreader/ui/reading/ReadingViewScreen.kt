@@ -18,11 +18,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.unit.dp
 import com.golemreader.highlight.HighlightState
 import com.golemreader.highlight.HighlightStateEmitter
+import com.golemreader.theme.GolemTheme
+import com.golemreader.theme.GolemThemeValueSets
 import com.golemreader.text.SentenceIndex
 import com.golemreader.text.SentenceRecord
 import kotlinx.coroutines.delay
@@ -55,8 +55,9 @@ fun ReadingViewScreen(
     sentences: List<SentenceRecord>,
     highlightEmitter: HighlightStateEmitter,
     modifier: Modifier = Modifier,
-    pollingIntervalMillis: Long = 100L,
+    pollingIntervalMillis: Long = GolemThemeValueSets.dark.motion.pollingIntervalMillis,
 ) {
+    val tokens = GolemTheme.tokens
     var highlightState by remember(highlightEmitter) {
         mutableStateOf(highlightEmitter.currentState())
     }
@@ -80,11 +81,12 @@ fun ReadingViewScreen(
 
     Column(
         modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(tokens.spacing.md),
     ) {
         Text(
             text = bookTitle,
-            style = MaterialTheme.typography.titleLarge,
+            style = tokens.typography.screenTitle,
+            color = tokens.colors.textPrimary,
             modifier = Modifier.fillMaxWidth(),
         )
         LazyColumn(
@@ -92,21 +94,27 @@ fun ReadingViewScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .testTag("reading-view-list"),
-            contentPadding = PaddingValues(vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(vertical = tokens.spacing.sm),
+            verticalArrangement = Arrangement.spacedBy(tokens.spacing.sm),
         ) {
             itemsIndexed(rows, key = { _, row -> row.index.toString() }) { _, row ->
-                val background =
-                    if (row.isHighlighted) MaterialTheme.colorScheme.primaryContainer else Color.Transparent
                 val textColor =
-                    if (row.isHighlighted) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onBackground
+                    if (row.isHighlighted) tokens.colors.onHighlight else tokens.colors.textPrimary
+                val rowModifier = if (row.isHighlighted) {
+                    Modifier.background(
+                        color = tokens.colors.highlightSoft,
+                        shape = androidx.compose.foundation.shape.RoundedCornerShape(tokens.shapes.highlight),
+                    )
+                } else {
+                    Modifier
+                }
                 Text(
                     text = row.text,
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = tokens.typography.reading,
                     color = textColor,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(background)
+                        .then(rowModifier)
                         .testTag(if (row.isHighlighted) "reading-highlight" else "reading-row"),
                 )
             }

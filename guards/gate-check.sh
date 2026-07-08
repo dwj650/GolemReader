@@ -20,6 +20,12 @@ else
   row "secret scan (deferred - not configured)" "SKIP"
 fi
 
+if bash guards/no-hardcode-check.sh >/dev/null 2>&1; then
+  row "no hardcoded UI literals" "PASS"
+else
+  row "no hardcoded UI literals" "FAIL"
+fi
+
 CHANGED="$(git diff --cached --name-only || true)"
 if echo "$CHANGED" | grep -q "^${CODE_PREFIX:-src/}"; then
   PATTERN="$(echo "${STATE_PATHS:-state/current-state.md}" | sed 's/[[:space:]]\+/|/g')"

@@ -2,6 +2,7 @@ package com.golemreader.storage
 
 import android.content.Context
 import androidx.room.Room
+import com.golemreader.theme.ThemeSettingsRepository
 import java.io.Closeable
 import java.io.File
 
@@ -38,7 +39,7 @@ data class GolemStorageSubstrate(
                 PreciousDatabase::class.java,
                 databaseName,
             )
-                .addMigrations(PreciousDatabase.Migrations.V1_TO_V2)
+                .addMigrations(*PreciousDatabase.Migrations.ALL)
 
             if (allowMainThreadQueriesForTests) {
                 builder.allowMainThreadQueries()
@@ -63,6 +64,9 @@ class PreciousDatabaseHandle(private val database: PreciousDatabase) : Closeable
         } finally {
             close()
         }
+
+    fun themeSettingsRepository(): ThemeSettingsRepository =
+        ThemeSettingsRepository(database.themeSettingsDao())
 
     override fun close() {
         database.close()

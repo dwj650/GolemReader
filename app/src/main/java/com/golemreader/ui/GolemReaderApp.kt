@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -14,10 +13,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.golemreader.AppInfo
 import com.golemreader.highlight.HighlightStateEmitter
 import com.golemreader.playback.StarvationState
+import com.golemreader.theme.GolemTheme
+import com.golemreader.theme.GolemThemeProvider
+import com.golemreader.theme.ThemeChoice
 import com.golemreader.text.SentenceRecord
 import com.golemreader.transport.TransportCommands
 import com.golemreader.ui.nowplaying.NowPlayingScreen
@@ -30,22 +31,24 @@ fun GolemReaderApp(
     sentences: List<SentenceRecord> = emptyList(),
     highlightEmitter: HighlightStateEmitter = remember { HighlightStateEmitter() },
     starvationState: StarvationState = remember { StarvationState() },
+    themeChoice: ThemeChoice = ThemeChoice.FollowSystem,
     transportControls: NowPlayingTransportControls = remember {
         NowPlayingTransportControls(TransportCommands())
     },
 ) {
     var screen by remember { mutableStateOf(GolemScreen.Reading) }
 
-    MaterialTheme {
+    GolemThemeProvider(choice = themeChoice) {
+        val tokens = GolemTheme.tokens
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background,
+            color = tokens.colors.background,
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
+                    .padding(tokens.spacing.screenPadding),
+                verticalArrangement = Arrangement.spacedBy(tokens.spacing.lg),
             ) {
                 ScreenSwitch(
                     selected = screen,
@@ -81,20 +84,21 @@ private fun ScreenSwitch(
     selected: GolemScreen,
     onSelected: (GolemScreen) -> Unit,
 ) {
+    val tokens = GolemTheme.tokens
     androidx.compose.foundation.layout.Row(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(tokens.spacing.sm),
     ) {
         Button(
             onClick = { onSelected(GolemScreen.Reading) },
             enabled = selected != GolemScreen.Reading,
         ) {
-            Text("Reading")
+            Text("Reading", style = tokens.typography.control)
         }
         Button(
             onClick = { onSelected(GolemScreen.NowPlaying) },
             enabled = selected != GolemScreen.NowPlaying,
         ) {
-            Text("Now Playing")
+            Text("Now Playing", style = tokens.typography.control)
         }
     }
 }

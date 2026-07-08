@@ -713,3 +713,10 @@ upgrading later is its own small step if the project outgrows the script.
 ## Consequences
 S12's acceptance criteria require the guard to pass on the migrated codebase and
 demonstrably fail on a seeded violation.
+
+## Implementation note (2026-07-08)
+S12 implemented D101 as `guards/no-hardcode-check.sh` and wired it into
+`guards/gate-check.sh`. The script scans Kotlin UI source outside
+`com.golemreader.theme` for raw Compose color, size, and duration literals. A temporary
+seeded violation using `Color(0xFF123456)` outside the theme package failed the guard;
+the clean migrated codebase passed.

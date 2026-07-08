@@ -1,12 +1,12 @@
 ---
 id: S12
 tier: state
-status: approved (handed to Codex)
-updated: 2026-07-02
+status: implemented (device screenshot tier blocked)
+updated: 2026-07-08
 phase: P2
 features: [F-065]
 cross-refs: [D15b, D31, D98, D99, D100, D101, PR-6, PR-7, IMP-001, IMP-003]
-current-rung: Orient
+current-rung: Closeout
 if-incomplete: "Return to state/current-state.md."
 ---
 # Step S12 — Theme foundation (F-065)
@@ -117,6 +117,37 @@ JDK 21).
 - OB-065-2 (exactly two themes in V1) — honored, unchanged.
 - Light-theme aesthetic — iterated in build (F-065 §12); a follow-up polish pass
   is in-scope for later steps without re-approval of the system.
+- S12 implementation boundary finding: `GolemStorageSubstrate.kt` needed a one-line
+  migration-list update because it is the existing central Room database builder.
+  This stayed inside storage wiring for the precious schema change and did not touch
+  any forbidden listen-loop directory.
+- Device tier boundary: agent-run screenshots and persisted dark restart proof were
+  not captured on 2026-07-08 because `adb devices` returned no attached/authorized
+  device.
+
+## Implementation record (2026-07-08)
+- Built token definitions and light/dark value-sets in `com.golemreader.theme`.
+- Added theme setting entity/DAO/repository in the precious Room database, schema
+  v4 export, and v3→v4 D31 migration test preserving `db_meta` and `book_identity`.
+- Added `GolemThemeProvider`, follow-system resolution, and system-bar color/icon
+  application.
+- Migrated `GolemReaderApp`, `ReadingViewScreen`, `NowPlayingScreen`,
+  `BufferingIndicator`, `MainActivity`, and `themes.xml` off stock visual defaults
+  and onto tokens.
+- Added `ThemeChoicePicker` control and option-model unit coverage; no settings screen
+  or picker home was added.
+- Added `guards/no-hardcode-check.sh`, wired it into `guards/gate-check.sh`, and
+  verified both clean pass and seeded violation failure.
+
+## Verification record (2026-07-08)
+- JVM/Robolectric: `ANDROID_HOME=/home/davidt14/Android/Sdk ./gradlew testDebugUnitTest`
+  passed.
+- Build: `ANDROID_HOME=/home/davidt14/Android/Sdk ./gradlew assembleDebug` passed.
+- Guard clean: `bash guards/no-hardcode-check.sh` passed.
+- Guard seeded violation: temporary `SeededHardcodeViolation.kt` with
+  `Color(0xFF123456)` failed the guard as expected, then was removed and the guard
+  passed cleanly.
+- Device: deferred/blocked; `adb devices` listed no devices.
 
 ## Handoff notes (IMP-001 standing rule)
 Before any multi-command paste on p1: run `git branch --show-current`, read the
