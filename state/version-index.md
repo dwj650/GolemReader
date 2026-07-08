@@ -2,13 +2,13 @@
 id: VERSION-INDEX
 tier: state
 status: active
-updated: 2026-06-28
+updated: 2026-07-02
 if-incomplete: "Return to current-state.md."
 ---
 # Version index
 | Version | Meaning | Status |
 |---|---|---|
-| **V0** | Foundation — the walking skeleton (no public release) | active |
-| V1 | Full feature set per the feature matrix (F-001–F-078 V1 band) | planned |
-| V2 | Bodies behind V1 seams (image viewer, search, sleep timer, richer follow, sync-glow) | planned |
+| **V0** | Foundation — the walking skeleton (no public release); baseline archived at `archive/V0-P1/` | **complete (G4 accepted 2026-07-02)** |
+| **V1** | Full feature set per the feature matrix (F-001–F-078 V1 band); begins with P2 — Accessible Shell | **active** |
+| V2 | Bodies behind V1 seams (image viewer, search, sleep timer, richer follow, sync-glow, rich theming/F-060) | planned |
 | V3 | New capability (e.g. cross-book/global rule promotion, F-047) | parked |

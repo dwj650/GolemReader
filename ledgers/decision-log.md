@@ -593,3 +593,123 @@ scope negotiation. Once S11 lands, G4 resumes with the same SOW, unchanged. The
 implementation gap at the same time.
 
 
+
+# Decision D98 — Visual prototype v0.2.0 is the frozen visual contract (ledger repair)
+- Date: 2026-07-02  ·  Status: locked  ·  Maps to phase: P1 closeout / P2
+- Operator-delegated? no — operator directly approved
+- **Repair note:** commit 8f7d6f7 added `foundation/prototype/golem-reader-prototype-v0_2_0.jsx`
+  and its commit message recorded D98, but this ledger entry never landed. Found and
+  repaired at P2's G1 (2026-07-02). The decision itself was made and approved on
+  2026-07-02, before that commit.
+
+## Context
+P1's retro (IMP-002) recorded that no visual-only G0 prototype ever existed, leaving
+"build matches prototype" with no literal artifact to check at future gates. A
+visual-only prototype (v0.2.0, dummy data, no backend) was iterated and approved,
+correcting a real D51/D52 topology error found in v0.1.0 (Reading View wrongly had
+its own nav tab) and tagging every not-yet-built control as roadmap.
+
+## Decision
+Prototype v0.2.0 (`foundation/prototype/golem-reader-prototype-v0_2_0.jsx`) is the
+project's frozen visual contract. Future gates check built surfaces against it.
+IMP-002 is closed.
+
+## Reasoning
+The Armature checklist's "build matches prototype" line needs a literal artifact;
+v0.2.0 provides it while honestly distinguishing target vision (D51/D52 gesture
+grammar) from the current build's simpler placeholder (D93).
+
+## Alternatives considered
+Continuing with the Design Spec as sole visual authority (the IMP-002 interim
+posture) was superseded once a real prototype existed and was approved.
+
+## Consequences
+G4 gates from P2 onward archive screenshots against the prototype. The dark theme's
+token values (S12 / F-065) derive from the prototype's palette.
+
+# Decision D99 — Phase P2 opens with F-065 (design-token foundation)
+- Date: 2026-07-02  ·  Status: locked  ·  Maps to phase: P2
+- Operator-delegated? no — operator directly approved
+
+## Context
+D95/IMP-004 prioritize accessibility (F-066–F-070) for P2. Reading the actual specs:
+F-066 (high contrast) is defined as a variant token set, F-068 (text scaling) as a
+multiplier on typography tokens, and every toggle is hosted in F-064 — but the token
+system (F-065) and settings host (F-064) do not exist, and the current UI uses stock
+Material defaults (verified: zero hardcoded color/size literals, no token layer).
+
+## Decision
+P2 opens with F-065 (token system + light/dark themes + persisted choice), and the
+accessibility set follows in dependency order: F-064 thin, F-066, F-068, F-067,
+F-069.
+
+## Reasoning
+F-065 is itself the first accessibility work — its spec names it the foundation
+F-066/F-067/F-068 extend, and it sits on Armature's standing accessibility set
+(D31-methodology). Building any axis before the token floor would force rework.
+
+## Alternatives considered
+Starting directly with F-066 was rejected: a high-contrast token set cannot exist
+before the token system it varies.
+
+## Consequences
+The P2 ladder is dependency-ordered (D100); themes are pure token value-sets, which
+is also the F-060 (theme import) forward-compat seam.
+
+# Decision D100 — Phase P2 shape: "Accessible Shell," six steps; F-070 explicitly deferred
+- Date: 2026-07-02  ·  Status: locked  ·  Maps to phase: P2
+- Operator-delegated? no — operator chose option A directly
+
+## Context
+F-070 (onboarding) depends on F-019 (library + empty state) and the F-048-family
+voice-import flow — neither exists. Including it in P2 would roughly double the
+phase (option B). IMP-004's lesson: accessibility deferral must be an explicit
+recorded decision, never a silent step-by-step omission.
+
+## Decision
+P2 is a tight six-step phase, "Accessible Shell": S12 F-065 theme foundation,
+S13 F-064 settings shell (thin) + theme picker, S14 F-066 high contrast,
+S15 F-068 text scaling, S16 F-067 reduced motion, S17 F-069 keyboard navigation,
+then G4. F-070 is deferred by this decision to the phase that builds library +
+voice import, where it becomes priority work and D74 (first-run obeys the
+accessibility contracts) takes effect.
+
+## Reasoning
+First-run guidance cannot be built before there is anything to guide through.
+A small phase lands the accessibility payoff sooner; the deferral is on the
+record with an owner, honoring IMP-004 rather than repeating PR-7's silent slide.
+
+## Alternatives considered
+Option B (P2 also builds F-019 + voice import so F-070 lands in-phase) was
+rejected as roughly doubling the phase and delaying the accessibility payoff.
+
+## Consequences
+Step IDs are flat and continue from P1: P2 = S12–S17. F-070 remains fully
+specified and queued. P2's G4 re-scores PR-7 against the four built axes.
+
+# Decision D101 — No-hardcode guard is a script check, not a custom lint rule
+- Date: 2026-07-02  ·  Status: locked  ·  Maps to phase: P2 (S12)
+- Operator-delegated? no — operator approved via the S12 SOW, which named this decision
+
+## Context
+F-065 R6 requires a mechanical guard rejecting hardcoded color/size/duration
+literals in UI code. Options: a custom Android Lint rule (separate tooling module
+to build and maintain) or a script scan wired into the existing guard pipeline.
+
+## Decision
+Implement the guard as a script (`guards/no-hardcode-check.sh` or equivalent wired
+into `guards/gate-check.sh`) that scans UI code for forbidden literal patterns and
+fails the gate on a hit. The theme package is the one allowed home for literals.
+
+## Reasoning
+Equally mechanical at this project's size, runs in the guard pipeline that already
+exists, and costs minutes instead of days. Mechanical-before-social is satisfied;
+sophistication is not the requirement.
+
+## Alternatives considered
+A custom Lint rule was rejected for V1 as real scope for zero added safety here;
+upgrading later is its own small step if the project outgrows the script.
+
+## Consequences
+S12's acceptance criteria require the guard to pass on the migrated codebase and
+demonstrably fail on a seeded violation.
