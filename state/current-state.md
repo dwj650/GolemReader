@@ -8,7 +8,7 @@ if-incomplete: "You are at the source of truth. If something isn't here, it isn'
 # Current state — THE source of truth for "now"
 
 - **Active version:** V1 (in progress; V0 foundation complete, archived at `archive/V0-P1/`)   **Phase:** P2 — Accessible Shell (entered at G1)   **Step:** S12 — Theme foundation (implemented; device tier completed after follow-up)   **current-rung:** Closeout
-- **Last committed:** pending S12 device follow-up commit / theme foundation + device proof / 2026-07-08
+- **Last committed:** s12-device-followup / theme foundation + device proof / `11677ec` / 2026-07-08
 - **Coverage target:** see reference/coverage-target.md   ·   **Test posture (active step):** automated (JVM/Robolectric) + agent-run device + guided-manual look-check
 
 ## What's happening right now
