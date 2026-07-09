@@ -7,8 +7,8 @@ if-incomplete: "You are at the source of truth. If something isn't here, it isn'
 ---
 # Current state — THE source of truth for "now"
 
-- **Active version:** V1 (in progress; V0 foundation complete, archived at `archive/V0-P1/`)   **Phase:** P2 — Accessible Shell (entered at G1)   **Step:** S12 — Theme foundation (implemented; device screenshot tier blocked by no attached ADB device)   **current-rung:** Closeout
-- **Last committed:** s12-handoff / P2 G1 entry + S12 SOW + D98–D101 / git HEAD / 2026-07-02
+- **Active version:** V1 (in progress; V0 foundation complete, archived at `archive/V0-P1/`)   **Phase:** P2 — Accessible Shell (entered at G1)   **Step:** S12 — Theme foundation (implemented; device tier completed after follow-up)   **current-rung:** Closeout
+- **Last committed:** pending S12 device follow-up commit / theme foundation + device proof / 2026-07-08
 - **Coverage target:** see reference/coverage-target.md   ·   **Test posture (active step):** automated (JVM/Robolectric) + agent-run device + guided-manual look-check
 
 ## What's happening right now
@@ -24,9 +24,9 @@ D100 to the phase that builds library + voice import. Full entry:
 spacing, and motion; dark + light value-sets; a composition-level provider; Room
 precious schema v4 with `theme_settings`; follow-system default; current UI files
 migrated to tokens; and the D101 no-hardcode guard wired into `guards/gate-check.sh`.
-Automated JVM/Robolectric, build, clean guard, and seeded guard-failure checks passed
-on 2026-07-08. Agent-run device screenshots could not be captured because `adb devices`
-returned no attached/authorized device.
+Automated JVM/Robolectric, build, clean guard, seeded guard-failure, and agent-run
+device checks passed on 2026-07-08. Device screenshots are archived at
+`archive/S12-theme-foundation/`.
 
 Ledger housekeeping repaired in this commit: the D98 entry (prototype v0.2.0 as the
 frozen visual contract) was referenced by commit 8f7d6f7 but never landed in the
@@ -34,9 +34,6 @@ decision log — found at P2's G1 and written now, alongside D99 (F-065 first), 
 (phase shape), and D101 (no-hardcode guard mechanism). D-ceiling: **D101**.
 
 ## Open items needing attention
-- S12 device tier remains owed: capture both themes on Reading and Now Playing, verify
-  direct persisted dark choice survives restart, verify live/system-bar switching on the
-  target S23 Ultra. Blocker observed 2026-07-08: `adb devices` listed no devices.
 - T-057-C1 and T-057-C2 remain owed agent-run measurements; T-057-C3 remains a contributor
   to the integrated listen-loop system-budget test at end of T3.
 - KI-S3-001 remains open: `androidx.test.services` has no UID on the S23, so the
@@ -50,6 +47,5 @@ decision log — found at P2's G1 and written now, alongside D99 (F-065 first), 
   survival, and resume-after-kill routing remain deferred after S8 per D92.
 
 ## Next action
-Operator reviews the S12 completion report. Before merge/G4 visual comparison, attach
-or authorize the target S23 Ultra and run the deferred S12 device screenshot/survival
-checks.
+Operator reviews the S12 completion report and archived screenshots before merge/G4
+visual comparison.

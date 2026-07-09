@@ -1,7 +1,7 @@
 ---
 id: S12
 tier: state
-status: implemented (device screenshot tier blocked)
+status: implemented
 updated: 2026-07-08
 phase: P2
 features: [F-065]
@@ -121,9 +121,12 @@ JDK 21).
   migration-list update because it is the existing central Room database builder.
   This stayed inside storage wiring for the precious schema change and did not touch
   any forbidden listen-loop directory.
-- Device tier boundary: agent-run screenshots and persisted dark restart proof were
-  not captured on 2026-07-08 because `adb devices` returned no attached/authorized
-  device.
+- Device tier boundary: first attempt was blocked because `adb devices` listed no
+  attached/authorized device; follow-up on the same date used SM-S918U successfully.
+- Device follow-up found and fixed an S12 launch bug: `MainActivity` called the blocking
+  Room `currentChoice()` read during Compose startup, which crashed on device. The fix
+  starts composition from `ThemeChoice.FollowSystem` and lets the existing Room `Flow`
+  update asynchronously.
 
 ## Implementation record (2026-07-08)
 - Built token definitions and light/dark value-sets in `com.golemreader.theme`.
@@ -147,7 +150,12 @@ JDK 21).
 - Guard seeded violation: temporary `SeededHardcodeViolation.kt` with
   `Color(0xFF123456)` failed the guard as expected, then was removed and the guard
   passed cleanly.
-- Device: deferred/blocked; `adb devices` listed no devices.
+- Device: SM-S918U verified. `adb devices` listed `R5CW72ZRMWP device`; debug APK
+  installed; follow-system changed live when OS night mode was switched; both themes
+  were captured on Reading and Now Playing; persisted dark was written through
+  `ThemeSettingsDeviceTest`, survived force-stop/relaunch, and rendered dark while OS
+  mode had been light. Screenshots and run notes are archived in
+  `archive/S12-theme-foundation/`.
 
 ## Handoff notes (IMP-001 standing rule)
 Before any multi-command paste on p1: run `git branch --show-current`, read the

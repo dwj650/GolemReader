@@ -281,6 +281,22 @@ if-incomplete: "Coverage policy is reference/coverage-target.md."
   restart survival, system bars, and screenshots of both themes on Reading and Now
   Playing could not run on 2026-07-08 because `adb devices` listed no attached or
   authorized devices. Confidence: not executed; blocker is environmental.
+- **S12 device tier follow-up** — SM-S918U verification completed on 2026-07-08 after
+  the device became available. `adb install -r app/build/outputs/apk/debug/app-debug.apk`
+  succeeded. Initial launch exposed a real S12 regression: `MainActivity` called
+  `ThemeSettingsRepository.currentChoice()` from Compose startup, and Room crashed on
+  the main thread. `MainActivityThemeStartupTest` now guards against that synchronous
+  startup read, RED failed first, and GREEN passed after switching the initial Compose
+  theme state to `ThemeChoice.FollowSystem` while collecting the Room `Flow`. Follow-system
+  live switching was verified with `adb shell cmd uimode night no`; light Reading and
+  Now Playing screenshots were captured, then OS night mode was restored with
+  `adb shell cmd uimode night yes`. `ThemeSettingsDeviceTest` wrote persisted
+  `ThemeChoice.Dark` through the real precious database via direct instrumentation
+  (`OK (1 test)`), then a force-stop/relaunch rendered dark while OS mode had been
+  light. Final log showed `Displayed com.golemreader/.MainActivity`. Screenshots and
+  run notes are archived in `archive/S12-theme-foundation/`. Android test/install churn
+  cleared media assets once; restoring `tom-sawyer.epub` and Piper assets resolved that
+  environmental issue. Confidence: medium.
 
 ## Resolved tool versions for S2
 - KSP Gradle plugin: `com.google.devtools.ksp:2.3.5` (**D81 primary path**, no

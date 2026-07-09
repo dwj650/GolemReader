@@ -7,6 +7,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.golemreader.bootstrap.BookBootstrap
 import com.golemreader.storage.GolemStorageSubstrate
+import com.golemreader.theme.ThemeChoice
 import com.golemreader.theme.ThemeSettingsRepository
 import com.golemreader.ui.GolemReaderApp
 
@@ -23,7 +24,7 @@ class MainActivity : ComponentActivity() {
         val bootstrap = BookBootstrap(this).start()
         setContent {
             val themeChoice by themeRepository.choiceFlow()
-                .collectAsState(initial = themeRepository.currentChoice())
+                .collectAsState(initial = ThemeChoice.FollowSystem)
             GolemReaderApp(
                 bookTitle = bootstrap.bookTitle,
                 sentences = bootstrap.sentences,
