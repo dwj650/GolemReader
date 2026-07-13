@@ -170,3 +170,4 @@ Reading evidence. All S14 acceptance criteria are satisfied at the declared conf
 levels. T-066-B4 scaling composition remains owned by S15, and the full multi-axis
 T-066-R1 sweep remains owned by G4. Step done; D-ceiling at close: D107. Next step:
 S15 — Text scaling (F-068), not yet started.
+Sequence note: the operator's commit approval preceded the screenshot look-check; the guided look-check was completed post-commit, pre-merge, on 2026-07-13, and passed.
