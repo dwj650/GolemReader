@@ -4,6 +4,7 @@ package com.golemreader.ui.settings
 value class SettingId(val value: String) {
     companion object {
         val Theme = SettingId("theme")
+        val HighContrast = SettingId("high-contrast")
         val Speed = SettingId("speed")
         val SentencePauses = SettingId("sentence-pauses")
         val Volume = SettingId("volume")
@@ -26,6 +27,13 @@ data class SettingsSection(
 object SettingsMap {
     private val registeredEntries = listOf(
         SettingEntry(SettingId.Theme, "Theme", "Appearance", "F-065", owningFeatureBuilt = true),
+        SettingEntry(
+            SettingId.HighContrast,
+            "High contrast",
+            "Accessibility",
+            "F-066",
+            owningFeatureBuilt = true,
+        ),
         SettingEntry(SettingId.Speed, "Speed", "Playback", "F-005", owningFeatureBuilt = false),
         SettingEntry(
             SettingId.SentencePauses,

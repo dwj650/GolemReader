@@ -327,6 +327,27 @@ if-incomplete: "Coverage policy is reference/coverage-target.md."
   run notes are archived in `archive/S12-theme-foundation/`. Android test/install churn
   cleared media assets once; restoring `tom-sawyer.epub` and Piper assets resolved that
   environmental issue. Confidence: medium.
+- **T-066-P1 / T-066-B1 / T-066-B2 / T-066-B4** — S14 central JVM contract:
+  `GolemThemeTokensTest` verifies all four value-sets are complete; all theme choice ×
+  system state × HC resolver combinations; HC primary/secondary text ≥ 7:1; HC control
+  and highlight pairs ≥ 3:1; the unchanged base-theme floor; and toggle-on/toggle-off
+  restoration through the shared resolver. A deliberately weak palette is rejected by
+  the same helper as negative proof. RED failed on missing S14 APIs; GREEN passed under
+  `./gradlew testDebugUnitTest` on 2026-07-13. Confidence: high.
+- **T-066 preference / registry / control** — `ThemeSettingsRepositoryTest` verifies HC
+  defaults off, persists independently as the `high_contrast` row, and dispatches its
+  suspend write off the calling thread. `SettingsMapTest` verifies the built F-066 entry
+  appears under Accessibility while unbuilt entries remain absent. Device inspection
+  exposed an unlabeled-switch NAF marker; `HighContrastToggleTest` failed RED, then
+  passed GREEN after the switch gained `content-desc="High contrast"`. Confidence: high.
+- **T-066-B3 / S14 build checks** — the full JVM suite, `assembleDebug`, D101
+  no-hardcode guard, and `git diff --check` passed on 2026-07-13. Confidence: high.
+- **T-066-C1 / S14 device proof** — on SM-S918U, HC Dark and HC Light rendered live on
+  Settings and Reading; Light + HC survived force-stop/cold relaunch; and toggling HC
+  off/on during playback preserved the `GolemPlaybackSession` thread with no entries in
+  a freshly cleared fatal log. Four screenshots are archived under
+  `archive/S14-high-contrast/`. Objective checks: medium confidence. Guided legibility
+  look-check: operator approved all four captures on 2026-07-13. Confidence: medium.
 
 ## Resolved tool versions for S2
 - KSP Gradle plugin: `com.google.devtools.ksp:2.3.5` (**D81 primary path**, no

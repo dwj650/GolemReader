@@ -192,6 +192,56 @@ object GolemThemeValueSets {
         motion = baseMotion,
     )
 
+    val hcDark = GolemThemeValueSet(
+        name = "hc-dark",
+        colors = GolemColors(
+            background = Color(0xFF000000),
+            surface = Color(0xFF0A0A0A),
+            surfaceRaised = Color(0xFF141414),
+            outline = Color(0xFFFFFFFF),
+            textPrimary = Color(0xFFFFFFFF),
+            textSecondary = Color(0xFFD6D6D6),
+            accent = Color(0xFFCFFF00),
+            onAccent = Color(0xFF000000),
+            highlight = Color(0xFFFFD000),
+            highlightSoft = Color(0xFFFFF0A0),
+            onHighlight = Color(0xFF000000),
+            systemBarBackground = Color(0xFF000000),
+            navigationBarBackground = Color(0xFF0A0A0A),
+            useDarkSystemBarIcons = false,
+        ),
+        typography = baseTypography(),
+        shapes = baseShapes,
+        elevation = baseElevation,
+        spacing = baseSpacing,
+        motion = baseMotion,
+    )
+
+    val hcLight = GolemThemeValueSet(
+        name = "hc-light",
+        colors = GolemColors(
+            background = Color(0xFFFFFFFF),
+            surface = Color(0xFFFFFFFF),
+            surfaceRaised = Color(0xFFF2F2F2),
+            outline = Color(0xFF000000),
+            textPrimary = Color(0xFF000000),
+            textSecondary = Color(0xFF333333),
+            accent = Color(0xFF003A80),
+            onAccent = Color(0xFFFFFFFF),
+            highlight = Color(0xFFC00000),
+            highlightSoft = Color(0xFFFFDADA),
+            onHighlight = Color(0xFF000000),
+            systemBarBackground = Color(0xFFFFFFFF),
+            navigationBarBackground = Color(0xFFFFFFFF),
+            useDarkSystemBarIcons = true,
+        ),
+        typography = baseTypography(),
+        shapes = baseShapes,
+        elevation = baseElevation,
+        spacing = baseSpacing,
+        motion = baseMotion,
+    )
+
     private fun baseTypography() = GolemTypography(
         screenTitle = TextStyle(
             fontFamily = FontFamily.Serif,
@@ -232,12 +282,23 @@ object GolemThemeValueSets {
     )
 }
 
-fun resolveThemeValueSet(choice: ThemeChoice, systemDark: Boolean): GolemThemeValueSet =
-    when (choice) {
-        ThemeChoice.FollowSystem -> if (systemDark) GolemThemeValueSets.dark else GolemThemeValueSets.light
-        ThemeChoice.Light -> GolemThemeValueSets.light
-        ThemeChoice.Dark -> GolemThemeValueSets.dark
+fun resolveThemeValueSet(
+    choice: ThemeChoice,
+    systemDark: Boolean,
+    highContrast: Boolean,
+): GolemThemeValueSet {
+    val useDarkValues = when (choice) {
+        ThemeChoice.FollowSystem -> systemDark
+        ThemeChoice.Light -> false
+        ThemeChoice.Dark -> true
     }
+    return when {
+        highContrast && useDarkValues -> GolemThemeValueSets.hcDark
+        highContrast -> GolemThemeValueSets.hcLight
+        useDarkValues -> GolemThemeValueSets.dark
+        else -> GolemThemeValueSets.light
+    }
+}
 
 fun contrastRatio(foreground: Color, background: Color): Double {
     val lighter = max(foreground.relativeLuminance(), background.relativeLuminance())

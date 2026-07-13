@@ -7,6 +7,7 @@ import java.util.concurrent.Executors
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
@@ -55,6 +56,41 @@ class ThemeSettingsRepositoryTest {
             repository.setChoice(ThemeChoice.Dark)
 
             assertTrue(dao.writeThread?.startsWith("theme-settings-io") == true)
+            assertNotEquals(callingThread, dao.writeThread)
+        }
+    }
+
+    @Test
+    fun highContrastDefaultsOffAndPersistsIndependentlyFromThemeChoice() = runBlocking {
+        val database = openDatabase()
+        try {
+            val repository = ThemeSettingsRepository(database.themeSettingsDao())
+
+            assertEquals(false, repository.highContrastFlow().first())
+
+            repository.setChoice(ThemeChoice.Light)
+            repository.setHighContrast(true)
+
+            assertEquals(ThemeChoice.Light, repository.currentChoice())
+            assertEquals(true, repository.highContrastFlow().first())
+        } finally {
+            database.close()
+        }
+    }
+
+    @Test
+    fun setHighContrastExecutesDaoWriteOffTheCallingThread() = runBlocking {
+        val callingThread = Thread.currentThread().name
+        val dao = RecordingThemeSettingsDao()
+        Executors.newSingleThreadExecutor { runnable ->
+            Thread(runnable, "high-contrast-settings-io")
+        }.asCoroutineDispatcher().use { ioDispatcher ->
+            val repository = ThemeSettingsRepository(dao, ioDispatcher)
+
+            repository.setHighContrast(true)
+
+            assertEquals(ThemeSettingEntity.HIGH_CONTRAST_KEY, dao.entity?.key)
+            assertTrue(dao.writeThread?.startsWith("high-contrast-settings-io") == true)
             assertNotEquals(callingThread, dao.writeThread)
         }
     }

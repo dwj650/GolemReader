@@ -33,6 +33,7 @@ data class ThemeSettingEntity(
 ) {
     companion object {
         const val THEME_CHOICE_KEY = "theme_choice"
+        const val HIGH_CONTRAST_KEY = "high_contrast"
     }
 }
 
@@ -58,7 +59,20 @@ class ThemeSettingsRepository(
     fun choiceFlow(): Flow<ThemeChoice> =
         dao.observe().map { entity -> ThemeChoice.fromStoredValue(entity?.choice) }
 
+    fun highContrastFlow(): Flow<Boolean> =
+        dao.observe(ThemeSettingEntity.HIGH_CONTRAST_KEY)
+            .map { entity -> entity?.choice == true.toString() }
+
     suspend fun setChoice(choice: ThemeChoice) = withContext(ioDispatcher) {
         dao.upsert(ThemeSettingEntity(choice = choice.storedValue))
+    }
+
+    suspend fun setHighContrast(enabled: Boolean) = withContext(ioDispatcher) {
+        dao.upsert(
+            ThemeSettingEntity(
+                key = ThemeSettingEntity.HIGH_CONTRAST_KEY,
+                choice = enabled.toString(),
+            ),
+        )
     }
 }

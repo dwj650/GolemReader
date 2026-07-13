@@ -7,8 +7,8 @@ if-incomplete: "You are at the source of truth. If something isn't here, it isn'
 ---
 # Current state — THE source of truth for "now"
 
-- **Active version:** V1 (in progress; V0 foundation complete, archived at `archive/V0-P1/`)   **Phase:** P2 — Accessible Shell (entered at G1)   **Step:** S14 — High contrast (SOW approved; awaiting agent implementation)   **current-rung:** Change
-- **Last committed:** main @ e1fe9dd (S13 settings host, fast-forward merged) + this handoff commit (S14 SOW, D105–D107, state refresh)
+- **Active version:** V1 (in progress; V0 foundation complete, archived at `archive/V0-P1/`)   **Phase:** P2 — Accessible Shell (entered at G1)   **Step:** S14 — High contrast (done; S15 next, not started)   **current-rung:** Closeout
+- **Last committed:** S14 completion on branch `s14-high-contrast` (this commit); main remains @ ac3c6d8 (S14 handoff)
 - **Coverage target:** see reference/coverage-target.md   ·   **Test posture (active step):** automated (JVM) + agent-run device + guided-manual look-check at closeout
 
 ## What's happening right now
@@ -19,15 +19,14 @@ current-sentence Reading entry, and the adaptive launcher icon are all on main.
 Operator approved the four archived screenshots 2026-07-13; closeout recorded
 in `state/active/step-S13.md`.
 
-**S14 is active, at the Change rung.** The approved SOW is
-`state/active/step-S14.md`: two pure-data high-contrast value-sets — hcDark
-and hcLight (D106) — authored to the AAA target (D105, resolving OB-066-1);
-the resolver gains a high-contrast dimension; the HC preference stored as a
-second key-value row in `theme_settings` with **no schema change** (D107);
-the toggle registered into the Settings Map as a one-entry Accessibility
-registration (the first live proof of D104); and the F-066 central contrast
-test harness (D69) that every other surface defers to. Writes stay suspend +
-IO-dispatched per the S13 rule. D-ceiling: **D107**.
+**S14 is done on branch `s14-high-contrast`.** The build now has
+explicit `hcDark` and `hcLight` token value-sets at the D105 ratios, the D106 resolver
+dimension, a precious `high_contrast` key-value row with no D31 schema change (D107),
+the F-066 Accessibility registry entry and labeled theme-owned switch, and the D69
+central contrast harness. Full JVM tests, debug build, no-hardcode guard, and S23
+objective checks passed; Light + HC survived force-stop/relaunch and playback remained
+active through off/on toggles. The operator approved all four archived Dark/Light
+Settings and Reading captures on 2026-07-13. D-ceiling: **D107**.
 
 ## Open items needing attention
 - T-057-C1 and T-057-C2 remain owed agent-run measurements; T-057-C3 remains a contributor
@@ -49,6 +48,5 @@ IO-dispatched per the S13 rule. D-ceiling: **D107**.
   closeout look-check, re-walked at G4.
 
 ## Next action
-Coding agent implements S14 from `state/active/step-S14.md` on a new branch
-(`s14-high-contrast`), then the operator brings the completion report back for
-verification against the acceptance criteria on real branch code.
+S15 — Text scaling (F-068) is next and not started. Return to the Design Zone to ground
+and approve its SOW before any S15 code changes.

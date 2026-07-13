@@ -17,6 +17,7 @@ import com.golemreader.highlight.HighlightStateEmitter
 import com.golemreader.playback.StarvationState
 import com.golemreader.theme.GolemTheme
 import com.golemreader.theme.GolemThemeProvider
+import com.golemreader.theme.HighContrastToggle
 import com.golemreader.theme.ThemeChoice
 import com.golemreader.theme.ThemeChoicePicker
 import com.golemreader.text.SentenceRecord
@@ -38,7 +39,9 @@ fun GolemReaderApp(
     highlightEmitter: HighlightStateEmitter = remember { HighlightStateEmitter() },
     starvationState: StarvationState = remember { StarvationState() },
     themeChoice: ThemeChoice = ThemeChoice.FollowSystem,
+    highContrast: Boolean = false,
     onThemeChoiceSelected: (ThemeChoice) -> Unit = {},
+    onHighContrastToggled: (Boolean) -> Unit = {},
     transportControls: NowPlayingTransportControls = remember {
         NowPlayingTransportControls(TransportCommands())
     },
@@ -49,7 +52,7 @@ fun GolemReaderApp(
         navigation = navigation.onBack()
     }
 
-    GolemThemeProvider(choice = themeChoice) {
+    GolemThemeProvider(choice = themeChoice, highContrast = highContrast) {
         val tokens = GolemTheme.tokens
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -80,11 +83,16 @@ fun GolemReaderApp(
                         GolemDestination.Settings -> SettingsScreen(
                             entries = SettingsMap.visibleEntries(),
                             controlContent = { entry ->
-                                if (entry.id == SettingId.Theme) {
-                                    ThemeChoicePicker(
+                                when (entry.id) {
+                                    SettingId.Theme -> ThemeChoicePicker(
                                         selected = themeChoice,
                                         onSelected = onThemeChoiceSelected,
                                     )
+                                    SettingId.HighContrast -> HighContrastToggle(
+                                        enabled = highContrast,
+                                        onToggled = onHighContrastToggled,
+                                    )
+                                    else -> Unit
                                 }
                             },
                         )

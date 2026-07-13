@@ -1,12 +1,12 @@
 ---
 id: S14
 tier: state
-status: approved
+status: done
 updated: 2026-07-13
 phase: P2
 features: [F-066]
 cross-refs: [D31, D68, D69, D100, D101, D103, D104, D105, D106, D107, PR-7, IMP-001, IMP-003]
-current-rung: Change
+current-rung: Closeout
 if-incomplete: "Return to state/current-state.md."
 ---
 # Step S14 — High contrast (F-066): HC token sets, toggle, central contrast test
@@ -126,3 +126,47 @@ first failure. p1 path: `~/AndroidStudioProjects/Golem`. T14 `cp` is aliased
 interactive — run `cp` lines singly or use `\cp`. Downloads hygiene: bundle
 files are uniquely named (`-s14` suffix) to avoid the stale-duplicate trap;
 after placing files, verify `updated:` dates read 2026-07-13.
+
+## Implementation record (2026-07-13)
+- Added `hcDark` and `hcLight` as explicit pure-data token value-sets. The resolver now
+  selects across theme choice, system dark state, and the high-contrast flag without
+  changing either base palette or adding runtime color transforms.
+- Reused `theme_settings` for a second `high_contrast` row. The repository exposes a
+  Boolean flow and a suspend, IO-dispatched write; the Room schema and exported schemas
+  are unchanged.
+- Registered High contrast as the built F-066 entry in the Accessibility group and
+  routed the theme-owned switch into the generic Settings shell through `controlContent`.
+- Collected the preference in `MainActivity`, passed it through `GolemReaderApp`, and
+  supplied it to `GolemThemeProvider`; no screen reads high-contrast state directly.
+- Device inspection initially found Android marking the switch NAF (not accessibility
+  friendly) because its visible label was a separate semantics node. A RED/GREEN
+  regression test now protects the switch's `High contrast` accessibility label.
+
+## Verification record (2026-07-13)
+- Clean baseline: `./gradlew testDebugUnitTest` passed before changes.
+- TDD RED: the focused S14 run failed on the missing HC value-sets/resolver dimension,
+  preference API, and Settings Map entry. GREEN: all focused token, repository, startup,
+  registry, and switch-label tests passed after their minimal implementations.
+- The central contract verifies four complete value-sets; all resolver combinations;
+  HC primary/secondary text at least 7:1; accent, on-accent, highlight, and on-highlight
+  pairs at least 3:1; the unchanged base floor; toggle-on/toggle-off restoration; and a
+  deliberately weak palette that the harness rejects.
+- Full `./gradlew testDebugUnitTest`, `./gradlew assembleDebug`, the no-hardcode guard,
+  and `git diff --check` passed before record reconciliation. Final fresh verification
+  is required immediately before G3 commit.
+- SM-S918U: Dark + HC and Light + HC rendered live on Settings and Reading. Light + HC
+  survived force-stop/cold relaunch with both controls still selected. During active
+  playback, HC toggled off and on, `GolemPlaybackSession` remained alive, and a freshly
+  cleared fatal log stayed empty. Android exposed the final switch as
+  `content-desc="High contrast"`, checked, with no NAF marker.
+- Four 1080×2316 screenshots and a run log are archived under
+  `archive/S14-high-contrast/`. Objective device checks pass at medium confidence;
+  the operator approved the guided legibility look-check and all four captures on
+  2026-07-13.
+
+## Closeout (2026-07-13)
+The operator approved the implementation explanation plus HC Dark/Light Settings and
+Reading evidence. All S14 acceptance criteria are satisfied at the declared confidence
+levels. T-066-B4 scaling composition remains owned by S15, and the full multi-axis
+T-066-R1 sweep remains owned by G4. Step done; D-ceiling at close: D107. Next step:
+S15 — Text scaling (F-068), not yet started.

@@ -27,10 +27,11 @@ object GolemTheme {
 @Composable
 fun GolemThemeProvider(
     choice: ThemeChoice,
+    highContrast: Boolean,
     content: @Composable () -> Unit,
 ) {
     val systemDark = isSystemInDarkTheme()
-    val valueSet = resolveThemeValueSet(choice, systemDark)
+    val valueSet = resolveThemeValueSet(choice, systemDark, highContrast)
     ApplySystemBars(valueSet)
     CompositionLocalProvider(LocalGolemTheme provides valueSet) {
         MaterialTheme(

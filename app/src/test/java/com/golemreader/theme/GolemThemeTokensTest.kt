@@ -2,6 +2,7 @@ package com.golemreader.theme
 
 import androidx.compose.ui.graphics.Color
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertThrows
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -9,7 +10,12 @@ import org.junit.Test
 class GolemThemeTokensTest {
     @Test
     fun shippedThemesResolveEveryTokenCategory() {
-        listOf(GolemThemeValueSets.dark, GolemThemeValueSets.light).forEach { valueSet ->
+        listOf(
+            GolemThemeValueSets.dark,
+            GolemThemeValueSets.light,
+            GolemThemeValueSets.hcDark,
+            GolemThemeValueSets.hcLight,
+        ).forEach { valueSet ->
             assertComplete(valueSet)
         }
     }
@@ -26,12 +32,23 @@ class GolemThemeTokensTest {
     }
 
     @Test
-    fun primaryTextContrastPassesBaselineInBothThemes() {
+    fun baseThemeTextContrastKeepsExistingFloor() {
         listOf(GolemThemeValueSets.dark, GolemThemeValueSets.light).forEach { valueSet ->
-            assertTrue(
-                "${valueSet.name} primary text contrast",
-                contrastRatio(valueSet.colors.textPrimary, valueSet.colors.background) >= 4.5,
-            )
+            assertContrastAtLeast(valueSet, "primary text", valueSet.colors.textPrimary, 4.5)
+        }
+    }
+
+    @Test
+    fun highContrastThemesMeetCentralD105Contract() {
+        listOf(GolemThemeValueSets.hcDark, GolemThemeValueSets.hcLight).forEach(::assertHighContrast)
+    }
+
+    @Test
+    fun centralHighContrastContractRejectsAWeakPalette() {
+        val weakPalette = GolemThemeValueSets.dark.copy(name = "deliberately-weak-hc")
+
+        assertThrows(AssertionError::class.java) {
+            assertHighContrast(weakPalette)
         }
     }
 
@@ -48,14 +65,68 @@ class GolemThemeTokensTest {
     }
 
     @Test
-    fun followSystemResolvesFromOsDarkState() {
-        assertEquals(
-            GolemThemeValueSets.dark,
-            resolveThemeValueSet(ThemeChoice.FollowSystem, systemDark = true),
+    fun resolverMapsThemeChoiceSystemStateAndHighContrastToFourValueSets() {
+        data class Case(
+            val choice: ThemeChoice,
+            val systemDark: Boolean,
+            val highContrast: Boolean,
+            val expected: GolemThemeValueSet,
         )
-        assertEquals(
-            GolemThemeValueSets.light,
-            resolveThemeValueSet(ThemeChoice.FollowSystem, systemDark = false),
+
+        listOf(
+            Case(ThemeChoice.FollowSystem, true, false, GolemThemeValueSets.dark),
+            Case(ThemeChoice.FollowSystem, false, false, GolemThemeValueSets.light),
+            Case(ThemeChoice.Light, true, false, GolemThemeValueSets.light),
+            Case(ThemeChoice.Dark, false, false, GolemThemeValueSets.dark),
+            Case(ThemeChoice.FollowSystem, true, true, GolemThemeValueSets.hcDark),
+            Case(ThemeChoice.FollowSystem, false, true, GolemThemeValueSets.hcLight),
+            Case(ThemeChoice.Light, true, true, GolemThemeValueSets.hcLight),
+            Case(ThemeChoice.Dark, false, true, GolemThemeValueSets.hcDark),
+        ).forEach { case ->
+            assertEquals(
+                case.expected,
+                resolveThemeValueSet(case.choice, case.systemDark, case.highContrast),
+            )
+        }
+    }
+
+    @Test
+    fun togglingHighContrastSwapsAndRestoresResolvedValueSet() {
+        val base = resolveThemeValueSet(ThemeChoice.Dark, systemDark = false, highContrast = false)
+        val enabled = resolveThemeValueSet(ThemeChoice.Dark, systemDark = false, highContrast = true)
+        val restored = resolveThemeValueSet(ThemeChoice.Dark, systemDark = false, highContrast = false)
+
+        assertEquals(GolemThemeValueSets.dark, base)
+        assertEquals(GolemThemeValueSets.hcDark, enabled)
+        assertNotEquals(base, enabled)
+        assertEquals(base, restored)
+    }
+
+    private fun assertHighContrast(valueSet: GolemThemeValueSet) {
+        val colors = valueSet.colors
+        assertContrastAtLeast(valueSet, "primary text", colors.textPrimary, 7.0)
+        assertContrastAtLeast(valueSet, "secondary text", colors.textSecondary, 7.0)
+        assertContrastAtLeast(valueSet, "accent control", colors.accent, 3.0)
+        assertContrastAtLeast(valueSet, "highlight", colors.highlight, 3.0)
+        assertTrue(
+            "${valueSet.name} on-accent contrast",
+            contrastRatio(colors.onAccent, colors.accent) >= 3.0,
+        )
+        assertTrue(
+            "${valueSet.name} on-highlight contrast",
+            contrastRatio(colors.onHighlight, colors.highlight) >= 3.0,
+        )
+    }
+
+    private fun assertContrastAtLeast(
+        valueSet: GolemThemeValueSet,
+        pairName: String,
+        foreground: Color,
+        minimum: Double,
+    ) {
+        assertTrue(
+            "${valueSet.name} $pairName contrast",
+            contrastRatio(foreground, valueSet.colors.background) >= minimum,
         )
     }
 

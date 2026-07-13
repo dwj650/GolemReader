@@ -27,6 +27,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             val themeChoice by themeRepository.choiceFlow()
                 .collectAsState(initial = ThemeChoice.FollowSystem)
+            val highContrast by themeRepository.highContrastFlow()
+                .collectAsState(initial = false)
             val themeWriteScope = rememberCoroutineScope()
             GolemReaderApp(
                 bookTitle = bootstrap.bookTitle,
@@ -34,8 +36,12 @@ class MainActivity : ComponentActivity() {
                 highlightEmitter = bootstrap.highlightEmitter,
                 starvationState = bootstrap.starvationState,
                 themeChoice = themeChoice,
+                highContrast = highContrast,
                 onThemeChoiceSelected = { choice ->
                     themeWriteScope.launch { themeRepository.setChoice(choice) }
+                },
+                onHighContrastToggled = { enabled ->
+                    themeWriteScope.launch { themeRepository.setHighContrast(enabled) }
                 },
                 transportControls = bootstrap.transportControls,
             )

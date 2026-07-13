@@ -9,8 +9,18 @@ class SettingsMapTest {
     fun productionMenuYieldsOnlyEntriesWhoseOwningFeaturesAreBuilt() {
         val entries = SettingsMap.visibleEntries()
 
-        assertEquals(listOf(SettingId.Theme), entries.map { it.id })
+        assertEquals(listOf(SettingId.Theme, SettingId.HighContrast), entries.map { it.id })
         assertFalse(entries.any { it.owningFeature in setOf("F-005", "F-006", "F-007") })
+    }
+
+    @Test
+    fun highContrastRegistersAsBuiltAccessibilitySettingOwnedByF066() {
+        val highContrast = SettingsMap.visibleEntries().single { it.id == SettingId.HighContrast }
+
+        assertEquals("High contrast", highContrast.label)
+        assertEquals("Accessibility", highContrast.group)
+        assertEquals("F-066", highContrast.owningFeature)
+        assertEquals(true, highContrast.owningFeatureBuilt)
     }
 
     @Test
