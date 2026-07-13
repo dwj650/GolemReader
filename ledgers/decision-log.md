@@ -720,3 +720,107 @@ S12 implemented D101 as `guards/no-hardcode-check.sh` and wired it into
 `com.golemreader.theme` for raw Compose color, size, and duration literals. A temporary
 seeded violation using `Color(0xFF123456)` outside the theme package failed the guard;
 the clean migrated codebase passed.
+
+# Decision D102 — Navigation topology: in-house route model, bottom nav, Library hidden until F-019
+- Date: 2026-07-12  ·  Status: locked  ·  Maps to phase: P2 (S13)
+- Operator-delegated? no — operator approved component A on 2026-07-12
+
+## Context
+S13 grounding (IMP-003) found the built app has no navigation at all: no
+navigation dependency, and the two screens hang off a private enum + button
+switch (the S9/D93 placeholder). The approved visual contract commits to a
+bottom nav of Library / Now Playing / Settings, with Reading reached from Now
+Playing (preview-strip tap or swipe-left per D51/D52), never as a nav
+destination. F-019 (Library) is unbuilt, and both real Reading doors (swipe,
+F-073 strip) are unbuilt features.
+
+## Decision
+S13 lands the app's real navigation: an in-house plain-Kotlin route model (no
+navigation library) driving a bottom nav bar per the visual contract, with two
+live tabs — Now Playing and Settings. The Library tab is not rendered until
+F-019 exists (D68: absent, never a dead control). Reading stays reachable via a
+simplified, tappable preview strip on Now Playing (real sentence text, sits
+where F-073's full strip will live); the S9/D93 top switch is removed. Swipe
+gestures remain D51/D52 target vision.
+
+## Reasoning
+Three destinations don't need a back-stack dependency; a plain route model is
+JVM-testable on the only automated rig this repo has. Same
+mechanical-before-social economy as D101. The simplified strip is the honest
+successor to the D93 placeholder, positioned so F-073 replaces it in place.
+
+## Alternatives considered
+A third peer button (rejected: settings becomes co-equal with reading surfaces,
+contradicts the contract). Adopting androidx.navigation (rejected for V1: real
+scope for zero added safety at three destinations; adopting later is its own
+small step). Rendering Library dimmed (rejected: exactly what D68 forbids).
+
+## Consequences
+S13's scope includes the nav topology, not just the settings screen. Route
+model unit tests join the acceptance criteria. The Library tab's activation is
+owned by the F-019 phase; the strip's enrichment is owned by F-073.
+
+# Decision D103 — Prototype v0.3.0 is the frozen visual contract (supersedes v0.2.0)
+- Date: 2026-07-12  ·  Status: locked  ·  Maps to phase: P2 (S13)
+- Operator-delegated? no — operator approved the v0.3.0 draft on 2026-07-12
+
+## Context
+D98 froze prototype v0.2.0 as the visual contract. S13 needed a visible
+proposal for the settings surface, which v0.2.0 lacked (its Settings tab was
+roadmap-only with no screen behind it). OB-064-1 (section grouping/order) was
+open for build.
+
+## Decision
+Prototype v0.3.0 (`foundation/prototype/golem-reader-prototype-v0_3_0.jsx`)
+supersedes v0.2.0 as the frozen visual contract; v0.2.0 is retained for
+rollback. v0.3.0 adds: a live Settings tab; the settings screen (title, grouped
+sections, segmented System · Light · Dark theme picker rendered with the real
+S12 palette values from GolemThemeTokens.kt); the preview-strip Reading entry
+carried forward. This resolves OB-064-1: day-one Settings renders exactly one
+section — Appearance. The dimmed "map preview" rows in the prototype are
+illustration only and are never rendered by the shipping app (D68).
+
+## Reasoning
+The D98 principle stands — screenshots at G4 compare against the contract; the
+contract artifact needed to grow to cover the surface S13 builds. Painting the
+prototype with the real token values keeps contract and build from drifting.
+
+## Alternatives considered
+Keeping v0.2.0 and specifying the settings screen in prose only (rejected: the
+operator approves what he can see; prose invited exactly the drift D98 exists
+to prevent).
+
+## Consequences
+G4's visual comparison target is v0.3.0. The segmented restyle of
+ThemeChoicePicker and the launcher icon join S13 scope as riders.
+
+# Decision D104 — Settings Map is a plain-Kotlin code registry
+- Date: 2026-07-12  ·  Status: locked  ·  Maps to phase: P2 (S13)
+- Operator-delegated? no — operator approved component B on 2026-07-12
+
+## Context
+F-064 R3 requires the settings shell to read a declared map so future settings
+register rather than modify the shell. OB-064-2 left the map's home open:
+doc-of-record or code. Grounding found no Settings Map exists anywhere — the
+spec's Appendix A is the open-boundary ledger.
+
+## Decision
+The Settings Map is a plain-Kotlin registry object in the app: each entry
+declares label, group, owning feature, and how to tell the feature is built.
+The shell renders exactly what the registry yields. This resolves OB-064-2.
+
+## Reasoning
+A code registry is the single source of truth (a doc mirror can silently
+drift), and its yield/absence logic runs as plain JVM unit tests — the only
+automated rig this repo has — keeping F-064's promised High-confidence tests
+High. S14–S16 each become a one-entry registration.
+
+## Alternatives considered
+Markdown doc-of-record mirrored by hand in code (rejected: unenforced
+agreement between doc and code is the D98-class gap S12 just spent effort
+repairing).
+
+## Consequences
+S13 acceptance requires registry tests proving built entries render and
+unbuilt entries are absent, plus a seam test that a new in-test entry surfaces
+with zero shell changes.

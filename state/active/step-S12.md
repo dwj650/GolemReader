@@ -1,7 +1,7 @@
 ---
 id: S12
 tier: state
-status: implemented
+status: done
 updated: 2026-07-08
 phase: P2
 features: [F-065]
@@ -161,3 +161,9 @@ JDK 21).
 Before any multi-command paste on p1: run `git branch --show-current`, read the
 output, and stop at the first failed command. Repo path on p1 is
 `~/AndroidStudioProjects/Golem`.
+
+## Closeout (2026-07-12)
+T-065-R2 guided look-check passed by operator on-device 2026-07-08 (both themes,
+both screens; screenshots at `archive/S12-theme-foundation/`). Branch
+`s12-theme-foundation` fast-forward merged to main at commit 1a08e91. Step done;
+D-ceiling at close: D101.
