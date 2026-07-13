@@ -824,3 +824,88 @@ repairing).
 S13 acceptance requires registry tests proving built entries render and
 unbuilt entries are absent, plus a seam test that a new in-test entry surfaces
 with zero shell changes.
+
+# Decision D105 — High-contrast target is WCAG AAA (7:1 text; 3:1 large-text/UI)
+- Date: 2026-07-13  ·  Status: locked  ·  Maps to phase: P2 (S14)
+- Operator-delegated? no — operator approved component A on 2026-07-13
+
+## Context
+OB-066-1 left the HC palette's ratio target open: WCAG AA (4.5:1) vs AAA
+(7:1). The base themes already meet AA, tested since S12.
+
+## Decision
+The high-contrast token sets target AAA: ≥ 7.0 for normal text pairs
+(textPrimary and textSecondary vs background), ≥ 3.0 for large-text/UI pairs
+(accent-as-control, highlight). Base themes keep their existing ≥ 4.5 floor.
+Resolves OB-066-1.
+
+## Reasoning
+An HC mode that only meets the bar the base theme already meets does nothing;
+AAA is the point of the switch. Cost is palette authoring, not architecture —
+the central test enforces it either way.
+
+## Alternatives considered
+AA target (rejected: indistinguishable from base in guarantee terms).
+
+## Consequences
+The F-066 central harness (D69) asserts these numbers; S15's scaling
+composition and G4's legibility sweep inherit them.
+
+# Decision D106 — High contrast is two pure-data value-sets; the resolver gains an HC dimension
+- Date: 2026-07-13  ·  Status: locked  ·  Maps to phase: P2 (S14)
+- Operator-delegated? no — operator approved component B on 2026-07-13
+
+## Context
+F-066 R1 defines HC as a token variant of the F-065 palette. Two shapes were
+possible: explicit HC value-sets, or a programmatic transform that derives HC
+from any theme at runtime.
+
+## Decision
+Two explicit pure-data value-sets — hcDark and hcLight — join the existing
+pair in GolemThemeValueSets. resolveThemeValueSet() gains a highContrast
+parameter mapping (choice × systemDark × HC) to one of four sets. No color
+math at runtime.
+
+## Reasoning
+Themes-as-pure-data is the F-065/F-060 seam S12 proved by test; a transform
+reintroduces logic into what is deliberately data, and its output can't be
+palette-authored to hit D105 precisely. Four value-sets is the honest size of
+the space.
+
+## Alternatives considered
+Programmatic HC transform (rejected: violates the pure-data seam, makes the
+AAA target emergent rather than authored).
+
+## Consequences
+The token completeness test extends to four sets; adding future themes means
+authoring their HC counterpart too (recorded as the known cost of this shape).
+
+# Decision D107 — HC preference is a second key-value row in theme_settings; no schema change
+- Date: 2026-07-13  ·  Status: locked  ·  Maps to phase: P2 (S14)
+- Operator-delegated? no — operator approved component C on 2026-07-13
+
+## Context
+S14 grounding (IMP-003) found S12 shaped theme_settings as a key-value table
+(a `key` primary key, the theme stored under "theme_choice"). The expected
+Room v4→v5 migration for a new preference is therefore unnecessary.
+
+## Decision
+The high-contrast on/off preference is stored as a second row
+(key = "high_contrast") in the existing theme_settings table, reusing the
+entity and DAO. No schema version bump; the D31 harness is not triggered. The
+value column's `choice` name is a recorded wart; renaming it would force the
+very migration this decision avoids, so it stays.
+
+## Reasoning
+Zero-migration is strictly less risk under the precious-data constraint (D31),
+and the KV shape was built for exactly this. Writes follow the S13 rule:
+suspend, IO dispatcher, proven by test.
+
+## Alternatives considered
+New column with v4→v5 migration (rejected: cost and risk for no functional
+gain); separate entity/table (rejected: same, heavier).
+
+## Consequences
+Future small preferences may reuse the KV table the same way; anything
+structurally richer than a keyed string still gets a real schema change under
+D31.

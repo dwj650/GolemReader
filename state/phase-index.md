@@ -2,7 +2,7 @@
 id: PHASE-INDEX
 tier: state
 status: active
-updated: 2026-07-12
+updated: 2026-07-13
 if-incomplete: "Return to current-state.md."
 ---
 # Phase index
@@ -44,8 +44,8 @@ IMP-004 (accessibility scoped in at next G1 — satisfied by P2's existence).*
 | Step | Delivers | Feature(s) |
 |---|---|---|
 | S12 — done | Theme foundation: design tokens, light + dark themes, persisted choice, live switch, no-hardcode guard (closeout: T-065-R2 passed by operator 2026-07-08; merged at 1a08e91) | F-065 |
-| **S13 — active** | Settings shell (thin) + navigation topology (D102) + theme picker lands in its home; visual contract now v0.3.0 (D103); Settings Map registry (D104) | F-064 |
-| S14 | High contrast: variant token set + toggle + central contrast test | F-066 |
+| S13 — done | Settings shell (thin) + navigation topology (D102) + theme picker in its home; visual contract v0.3.0 (D103); Settings Map registry (D104) (closeout: screenshots approved by operator 2026-07-13; merged at e1fe9dd) | F-064 |
+| **S14 — active** | High contrast: hcDark + hcLight value-sets (D106), AAA target (D105), KV-row preference (D107), toggle registered via D104, central contrast test | F-066 |
 | S15 | Text scaling: OS + in-app combined multiplier, reflow-not-clip | F-068 |
 | S16 | Reduced motion: contract + toggle + non-motion equivalents (highlight, starvation) | F-067 |
 | S17 | Keyboard navigation: reachability, focus order, visible focus | F-069 |
