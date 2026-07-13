@@ -3,6 +3,7 @@ package com.golemreader.ui.reading
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +12,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -54,6 +56,7 @@ fun ReadingViewScreen(
     bookTitle: String,
     sentences: List<SentenceRecord>,
     highlightEmitter: HighlightStateEmitter,
+    onBack: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
     pollingIntervalMillis: Long = GolemThemeValueSets.dark.motion.pollingIntervalMillis,
 ) {
@@ -83,6 +86,16 @@ fun ReadingViewScreen(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(tokens.spacing.md),
     ) {
+        if (onBack != null) {
+            Row(modifier = Modifier.fillMaxWidth()) {
+                TextButton(
+                    onClick = onBack,
+                    modifier = Modifier.testTag("reading-back"),
+                ) {
+                    Text("Back", style = tokens.typography.control)
+                }
+            }
+        }
         Text(
             text = bookTitle,
             style = tokens.typography.screenTitle,

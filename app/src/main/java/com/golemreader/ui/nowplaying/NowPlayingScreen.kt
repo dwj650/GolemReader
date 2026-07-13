@@ -1,5 +1,7 @@
 package com.golemreader.ui.nowplaying
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,11 +22,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.foundation.shape.RoundedCornerShape
 import com.golemreader.highlight.HighlightState
 import com.golemreader.highlight.HighlightStateEmitter
 import com.golemreader.playback.StarvationState
 import com.golemreader.theme.GolemTheme
 import com.golemreader.theme.GolemThemeValueSets
+import com.golemreader.text.SentenceRecord
 import com.golemreader.transport.TransportCommands
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -55,6 +59,8 @@ fun NowPlayingScreen(
     highlightEmitter: HighlightStateEmitter,
     starvationState: StarvationState,
     controls: NowPlayingTransportControls,
+    sentences: List<SentenceRecord>,
+    onOpenReading: () -> Unit,
     modifier: Modifier = Modifier,
     pollingIntervalMillis: Long = GolemThemeValueSets.dark.motion.pollingIntervalMillis,
 ) {
@@ -92,9 +98,43 @@ fun NowPlayingScreen(
             modifier = Modifier.testTag("now-playing-position"),
         )
         BufferingIndicator(isBuffering = isBuffering)
+        ReadingPreviewStrip(
+            text = previewSentenceText(sentences, highlightState) ?: "Reading position pending",
+            onOpenReading = onOpenReading,
+        )
         TransportButtons(controls)
-        ReservedSlot(testTag = "sync-preview-slot")
         ReservedSlot(testTag = "action-row-slot")
+    }
+}
+
+@Composable
+private fun ReadingPreviewStrip(
+    text: String,
+    onOpenReading: () -> Unit,
+) {
+    val tokens = GolemTheme.tokens
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                color = tokens.colors.surface,
+                shape = RoundedCornerShape(tokens.shapes.panel),
+            )
+            .clickable(onClick = onOpenReading)
+            .padding(tokens.spacing.md)
+            .testTag("reading-preview"),
+        verticalArrangement = Arrangement.spacedBy(tokens.spacing.sm),
+    ) {
+        Text(
+            text = text,
+            style = tokens.typography.reading,
+            color = tokens.colors.textPrimary,
+        )
+        Text(
+            text = "Tap to open reader",
+            style = tokens.typography.label,
+            color = tokens.colors.textSecondary,
+        )
     }
 }
 
@@ -102,6 +142,14 @@ fun positionText(highlightState: HighlightState?): String =
     highlightState?.sentenceIndex?.let { index ->
         "Chapter ${index.chapterOrdinal}, sentence ${index.sentenceOrdinal + 1}"
     } ?: "Position pending"
+
+fun previewSentenceText(
+    sentences: List<SentenceRecord>,
+    highlightState: HighlightState?,
+): String? =
+    highlightState?.sentenceIndex?.let { currentIndex ->
+        sentences.firstOrNull { it.index == currentIndex }?.display
+    }
 
 @Composable
 private fun TransportButtons(controls: NowPlayingTransportControls) {

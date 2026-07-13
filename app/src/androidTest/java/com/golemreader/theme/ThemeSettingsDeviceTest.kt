@@ -7,6 +7,7 @@ import com.golemreader.storage.GolemStorageSubstrate
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
+import kotlinx.coroutines.runBlocking
 
 @RunWith(AndroidJUnit4::class)
 class ThemeSettingsDeviceTest {
@@ -20,7 +21,7 @@ class ThemeSettingsDeviceTest {
         storage.preciousDatabase.useDatabase { database ->
             val repository = ThemeSettingsRepository(database.themeSettingsDao())
 
-            repository.setChoice(ThemeChoice.Dark)
+            runBlocking { repository.setChoice(ThemeChoice.Dark) }
 
             assertEquals(ThemeChoice.Dark, repository.currentChoice())
         }

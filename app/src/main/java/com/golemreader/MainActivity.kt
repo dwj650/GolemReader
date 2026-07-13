@@ -5,11 +5,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import com.golemreader.bootstrap.BookBootstrap
 import com.golemreader.storage.GolemStorageSubstrate
 import com.golemreader.theme.ThemeChoice
 import com.golemreader.theme.ThemeSettingsRepository
 import com.golemreader.ui.GolemReaderApp
+import kotlinx.coroutines.launch
 
 object AppInfo {
     const val name = "Golem Reader"
@@ -25,12 +27,16 @@ class MainActivity : ComponentActivity() {
         setContent {
             val themeChoice by themeRepository.choiceFlow()
                 .collectAsState(initial = ThemeChoice.FollowSystem)
+            val themeWriteScope = rememberCoroutineScope()
             GolemReaderApp(
                 bookTitle = bootstrap.bookTitle,
                 sentences = bootstrap.sentences,
                 highlightEmitter = bootstrap.highlightEmitter,
                 starvationState = bootstrap.starvationState,
                 themeChoice = themeChoice,
+                onThemeChoiceSelected = { choice ->
+                    themeWriteScope.launch { themeRepository.setChoice(choice) }
+                },
                 transportControls = bootstrap.transportControls,
             )
         }

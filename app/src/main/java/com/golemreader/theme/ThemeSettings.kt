@@ -9,6 +9,9 @@ import androidx.room.PrimaryKey
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 enum class ThemeChoice(val storedValue: String) {
     FollowSystem("follow_system"),
@@ -47,6 +50,7 @@ interface ThemeSettingsDao {
 
 class ThemeSettingsRepository(
     private val dao: ThemeSettingsDao,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
     fun currentChoice(): ThemeChoice =
         ThemeChoice.fromStoredValue(dao.get()?.choice)
@@ -54,7 +58,7 @@ class ThemeSettingsRepository(
     fun choiceFlow(): Flow<ThemeChoice> =
         dao.observe().map { entity -> ThemeChoice.fromStoredValue(entity?.choice) }
 
-    fun setChoice(choice: ThemeChoice) {
+    suspend fun setChoice(choice: ThemeChoice) = withContext(ioDispatcher) {
         dao.upsert(ThemeSettingEntity(choice = choice.storedValue))
     }
 }

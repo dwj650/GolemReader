@@ -2,7 +2,7 @@
 id: TESTING
 tier: ledger
 status: active
-updated: 2026-07-01
+updated: 2026-07-13
 if-incomplete: "Coverage policy is reference/coverage-target.md."
 ---
 # Testing register
@@ -17,6 +17,36 @@ if-incomplete: "Coverage policy is reference/coverage-target.md."
 - Long-run register-drift listen (D26); batching keep/kill A/B (D12/OB-001-1); edge-trim floor tuning (D27); Kokoro sustained-load/thermal; abort cleanliness; skip-to-sound gap; audio-focus behaviors; background survival; Room round-trip; persisted-URI survival.
 
 > Per-step tests (T-###-B#) are added to the step's req doc and recorded here as they're written.
+
+## P2 step tests
+- **T-064-P2 / T-064-B1 / T-064-B2 / F-064 R3** — `SettingsMapTest` verifies the
+  production menu yields only built Theme, genuinely unbuilt F-005/F-006/F-007 parents
+  are absent rather than disabled, and a fake registered entry groups correctly without
+  shell changes. RED failed on the missing registry; GREEN passed in the targeted and
+  full JVM suites on 2026-07-13. Confidence: high.
+- **S13 route topology** — `GolemNavigationStateTest` verifies the bottom bar exposes
+  exactly Now Playing and Settings, Library is not a destination, selecting a tab closes
+  Reading, and explicit close/system back return Reading to Now Playing. RED failed on
+  the missing route API; GREEN passed on 2026-07-13. Confidence: high.
+- **S13 preview strip** — `NowPlayingScreenTest` verifies the simplified strip resolves
+  the display text for the current shared highlight index. The device navigation test
+  exercised preview tap → Reading → explicit Back on SM-S918U. Confidence: high for
+  model logic, medium for the device path.
+- **S13 off-main theme write** — `ThemeSettingsRepositoryTest` injects a dedicated
+  dispatcher and proves `setChoice()` executes the DAO write on that thread rather than
+  its caller; persistence coverage remains green. Confidence: high.
+- **T-064-B3 / S13 builds** — `./gradlew testDebugUnitTest`, `./gradlew assembleDebug`,
+  `./gradlew assembleDebugAndroidTest`, `bash guards/no-hardcode-check.sh`, and
+  `git diff --check` passed during implementation on 2026-07-13. Confidence: high;
+  a fresh final gate run remains due after device closeout and record reconciliation.
+- **T-064-R1** — SM-S918U installed the final rebuilt app/test APKs. The navigation flow
+  and live Dark selection methods each passed independently (`OK (1 test)`), verifying
+  exactly two live bottom tabs, Settings with exactly Appearance → Theme, absent Speed,
+  preview → Reading → Back, and selected-state change without crash/ANR. After
+  force-stop/relaunch, Android reported Dark `checked="true"`. The final headphone/gear
+  bottom-nav icons and adaptive launcher icon rendered. Settings Dark/Light, Now Playing,
+  and launcher screenshots are archived in `archive/S13-settings-host/`. The operator
+  reviewed and approved the four-image evidence set on 2026-07-13. Confidence: medium.
 
 ## P1 step tests
 - **T-S1-smoke** — JVM smoke test: `./gradlew testDebugUnitTest` passed on 2026-06-30.

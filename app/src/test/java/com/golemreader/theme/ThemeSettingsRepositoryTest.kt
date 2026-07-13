@@ -3,7 +3,14 @@ package com.golemreader.theme
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.golemreader.storage.PreciousDatabase
+import java.util.concurrent.Executors
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -23,7 +30,7 @@ class ThemeSettingsRepositoryTest {
     }
 
     @Test
-    fun themeChoicePersistsUpdates() {
+    fun themeChoicePersistsUpdates() = runBlocking {
         val database = openDatabase()
         try {
             val repository = ThemeSettingsRepository(database.themeSettingsDao())
@@ -36,6 +43,22 @@ class ThemeSettingsRepositoryTest {
         }
     }
 
+    @Test
+    fun setChoiceExecutesDaoWriteOffTheCallingThread() = runBlocking {
+        val callingThread = Thread.currentThread().name
+        val dao = RecordingThemeSettingsDao()
+        Executors.newSingleThreadExecutor { runnable ->
+            Thread(runnable, "theme-settings-io")
+        }.asCoroutineDispatcher().use { ioDispatcher ->
+            val repository = ThemeSettingsRepository(dao, ioDispatcher)
+
+            repository.setChoice(ThemeChoice.Dark)
+
+            assertTrue(dao.writeThread?.startsWith("theme-settings-io") == true)
+            assertNotEquals(callingThread, dao.writeThread)
+        }
+    }
+
     private fun openDatabase(): PreciousDatabase =
         Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
@@ -43,4 +66,18 @@ class ThemeSettingsRepositoryTest {
         )
             .allowMainThreadQueries()
             .build()
+
+    private class RecordingThemeSettingsDao : ThemeSettingsDao {
+        var entity: ThemeSettingEntity? = null
+        var writeThread: String? = null
+
+        override fun get(key: String): ThemeSettingEntity? = entity
+
+        override fun observe(key: String): Flow<ThemeSettingEntity?> = flowOf(entity)
+
+        override fun upsert(entity: ThemeSettingEntity) {
+            this.entity = entity
+            writeThread = Thread.currentThread().name
+        }
+    }
 }

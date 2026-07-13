@@ -1,12 +1,12 @@
 ---
 id: S13
 tier: state
-status: approved
-updated: 2026-07-12
+status: done
+updated: 2026-07-13
 phase: P2
 features: [F-064, F-065]
 cross-refs: [D51, D52, D68, D93, D98, D100, D101, D102, D103, D104, PR-7, IMP-001, IMP-003]
-current-rung: Change
+current-rung: Closeout
 if-incomplete: "Return to state/current-state.md."
 ---
 # Step S13 — Settings Host, thin (F-064) + navigation topology + theme picker home
@@ -137,3 +137,44 @@ Before any multi-command paste on p1: run `git branch --show-current`, read the
 output, and stop at the first failed command. Repo path on p1 is
 `~/AndroidStudioProjects/Golem`. On T14, `cp` is aliased to `cp -i`: run `cp`
 lines one at a time or prefix with `\cp`.
+
+## Implementation record (2026-07-13)
+- Replaced the S9 top screen-switch with a plain-Kotlin route state, a two-item
+  Now Playing / Settings bottom bar, and a Reading overlay that returns explicitly
+  to Now Playing.
+- Added the plain-Kotlin Settings Map and generic grouped Settings shell. The production
+  map declares Theme plus genuinely unbuilt F-005/F-006/F-007 entries; filtering renders
+  only the built Appearance → Theme entry.
+- Moved the feature-owned theme picker into Settings and restyled it as the approved
+  System · Light · Dark segmented control with selected-state semantics.
+- Made `ThemeSettingsRepository.setChoice()` suspend and dispatched its DAO write through
+  an injectable IO dispatcher; `MainActivity` calls it from a Compose coroutine.
+- Replaced the reserved sync-preview slot with a tappable current-sentence strip and
+  added an explicit Reading Back control.
+- Converted `foundation/assets/golem-reader-icon.png` into legacy and adaptive launcher
+  resources for mdpi through xxxhdpi, with density-specific foreground layers.
+
+## Verification record (2026-07-13)
+- Clean baseline: `./gradlew testDebugUnitTest` passed before changes.
+- TDD: the first targeted run failed on the deliberately missing navigation, Settings
+  Map, preview, and dispatcher APIs; after implementation, all 13 targeted tests passed.
+- Full JVM suite, `assembleDebug`, and `assembleDebugAndroidTest` passed before final
+  record reconciliation. The no-hardcode guard and `git diff --check` also passed.
+- SM-S918U: the rebuilt app/test APKs installed successfully. The S13 navigation device
+  test passed once while the device was unlocked (`OK (1 test)`), covering exactly two
+  bottom tabs, Appearance → Theme only, absent Speed, preview-to-Reading, and Back.
+- After the operator unlocked the phone, both S13 device methods passed independently
+  (`OK (1 test)` each): navigation/Settings/Reading flow and live Dark selection.
+  Force-stop/relaunch preserved Dark; Android's hierarchy reported the Dark radio segment
+  `checked="true"` after restart. The final APK was reinstalled after the vector-icon
+  refinement and visually confirmed with headphone/gear bottom-nav icons.
+- Settings in Dark and Light, Now Playing, and the Samsung launcher result showing the
+  adaptive Golem Reader icon are archived under `archive/S13-settings-host/`. Objective
+  device checks pass at medium confidence. The operator reviewed and approved all four
+  archived screenshots on 2026-07-13, completing the guided subjective look-check.
+
+## Closeout (2026-07-13)
+The operator approved the Dark Settings, Light Settings, Now Playing, and launcher-icon
+evidence. All S13 acceptance criteria are satisfied at the declared confidence levels;
+recorded deferrals remain owned by S14–S17, F-019, F-073, and D51/D52. Step done;
+D-ceiling at close: D104. Next step: S14 — High contrast (F-066), not yet started.
