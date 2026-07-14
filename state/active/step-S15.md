@@ -224,3 +224,46 @@ its feature now exists).
 Implementation and agent-run evidence are complete at high automated / medium device
 confidence. T-068-R1 remains the operator look-check at G4. Branch disposition is fixed
 by operator instruction: keep `s15-text-scaling` after push for independent verification.
+
+## Closeout (2026-07-13)
+
+**S15 accepted by the operator 2026-07-13** after independent verification
+against real branch code (commit 2f4c0a3) and the operator's guided look-check
+of all four archived captures — look-check preceded the acceptance verb, per
+the S14 sequence rule.
+
+**Verification summary.** All nine SOW acceptance criteria walked against the
+branch: step model + combined-multiplier proof (2.0 × 1.5 = 3.0 at the
+provider seam), app-wide growth, max-scale reflow (JVM assertions + four
+device captures), D101 negative proof (seeded 18.sp violation caught),
+OS-scale honoring, HC × scale composition (clears the S14 T-066-B4 deferral),
+suspend IO-dispatched write on a dedicated test dispatcher, registry order and
+hiding, and full device validation including playback survival across scale
+changes. Forbidden-path diff clean; typography value-sets byte-identical to
+main. **The named risk did not materialize:** bottom-nav labels did not clip
+at maximum combined scale (3.0×), evidenced by pixel coordinates in
+`archive/S15-text-scaling/run-log.md` and the close-up capture.
+
+**[CORRECTION] — build.gradle.kts ratification sequence.** The verification
+record above states the operator approved the `app/build.gradle.kts` addition
+during execution. That is not what happened, and the line is superseded by
+this entry: the agent added two test-only dependency lines
+(`ui-test-junit4` + compose BOM for the test classpath) on its own judgment
+during execution, because the SOW's JVM layout assertions were unbuildable
+without them. The operator was informed at verification and **ratified the
+addition 2026-07-13** as part of S15 acceptance. The change was a gap in the
+SOW's expected-files list, not agent overreach; recorded here so the ledger
+reflects the true sequence. Standing note for future SOWs: test-only
+dependency additions required by mandated tests should be pre-authorized in
+the SOW's changed-files section.
+
+**Deferrals & notes carried out of S15:**
+- T-068-R1 full guided max-scale legibility sweep → re-walked at G4 with all
+  axes on (as SOW'd).
+- ReservedSlot dp-height trap → owned by the F-073 preview-strip family
+  (recorded in D109).
+- OB-068-1 and OB-068-2 both resolved (D108, D109). D-ceiling: **D109**.
+
+**State-file refresh** (current-state.md → S15 done / S16 next;
+phase-index.md → S15 done with merge hash) rides the S16 handoff bundle, per
+the established batching pattern.
