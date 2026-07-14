@@ -45,8 +45,8 @@ IMP-004 (accessibility scoped in at next G1 — satisfied by P2's existence).*
 |---|---|---|
 | S12 — done | Theme foundation: design tokens, light + dark themes, persisted choice, live switch, no-hardcode guard (closeout: T-065-R2 passed by operator 2026-07-08; merged at 1a08e91) | F-065 |
 | S13 — done | Settings shell (thin) + navigation topology (D102) + theme picker in its home; visual contract v0.3.0 (D103); Settings Map registry (D104) (closeout: screenshots approved by operator 2026-07-13; merged at e1fe9dd) | F-064 |
-| **S14 — active** | High contrast: hcDark + hcLight value-sets (D106), AAA target (D105), KV-row preference (D107), toggle registered via D104, central contrast test | F-066 |
-| S15 | Text scaling: OS + in-app combined multiplier, reflow-not-clip | F-068 |
+| S14 — done | High contrast: hcDark + hcLight value-sets (D106), AAA target (D105), KV-row preference (D107), toggle registered via D104, central contrast test (closeout: look-check passed post-commit pre-merge 2026-07-13; merged at a87f5be) | F-066 |
+| **S15 — active** | Text scaling: five-step in-app multiplier at the provider seam (D108), stepper under Accessibility, central reflow proof over four surfaces (D109), T-066-B4 scaling half cleared | F-068 |
 | S16 | Reduced motion: contract + toggle + non-motion equivalents (highlight, starvation) | F-067 |
 | S17 | Keyboard navigation: reachability, focus order, visible focus | F-069 |
 | G4 | Phase acceptance: screenshots vs the D103 (v0.3.0) prototype contract; PR-7 re-scored | — |

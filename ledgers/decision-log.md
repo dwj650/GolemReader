@@ -2,7 +2,7 @@
 id: DECISION-LOG
 tier: ledger
 status: active
-updated: 2026-07-01
+updated: 2026-07-13
 if-incomplete: "The locked register is foundation/design-charter.md; full text in foundation/design-spec.md."
 ---
 # Decision log (all decisions, over time)
@@ -909,3 +909,82 @@ gain); separate entity/table (rejected: same, heavier).
 Future small preferences may reuse the KV table the same way; anything
 structurally richer than a keyed string still gets a real schema change under
 D31.
+
+# Decision D108 — Text-scale model: provider-level density composition; five steps; stepper control
+- Date: 2026-07-13  ·  Status: locked  ·  Maps to phase: P2 (S15)
+- Operator-delegated? no — Component A operator-approved individually 2026-07-13;
+  control form (stepper) approved by confirmed informed sweep 2026-07-13
+
+## Context
+F-068 R1 requires text size = token size × OS font-scale × in-app control, with
+no literal font sizes (D69). S15 grounding (IMP-003) found every text size
+already sp and token-owned, and the D101 guard already forbidding size literals
+outside the theme package — so the OS half and the guard pre-exist; only the
+in-app multiplier and its control were open (OB-068-1).
+
+## Decision
+The in-app multiplier is applied once, in `GolemThemeProvider`, by overriding
+`LocalDensity` with `Density(density, fontScale = systemFontScale × inAppScale)`.
+Because the system fontScale already carries the OS setting, the multiplication
+is the combined multiplier, and because all text is sp, every screen scales with
+zero screen-code changes. The in-app setting is a five-step enum —
+0.85 / 1.0 / 1.15 / 1.3 / 1.5 — default 1.0, unknown stored values resolving to
+1.0. The control is a stepper (A− / current % / A+) with ends disabled,
+registered under Settings → Accessibility via one D104 entry. Resolves OB-068-1.
+
+## Reasoning
+One provider-level seam mirrors the D106 value-set-swap pattern exactly: central,
+tested, zero-touch for screens, and a screen doing its own scaling stays a halt
+condition (D69). Discrete steps are individually testable and keep the first
+non-toggle control simple; 1.5× in-app stacked on the S23's maximum OS scale
+gives a worst case the reflow proof can actually pin down.
+
+## Alternatives considered
+Scaling the typography value-sets at resolve time (rejected: makes typography a
+computed value instead of pure data, more surface for error, same result); a
+free-form slider (rejected: untestable continuum, more UI complexity for no
+accessibility gain).
+
+## Consequences
+Every current and future sp-based text surface inherits scaling automatically.
+The provider seam is where any future scale-related axis composes. The reflow
+proof, not the multiplier, carries the acceptance weight (D109).
+
+# Decision D109 — Reflow proof surfaces: Settings, Now Playing, Reading View, bottom nav
+- Date: 2026-07-13  ·  Status: locked  ·  Maps to phase: P2 (S15)
+- Operator-delegated? no — approved by confirmed informed sweep 2026-07-13
+
+## Context
+F-068 R3/R5 make reflow-not-clip the real test, with surface priority left open
+(OB-068-2). Grounding found zero truncation anywhere in the codebase, and two
+named risks: the framework-fixed Material3 NavigationBar height (tab labels are
+the most likely clip at max scale) and the two dp-fixed ReservedSlot boxes on
+Now Playing (currently textless).
+
+## Decision
+The central reflow proof covers four surfaces: Settings, Now Playing, Reading
+View, and the bottom navigation bar — JVM layout assertions at max in-app step ×
+max-OS-scale density where assertable, plus archived device screenshots at true
+maximum combined scale. Bottom nav labels get explicit photographed evidence; if
+the framework clips them, that returns as a design question with the screenshot
+in hand — never silently accepted or improvised around. The ReservedSlot
+dp-height trap is recorded with an owner (the F-073 preview-strip family, which
+first puts text there). T-066-B4's scaling half (HC × scaling composition,
+deferred from S14) is folded into this same harness. Resolves OB-068-2.
+
+## Reasoning
+These four are every text surface that exists today; "each surface checked at
+max scale" (R5) is currently satisfiable in full, so no priority ordering is
+needed — the priority question dissolves. Naming the bottom nav risk before
+Codex builds prevents the two failure modes IMP-003 exists to catch: silent
+acceptance and unauthorized improvisation.
+
+## Alternatives considered
+Reading View only (rejected: R2/R5 say app-wide, every surface); deferring the
+bottom nav check to G4 (rejected: it is the named highest-risk surface — evidence
+belongs in the step that owns the axis).
+
+## Consequences
+Future screens must join the reflow harness when built (the deferred-to
+contract, D69). S14's T-066-B4 deferral is cleared by this step. The G4 phase
+gate re-walks the guided max-scale sweep with all axes on (T-068-R1).

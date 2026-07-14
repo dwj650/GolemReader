@@ -7,26 +7,27 @@ if-incomplete: "You are at the source of truth. If something isn't here, it isn'
 ---
 # Current state — THE source of truth for "now"
 
-- **Active version:** V1 (in progress; V0 foundation complete, archived at `archive/V0-P1/`)   **Phase:** P2 — Accessible Shell (entered at G1)   **Step:** S14 — High contrast (done; S15 next, not started)   **current-rung:** Closeout
-- **Last committed:** S14 completion on branch `s14-high-contrast` (this commit); main remains @ ac3c6d8 (S14 handoff)
+- **Active version:** V1 (in progress; V0 foundation complete, archived at `archive/V0-P1/`)   **Phase:** P2 — Accessible Shell (entered at G1)   **Step:** S15 — Text scaling (active; SOW approved, handoff to agent pending)   **current-rung:** Orient
+- **Last committed:** S15 handoff bundle on `s15-handoff` → merged ff-only to main; before that, S14 merged at a87f5be
 - **Coverage target:** see reference/coverage-target.md   ·   **Test posture (active step):** automated (JVM) + agent-run device + guided-manual look-check at closeout
 
 ## What's happening right now
-**S13 is done and merged at e1fe9dd.** Bottom navigation (Now Playing ·
-Settings), the Settings Map registry, the settings shell with the theme picker
-in its Appearance home, the off-main-thread theme write, the tappable
-current-sentence Reading entry, and the adaptive launcher icon are all on main.
-Operator approved the four archived screenshots 2026-07-13; closeout recorded
-in `state/active/step-S13.md`.
+**S14 is done and merged at a87f5be.** High contrast is live: hcDark/hcLight
+value-sets at the D105 AAA ratios, the D106 resolver dimension, the D107
+key-value preference, the Accessibility settings section, and the D69 central
+contrast harness with its negative proof. Operator approved all four archived
+captures 2026-07-13; the actual look-check sequence is recorded in
+`state/active/step-S14.md`.
 
-**S14 is done on branch `s14-high-contrast`.** The build now has
-explicit `hcDark` and `hcLight` token value-sets at the D105 ratios, the D106 resolver
-dimension, a precious `high_contrast` key-value row with no D31 schema change (D107),
-the F-066 Accessibility registry entry and labeled theme-owned switch, and the D69
-central contrast harness. Full JVM tests, debug build, no-hardcode guard, and S23
-objective checks passed; Light + HC survived force-stop/relaunch and playback remained
-active through off/on toggles. The operator approved all four archived Dark/Light
-Settings and Reading captures on 2026-07-13. D-ceiling: **D107**.
+**S15 — Text scaling (F-068) is active.** SOW v1.0.0 approved by the operator
+2026-07-13 (`state/active/step-S15.md`): a five-step in-app multiplier (D108)
+applied once at the theme provider via density composition — zero screen-code
+changes — a stepper control registered under Accessibility, a third
+`theme_settings` KV row (D107 applied, no migration), and the central
+scaling/reflow harness over four surfaces (D109), folding in the T-066-B4
+scaling half inherited from S14. Grounding found the OS half and the no-hardcode
+guard already exist; the named risk is the framework-fixed bottom nav height at
+max scale (explicit device evidence required). D-ceiling: **D109**.
 
 ## Open items needing attention
 - T-057-C1 and T-057-C2 remain owed agent-run measurements; T-057-C3 remains a contributor
@@ -41,12 +42,19 @@ Settings and Reading captures on 2026-07-13. D-ceiling: **D107**.
 - Full Android MediaSessionService, lock-screen/notification, audio-focus, background
   survival, and resume-after-kill routing remain deferred after S8 per D92.
 - Secret scan remains intentionally skipped until configured (KI-S1-001 / D78) —
-  re-confirmed at S13 verification; not a defect.
+  not a defect.
 - S13 recorded deferrals: T-064-B4 → S17; T-064-R2 → G4; swipe-left → D51/D52;
   full preview strip → F-073; Library tab → F-019 phase.
-- S14 recorded deferrals: T-066-B4 scaling half → S15; T-066-R1 full sweep →
-  closeout look-check, re-walked at G4.
+- S14 recorded deferrals: T-066-B4 scaling half → **owned by S15's harness (in
+  the approved SOW)**; T-066-R1 full sweep → re-walked at G4.
+- S15 recorded notes: ReservedSlot dp-height trap → owned by the F-073
+  preview-strip family; bottom nav max-scale clipping, if evidenced on device,
+  returns as a design question with the screenshot in hand.
+- p1 likely retains stale local branches — prune (`git fetch --prune` +
+  `git branch -vv` review) next time the operator is on p1.
 
 ## Next action
-S15 — Text scaling (F-068) is next and not started. Return to the Design Zone to ground
-and approve its SOW before any S15 code changes.
+Hand `state/active/step-S15.md` to the coding agent on branch
+`s15-text-scaling`. Verification is against real branch code per the SOW's
+acceptance criteria; look-check precedes the commit-approval verb (S14 sequence
+lesson).
