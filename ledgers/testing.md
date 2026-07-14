@@ -19,6 +19,19 @@ if-incomplete: "Coverage policy is reference/coverage-target.md."
 > Per-step tests (T-###-B#) are added to the step's req doc and recorded here as they're written.
 
 ## P2 step tests
+- **S17 / T-069-B1/B2/B4 / T-064-B4** — the Task-1 Robolectric Tab spike did
+  not move focus, invoking the pre-authorized device fallback. The central
+  `KeyboardNavigationDeviceTest` then passed 4/4 on SM-S918U: all current controls
+  are reached in the D115 forward/backward order; Enter/Space match tap behavior;
+  preview → Reading places focus on Back; and one nav-tab transition places focus
+  on the new screen's first control. Confidence: high for real-device behavior.
+- **S17 / T-069-P1/B3/C1** — `GolemThemeTokensTest` proves all four `focusRing`
+  values resolve and both HC values meet 3:1 against background/surface/raised;
+  `FocusRingContractTest` proves the shared token-driven 3dp mechanism is used in
+  every control file and contains no animation API. Dark and hcDark focused-ring
+  screenshots are archived under `archive/S17-keyboard-nav/`. AC7 is tagged
+  N/A — not a T-001-C1 contributor. Confidence: high for automated contracts,
+  medium pending the operator look-check.
 - **T-064-P2 / T-064-B1 / T-064-B2 / F-064 R3** — `SettingsMapTest` verifies the
   production menu yields only built Theme, genuinely unbuilt F-005/F-006/F-007 parents
   are absent rather than disabled, and a fake registered entry groups correctly without

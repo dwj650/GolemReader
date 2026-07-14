@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 
@@ -31,9 +32,10 @@ fun ReducedMotionToggle(
         Switch(
             checked = enabled,
             onCheckedChange = onToggled,
-            modifier = Modifier.semantics {
-                contentDescription = "Reduce motion"
-            },
+            modifier = Modifier
+                .golemFocusRing()
+                .testTag("reduced-motion-toggle")
+                .semantics { contentDescription = "Reduce motion" },
         )
     }
 }

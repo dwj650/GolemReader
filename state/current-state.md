@@ -7,9 +7,9 @@ if-incomplete: "You are at the source of truth. If something isn't here, it isn'
 ---
 # Current state — THE source of truth for "now"
 
-- **Active version:** V1 (in progress; V0 foundation complete, archived at `archive/V0-P1/`)   **Phase:** P2 — Accessible Shell (entered at G1)   **Step:** S17 — SOW approved 2026-07-14; awaiting agent execution
+- **Active version:** V1 (in progress; V0 foundation complete, archived at `archive/V0-P1/`)   **Phase:** P2 — Accessible Shell (entered at G1)   **Step:** S17 — implementation candidate complete on `s17-keyboard-navigation`; operator closeout pending
 - **Last committed:** S16 merged to `main` at **b507c75** (ff-only, 2026-07-14); feature branch deleted per ritual
-- **Coverage target:** see reference/coverage-target.md   ·   **Test posture (active step):** automated (JVM, with pre-authorized device fallback for traversal tests pending the Task-1 Robolectric spike) + agent-run device + guided keyboard walkthrough at closeout
+- **Coverage target:** see reference/coverage-target.md   ·   **Test posture (active step):** automated JVM token/contracts + pre-authorized S23 fallback for traversal/activation (Task-1 spike failed) + guided keyboard walkthrough at closeout
 - **D-ceiling: D115**
 
 ## What's happening right now
@@ -22,15 +22,17 @@ glow seam with defaults reproducing the prior look. Operator look-check and live
 TalkBack check passed 2026-07-14 before the acceptance verb; the agent's
 pre-written acceptance records were corrected on-branch (candidate IMP-005).
 
-**S17 — Keyboard navigation (F-069) is active.** SOW v1.0.0 approved 2026-07-14
+**S17 — Keyboard navigation (F-069) has an implementation candidate.** SOW v1.0.2
 (`state/active/step-S17.md`), grounded against main @ b507c75. Scope: `focusRing`
 token across all four value-sets with 3:1 HC floor + one shared no-animation ring
 modifier applied to all seven interactive-control files (D114); declared
-traversal orders, content-first/nav-last, Tab/Shift-Tab contract (D115); central
+traversal orders, content-first/nav-last, Tab/Shift-Tab contract (D115); standard
+destination focus placement on the first D115 control (D116); central
 keyboard test over all four current surfaces, resolving OB-069-2 and absorbing
 T-064-B4 (D113); no stored preference (F-069 §7 — always-on, no fifth KV row, no
-D104 entry). Task 1 is the Robolectric Tab spike gating JVM-vs-device test
-placement; the device fallback is pre-authorized. T-069-B5 (onboarding) deferred
+D104 entry). The Robolectric Tab spike failed to move focus, so the pre-authorized
+S23 fallback ran and passed 4/4; JVM token/ring contracts pass. Dark and hcDark
+evidence is archived under `archive/S17-keyboard-nav/`. T-069-B5 (onboarding) deferred
 to the F-070 phase with owner recorded. Operator has a Bluetooth keyboard; the
 closeout is a guided keyboard-only walkthrough (script in the SOW). Per D100,
 S17 is the last step before G4.
@@ -69,9 +71,8 @@ S17 is the last step before G4.
   (verified 2026-07-14: only `main` on remote).
 
 ## Next action
-Operator hands `state/active/step-S17.md` to the agent (branch
-`s17-keyboard-navigation` from b507c75). On the completion report: operator
-confirms the branch exists on origin (`git ls-remote --heads`), then independent
+On the agent completion report, operator confirms `s17-keyboard-navigation` exists
+on origin (`git ls-remote --heads`), then independent
 verification against real branch code — including the standard grep for premature
 operator-acceptance language — then the guided keyboard walkthrough, then the
 acceptance verb, then the merge ritual. **G4 phase acceptance follows in its own

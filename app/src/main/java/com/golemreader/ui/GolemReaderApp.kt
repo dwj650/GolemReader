@@ -7,11 +7,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import com.golemreader.AppInfo
 import com.golemreader.highlight.HighlightStateEmitter
 import com.golemreader.playback.StarvationState
@@ -55,6 +57,17 @@ fun GolemReaderApp(
     },
 ) {
     var navigation by remember { mutableStateOf(GolemNavigationState()) }
+    val readingFocusRequester = remember { FocusRequester() }
+    val nowPlayingFocusRequester = remember { FocusRequester() }
+    val settingsFocusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(navigation.destination) {
+        when (navigation.destination) {
+            GolemDestination.Reading -> readingFocusRequester.requestFocus()
+            GolemDestination.NowPlaying -> nowPlayingFocusRequester.requestFocus()
+            GolemDestination.Settings -> settingsFocusRequester.requestFocus()
+        }
+    }
 
     BackHandler(enabled = navigation.destination == GolemDestination.Reading) {
         navigation = navigation.onBack()
@@ -81,6 +94,7 @@ fun GolemReaderApp(
                             sentences = sentences,
                             highlightEmitter = highlightEmitter,
                             onBack = { navigation = navigation.closeReading() },
+                            firstControlFocusRequester = readingFocusRequester,
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(tokens.spacing.screenPadding),
@@ -92,6 +106,7 @@ fun GolemReaderApp(
                             controls = transportControls,
                             sentences = sentences,
                             onOpenReading = { navigation = navigation.openReading() },
+                            firstControlFocusRequester = nowPlayingFocusRequester,
                         )
                         GolemDestination.Settings -> SettingsScreen(
                             entries = SettingsMap.visibleEntries(),
@@ -100,6 +115,7 @@ fun GolemReaderApp(
                                     SettingId.Theme -> ThemeChoicePicker(
                                         selected = themeChoice,
                                         onSelected = onThemeChoiceSelected,
+                                        firstOptionFocusRequester = settingsFocusRequester,
                                     )
                                     SettingId.HighContrast -> HighContrastToggle(
                                         enabled = highContrast,

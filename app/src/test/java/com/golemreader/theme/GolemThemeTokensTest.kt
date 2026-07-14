@@ -44,6 +44,31 @@ class GolemThemeTokensTest {
     }
 
     @Test
+    fun focusRingIsAuthoredForEveryThemeAndMeetsHighContrastSurfaceFloor() {
+        val valueSets = listOf(
+            GolemThemeValueSets.dark,
+            GolemThemeValueSets.light,
+            GolemThemeValueSets.hcDark,
+            GolemThemeValueSets.hcLight,
+        )
+        valueSets.forEach { valueSet ->
+            assertNotEquals(Color.Unspecified, valueSet.colors.focusRing)
+        }
+        listOf(GolemThemeValueSets.hcDark, GolemThemeValueSets.hcLight).forEach { valueSet ->
+            listOf(
+                "background" to valueSet.colors.background,
+                "surface" to valueSet.colors.surface,
+                "raised surface" to valueSet.colors.surfaceRaised,
+            ).forEach { (name, surface) ->
+                assertTrue(
+                    "${'$'}{valueSet.name} focus ring against ${'$'}name",
+                    contrastRatio(valueSet.colors.focusRing, surface) >= 3.0,
+                )
+            }
+        }
+    }
+
+    @Test
     fun centralHighContrastContractRejectsAWeakPalette() {
         val weakPalette = GolemThemeValueSets.dark.copy(name = "deliberately-weak-hc")
 

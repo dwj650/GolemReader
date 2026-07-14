@@ -21,6 +21,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.testTag
 import androidx.compose.foundation.shape.RoundedCornerShape
 import com.golemreader.highlight.HighlightState
@@ -28,6 +30,7 @@ import com.golemreader.highlight.HighlightStateEmitter
 import com.golemreader.playback.StarvationState
 import com.golemreader.theme.GolemTheme
 import com.golemreader.theme.GolemThemeValueSets
+import com.golemreader.theme.golemFocusRing
 import com.golemreader.text.SentenceRecord
 import com.golemreader.transport.TransportCommands
 import kotlinx.coroutines.delay
@@ -61,6 +64,7 @@ fun NowPlayingScreen(
     controls: NowPlayingTransportControls,
     sentences: List<SentenceRecord>,
     onOpenReading: () -> Unit,
+    firstControlFocusRequester: FocusRequester? = null,
     modifier: Modifier = Modifier,
     pollingIntervalMillis: Long = GolemThemeValueSets.dark.motion.pollingIntervalMillis,
 ) {
@@ -101,6 +105,7 @@ fun NowPlayingScreen(
         ReadingPreviewStrip(
             text = previewSentenceText(sentences, highlightState) ?: "Reading position pending",
             onOpenReading = onOpenReading,
+            focusRequester = firstControlFocusRequester,
         )
         TransportButtons(controls)
         ReservedSlot(testTag = "action-row-slot")
@@ -111,6 +116,7 @@ fun NowPlayingScreen(
 private fun ReadingPreviewStrip(
     text: String,
     onOpenReading: () -> Unit,
+    focusRequester: FocusRequester?,
 ) {
     val tokens = GolemTheme.tokens
     Column(
@@ -120,6 +126,10 @@ private fun ReadingPreviewStrip(
                 color = tokens.colors.surface,
                 shape = RoundedCornerShape(tokens.shapes.panel),
             )
+            .then(
+                if (focusRequester != null) Modifier.focusRequester(focusRequester) else Modifier,
+            )
+            .golemFocusRing()
             .clickable(onClick = onOpenReading)
             .padding(tokens.spacing.md)
             .testTag("reading-preview"),
@@ -159,16 +169,28 @@ private fun TransportButtons(controls: NowPlayingTransportControls) {
         horizontalArrangement = Arrangement.spacedBy(tokens.spacing.sm),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Button(onClick = controls::play, modifier = Modifier.weight(1f)) {
+        Button(
+            onClick = controls::play,
+            modifier = Modifier.weight(1f).golemFocusRing().testTag("transport-play"),
+        ) {
             Text("Play", style = tokens.typography.control)
         }
-        Button(onClick = controls::pause, modifier = Modifier.weight(1f)) {
+        Button(
+            onClick = controls::pause,
+            modifier = Modifier.weight(1f).golemFocusRing().testTag("transport-pause"),
+        ) {
             Text("Pause", style = tokens.typography.control)
         }
-        Button(onClick = controls::resume, modifier = Modifier.weight(1f)) {
+        Button(
+            onClick = controls::resume,
+            modifier = Modifier.weight(1f).golemFocusRing().testTag("transport-resume"),
+        ) {
             Text("Resume", style = tokens.typography.control)
         }
-        Button(onClick = controls::stop, modifier = Modifier.weight(1f)) {
+        Button(
+            onClick = controls::stop,
+            modifier = Modifier.weight(1f).golemFocusRing().testTag("transport-stop"),
+        ) {
             Text("Stop", style = tokens.typography.control)
         }
     }

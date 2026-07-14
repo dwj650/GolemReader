@@ -1199,3 +1199,31 @@ layout. Focusable sentence rows rejected as scope invention.
 ## Consequences
 The central test asserts these exact sequences forward and backward. Order fixes
 (`focusProperties`) are added only where tests prove the layout default deviates.
+
+### 2026-07-14 operator-approved correction
+The live S17 contract follows locked D102: Library remains absent until F-019, so
+the nav sequence is **Now Playing → Settings**. The theme picker is three distinct
+focusable controls, so Settings begins **System → Light → Dark** rather than one
+aggregate picker stop.
+
+# Decision D116 — Destination changes place focus on the new screen's first D115 control
+- Date: 2026-07-14  ·  Status: locked  ·  Maps to phase: P2 (S17)
+- Operator-delegated? no — operator approved SOW amendment v1.0.2 on 2026-07-14
+
+## Context
+The S23 central keyboard test proved Compose's default traversal deviates after a
+destination replacement: opening Reading from the focused preview retained a spatial
+origin in the persistent navigation, so the next traversal bypassed Back. Clearing
+focus was tried both after and immediately before the destination update and failed
+because Compose retained that traversal origin.
+
+## Decision
+On every destination change, `GolemReaderApp` uses standard Compose focus requesters
+to place focus on the new screen's first D115 control: Reading View → Back, Now Playing
+→ preview row, Settings → System. Compose's refusal of the request in touch mode is the
+intended gate, producing no touch-visible change. Placement has no animation.
+
+## Consequences
+Requester ownership stays in `GolemReaderApp.kt`; wiring is limited to the three
+existing first-control files. The central device test permanently asserts preview →
+Reading places focus on Back and includes one nav-tab transition placement assertion.

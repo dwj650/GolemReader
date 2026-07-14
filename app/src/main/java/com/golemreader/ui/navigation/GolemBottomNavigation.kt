@@ -10,6 +10,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import com.golemreader.R
 import com.golemreader.theme.GolemTheme
+import com.golemreader.theme.golemFocusRing
 
 @Composable
 fun GolemBottomNavigation(
@@ -22,7 +23,9 @@ fun GolemBottomNavigation(
             NavigationBarItem(
                 selected = tab == selectedTab,
                 onClick = { onTabSelected(tab) },
-                modifier = Modifier.testTag("bottom-nav-${tab.name.lowercase()}"),
+                modifier = Modifier
+                    .golemFocusRing()
+                    .testTag("bottom-nav-${tab.name.lowercase()}"),
                 icon = {
                     Icon(
                         painter = painterResource(

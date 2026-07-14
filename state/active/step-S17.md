@@ -5,12 +5,28 @@ status: active
 updated: 2026-07-14
 phase: P2
 features: [F-069]
-cross-refs: [D68, D69, D74, D100, D101, D104, D105, D106, D113, D114, D115, OB-069-1, OB-069-2, T-064-B4, IMP-001, IMP-003]
-current-rung: Change
+cross-refs: [D68, D69, D74, D100, D101, D104, D105, D106, D113, D114, D115, D116, OB-069-1, OB-069-2, T-064-B4, IMP-001, IMP-003]
+current-rung: Closeout
 if-incomplete: "Return to state/current-state.md."
 ---
 # Step S17 — Keyboard navigation (F-069): reachability, focus order, visible focus ring, central keyboard test
 
+> **Version v1.0.2** — v1.0.1 plus operator-approved D116 destination-change focus
+> placement. `GolemReaderApp.kt` hosts standard Compose focus requesters for the first
+> D115 control on each destination; requester wiring is limited to the existing Reading
+> View, Now Playing, and theme-picker files. Placement has no animation and is ignored by
+> Compose in touch mode. The permanent central test covers preview → Reading → Back and
+> exactly one nav-tab transition. This supersedes v1.0.1's focus-clear implementation:
+> clearing was tried both after and immediately before the destination update, but Compose
+> retained its spatial traversal origin and the S23 regression still bypassed Back.
+>
+> **Version v1.0.1** — v1.0.0 plus the operator-approved 2026-07-14 scope amendment:
+> `ui/GolemReaderApp.kt` is the eighth changed control-routing file, restricted to clearing
+> focus when the destination changes. The central test permanently asserts preview →
+> Reading View → next Tab reaches Back before nav. This invokes D115's proven-deviation
+> provision after the S23 test demonstrated Compose otherwise transfers focus to persistent
+> navigation. Operator-acceptance and closeout fields remain literal placeholders.
+>
 > **Version v1.0.0** — initial approved SOW. Grounded against repo main @ **b507c75**,
 > F-069-Keyboard-Navigation-Requirements v1.0.0, F-064 v1.0.0 (T-064-B4 deferral),
 > F-066 v1.0.0 (focus visible at high contrast), and Design Spec v0.6.0 (D68/D69/D74).
@@ -35,8 +51,8 @@ future surface defers to (D69).
    - `ui/reading/ReadingViewScreen.kt` — one `TextButton` (Back).
    - `ui/nowplaying/NowPlayingScreen.kt` — one `clickable` preview row (opens
      Reading View) + four `Button`s: Play, Pause, Resume, Stop.
-   - `ui/navigation/GolemBottomNavigation.kt` — three `NavigationBarItem`s
-     (Library, Now Playing, Settings).
+   - `ui/navigation/GolemBottomNavigation.kt` — two live `NavigationBarItem`s
+     (Now Playing, Settings); Library remains absent until F-019 under D102.
    - `theme/ThemeChoicePicker.kt`, `theme/HighContrastToggle.kt`,
      `theme/TextScaleStepper.kt` (A− and A+), `theme/ReducedMotionToggle.kt` —
      the four Settings entries in D104 registry order.
@@ -76,12 +92,13 @@ future surface defers to (D69).
    test asserts. Compose's default layout order is expected to already satisfy
    these; add `focusGroup`/`focusProperties` **only** where a test proves the
    default deviates:
-   - **Settings:** Theme picker → High contrast toggle → Text size A− → A+ →
-     Reduced motion toggle → nav (Library → Now Playing → Settings).
+   - **Settings:** System → Light → Dark → High contrast toggle → Text size A− → A+ →
+     Reduced motion toggle → nav (Now Playing → Settings).
    - **Now Playing:** preview row → Play → Pause → Resume → Stop → nav tabs.
    - **Reading View:** Back → nav tabs. Sentence rows are display, **not**
      focusable — do not add them to traversal.
-   - Rule: **screen content first, nav tabs last**, nav left-to-right.
+   - Rule: **screen content first, nav tabs last**, nav left-to-right. Library remains
+     absent until F-019 under D102.
    - Contract keys: **Tab / Shift-Tab**. Arrow keys stay library-native — build
      and promise nothing beyond what Material provides.
 4. **Central keyboard test (D113, C-069-3, resolves OB-069-2; absorbs T-064-B4).**

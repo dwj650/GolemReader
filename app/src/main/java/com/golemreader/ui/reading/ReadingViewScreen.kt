@@ -24,6 +24,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import com.golemreader.highlight.HighlightState
@@ -31,6 +33,7 @@ import com.golemreader.highlight.HighlightStateEmitter
 import com.golemreader.highlight.HighlightStyle
 import com.golemreader.theme.GolemTheme
 import com.golemreader.theme.GolemThemeValueSets
+import com.golemreader.theme.golemFocusRing
 import com.golemreader.text.SentenceIndex
 import com.golemreader.text.SentenceRecord
 import kotlinx.coroutines.delay
@@ -68,6 +71,7 @@ fun ReadingViewScreen(
     sentences: List<SentenceRecord>,
     highlightEmitter: HighlightStateEmitter,
     onBack: (() -> Unit)? = null,
+    firstControlFocusRequester: FocusRequester? = null,
     modifier: Modifier = Modifier,
     pollingIntervalMillis: Long = GolemThemeValueSets.dark.motion.pollingIntervalMillis,
     highlightStyle: HighlightStyle = HighlightStyle.V1Defaults,
@@ -105,7 +109,16 @@ fun ReadingViewScreen(
             Row(modifier = Modifier.fillMaxWidth()) {
                 TextButton(
                     onClick = onBack,
-                    modifier = Modifier.testTag("reading-back"),
+                    modifier = Modifier
+                        .then(
+                            if (firstControlFocusRequester != null) {
+                                Modifier.focusRequester(firstControlFocusRequester)
+                            } else {
+                                Modifier
+                            },
+                        )
+                        .golemFocusRing()
+                        .testTag("reading-back"),
                 ) {
                     Text("Back", style = tokens.typography.control)
                 }

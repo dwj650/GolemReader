@@ -11,6 +11,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 
 data class ThemeChoiceOption(
@@ -29,6 +32,7 @@ fun themeChoiceOptions(): List<ThemeChoiceOption> =
 fun ThemeChoicePicker(
     selected: ThemeChoice,
     onSelected: (ThemeChoice) -> Unit,
+    firstOptionFocusRequester: FocusRequester? = null,
     modifier: Modifier = Modifier,
 ) {
     val tokens = GolemTheme.tokens
@@ -51,6 +55,16 @@ fun ThemeChoicePicker(
                 color = if (isSelected) tokens.colors.textPrimary else tokens.colors.textSecondary,
                 modifier = Modifier
                     .weight(1f)
+                    .then(
+                        if (
+                            option == themeChoiceOptions().first() &&
+                            firstOptionFocusRequester != null
+                        ) {
+                            Modifier.focusRequester(firstOptionFocusRequester)
+                        } else {
+                            Modifier
+                        },
+                    )
                     .background(
                         color = if (isSelected) tokens.colors.surface else tokens.colors.surfaceRaised,
                         shape = segmentShape,
@@ -62,11 +76,13 @@ fun ThemeChoicePicker(
                             Modifier
                         },
                     )
+                    .golemFocusRing()
                     .selectable(
                         selected = isSelected,
                         onClick = { onSelected(option.choice) },
                         role = Role.RadioButton,
                     )
+                    .testTag("theme-${option.choice.name.lowercase()}")
                     .padding(vertical = tokens.spacing.sm),
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center,
             )
