@@ -23,7 +23,8 @@ closeout: the agent's two test-only build.gradle.kts lines were ratified at
 verification, not approved during execution — future SOWs pre-authorize
 test-only dependency additions required by mandated tests.
 
-**S16 — Reduced motion (F-067) is SOW'd and handed off** on the approved scope:
+**S16 — Reduced motion (F-067) is implemented and operator-accepted on its feature
+branch; final verification/commit is in progress** on the approved scope:
 motion-override at the provider seam (D110, operator-delegated), instant-jump
 scroll + proven-still flip/indicator + untouched polling with the "Catching up"
 polite-live-region announcement at a 500 ms hold threshold (D111, resolves
@@ -32,7 +33,9 @@ default (D112, resolves OB-067-3), fourth `theme_settings` KV row (D107
 applied), one D104 registry entry, the D76 glow-parameter seam with defaults
 reproducing today's look, and the central reduced-motion harness. The reduced
 highlight path is a named T-001-C1 contributor and carries device cost
-evidence. Full SOW: `state/active/step-S16.md`. D-ceiling: **D112**.
+evidence. Automated gates are green, objective S23 evidence is archived, and the operator
+approved the guided visual/TalkBack closeout on 2026-07-13. Full SOW:
+`state/active/step-S16.md`. D-ceiling: **D112**.
 
 ## Open items needing attention
 - T-057-C1 and T-057-C2 remain owed agent-run measurements; T-057-C3 remains a contributor
@@ -62,8 +65,6 @@ evidence. Full SOW: `state/active/step-S16.md`. D-ceiling: **D112**.
   `git branch -vv` review) next time the operator is on p1.
 
 ## Next action
-Agent executes S16 on branch `s16-reduced-motion` from main @ 9c97aec per
-`state/active/step-S16.md`. Then independent verification against real branch
-code, operator look-check (including TalkBack announcement observation)
-**before** the acceptance verb, then the operator merge ritual. After S16:
+Agent runs final fresh gates, independent verification against real branch code, and the
+G3 commit. The branch remains for the operator's merge ritual. After S16:
 S17 (F-069 keyboard navigation), then G4.

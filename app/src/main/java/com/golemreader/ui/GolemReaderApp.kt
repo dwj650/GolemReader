@@ -18,6 +18,7 @@ import com.golemreader.playback.StarvationState
 import com.golemreader.theme.GolemTheme
 import com.golemreader.theme.GolemThemeProvider
 import com.golemreader.theme.HighContrastToggle
+import com.golemreader.theme.ReducedMotionToggle
 import com.golemreader.theme.ThemeChoice
 import com.golemreader.theme.ThemeChoicePicker
 import com.golemreader.theme.TextScaleStep
@@ -43,9 +44,12 @@ fun GolemReaderApp(
     themeChoice: ThemeChoice = ThemeChoice.FollowSystem,
     highContrast: Boolean = false,
     textScale: TextScaleStep = TextScaleStep.Default,
+    reducedMotion: Boolean = false,
+    inAppReducedMotion: Boolean = false,
     onThemeChoiceSelected: (ThemeChoice) -> Unit = {},
     onHighContrastToggled: (Boolean) -> Unit = {},
     onTextScaleChanged: (TextScaleStep) -> Unit = {},
+    onReducedMotionToggled: (Boolean) -> Unit = {},
     transportControls: NowPlayingTransportControls = remember {
         NowPlayingTransportControls(TransportCommands())
     },
@@ -60,6 +64,7 @@ fun GolemReaderApp(
         choice = themeChoice,
         highContrast = highContrast,
         textScale = textScale,
+        reducedMotion = reducedMotion,
     ) {
         val tokens = GolemTheme.tokens
         Surface(
@@ -103,6 +108,10 @@ fun GolemReaderApp(
                                     SettingId.TextScale -> TextScaleStepper(
                                         step = textScale,
                                         onStepChanged = onTextScaleChanged,
+                                    )
+                                    SettingId.ReducedMotion -> ReducedMotionToggle(
+                                        enabled = inAppReducedMotion,
+                                        onToggled = onReducedMotionToggled,
                                     )
                                     else -> Unit
                                 }

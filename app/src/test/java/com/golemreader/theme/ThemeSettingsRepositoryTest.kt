@@ -133,6 +133,40 @@ class ThemeSettingsRepositoryTest {
         }
     }
 
+    @Test
+    fun reducedMotionDefaultsOffTreatsUnknownAsOffAndPersistsIndependently() = runBlocking {
+        val dao = RecordingThemeSettingsDao()
+        val repository = ThemeSettingsRepository(dao)
+
+        assertEquals(false, repository.reducedMotionFlow().first())
+
+        dao.entity = ThemeSettingEntity(
+            key = ThemeSettingEntity.REDUCED_MOTION_KEY,
+            choice = "unknown",
+        )
+        assertEquals(false, repository.reducedMotionFlow().first())
+
+        repository.setReducedMotion(true)
+        assertEquals(ThemeSettingEntity.REDUCED_MOTION_KEY, dao.entity?.key)
+        assertEquals("true", dao.entity?.choice)
+    }
+
+    @Test
+    fun setReducedMotionExecutesDaoWriteOffTheCallingThread() = runBlocking {
+        val callingThread = Thread.currentThread().name
+        val dao = RecordingThemeSettingsDao()
+        Executors.newSingleThreadExecutor { runnable ->
+            Thread(runnable, "reduced-motion-settings-io")
+        }.asCoroutineDispatcher().use { ioDispatcher ->
+            val repository = ThemeSettingsRepository(dao, ioDispatcher)
+
+            repository.setReducedMotion(true)
+
+            assertTrue(dao.writeThread?.startsWith("reduced-motion-settings-io") == true)
+            assertNotEquals(callingThread, dao.writeThread)
+        }
+    }
+
     private fun openDatabase(): PreciousDatabase =
         Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),

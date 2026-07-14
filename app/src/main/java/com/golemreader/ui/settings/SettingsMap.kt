@@ -6,6 +6,7 @@ value class SettingId(val value: String) {
         val Theme = SettingId("theme")
         val HighContrast = SettingId("high-contrast")
         val TextScale = SettingId("text-scale")
+        val ReducedMotion = SettingId("reduced-motion")
         val Speed = SettingId("speed")
         val SentencePauses = SettingId("sentence-pauses")
         val Volume = SettingId("volume")
@@ -36,6 +37,13 @@ object SettingsMap {
             owningFeatureBuilt = true,
         ),
         SettingEntry(SettingId.TextScale, "Text size", "Accessibility", "F-068", owningFeatureBuilt = true),
+        SettingEntry(
+            SettingId.ReducedMotion,
+            "Reduce motion",
+            "Accessibility",
+            "F-067",
+            owningFeatureBuilt = true,
+        ),
         SettingEntry(SettingId.Speed, "Speed", "Playback", "F-005", owningFeatureBuilt = false),
         SettingEntry(
             SettingId.SentencePauses,

@@ -6,7 +6,7 @@ updated: 2026-07-13
 phase: P2
 features: [F-067]
 cross-refs: [D69, D70, D76, D100, D101, D104, D107, D110, D111, D112, OB-015-2, OB-067-3, T-001-C1, PR-7, IMP-001, IMP-003]
-current-rung: Change
+current-rung: Commit
 if-incomplete: "Return to state/current-state.md."
 ---
 # Step S16 — Reduced motion (F-067): contract, toggle, non-motion equivalents, glow seam

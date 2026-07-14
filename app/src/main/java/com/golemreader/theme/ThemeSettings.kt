@@ -35,6 +35,7 @@ data class ThemeSettingEntity(
         const val THEME_CHOICE_KEY = "theme_choice"
         const val HIGH_CONTRAST_KEY = "high_contrast"
         const val TEXT_SCALE_KEY = "text_scale"
+        const val REDUCED_MOTION_KEY = "reduced_motion"
     }
 }
 
@@ -68,6 +69,10 @@ class ThemeSettingsRepository(
         dao.observe(ThemeSettingEntity.TEXT_SCALE_KEY)
             .map { entity -> TextScaleStep.fromStoredValue(entity?.choice) }
 
+    fun reducedMotionFlow(): Flow<Boolean> =
+        dao.observe(ThemeSettingEntity.REDUCED_MOTION_KEY)
+            .map { entity -> entity?.choice == true.toString() }
+
     suspend fun setChoice(choice: ThemeChoice) = withContext(ioDispatcher) {
         dao.upsert(ThemeSettingEntity(choice = choice.storedValue))
     }
@@ -87,6 +92,15 @@ class ThemeSettingsRepository(
             ThemeSettingEntity(
                 key = ThemeSettingEntity.TEXT_SCALE_KEY,
                 choice = step.storedValue,
+            ),
+        )
+    }
+
+    suspend fun setReducedMotion(enabled: Boolean) = withContext(ioDispatcher) {
+        dao.upsert(
+            ThemeSettingEntity(
+                key = ThemeSettingEntity.REDUCED_MOTION_KEY,
+                choice = enabled.toString(),
             ),
         )
     }

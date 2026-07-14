@@ -9,7 +9,10 @@ class SettingsMapTest {
     fun productionMenuYieldsOnlyEntriesWhoseOwningFeaturesAreBuilt() {
         val entries = SettingsMap.visibleEntries()
 
-        assertEquals(listOf(SettingId.Theme, SettingId.HighContrast, SettingId.TextScale), entries.map { it.id })
+        assertEquals(
+            listOf(SettingId.Theme, SettingId.HighContrast, SettingId.TextScale, SettingId.ReducedMotion),
+            entries.map { it.id },
+        )
         assertFalse(entries.any { it.owningFeature in setOf("F-005", "F-006", "F-007") })
     }
 
@@ -39,9 +42,19 @@ class SettingsMapTest {
             .single { it.label == "Accessibility" }
 
         assertEquals(
-            listOf(SettingId.HighContrast, SettingId.TextScale),
+            listOf(SettingId.HighContrast, SettingId.TextScale, SettingId.ReducedMotion),
             accessibility.entries.map { it.id },
         )
+    }
+
+    @Test
+    fun reducedMotionRegistersAfterTextSizeAsBuiltAccessibilitySettingOwnedByF067() {
+        val entry = SettingsMap.visibleEntries().single { it.id == SettingId.ReducedMotion }
+
+        assertEquals("Reduce motion", entry.label)
+        assertEquals("Accessibility", entry.group)
+        assertEquals("F-067", entry.owningFeature)
+        assertEquals(true, entry.owningFeatureBuilt)
     }
 
     @Test

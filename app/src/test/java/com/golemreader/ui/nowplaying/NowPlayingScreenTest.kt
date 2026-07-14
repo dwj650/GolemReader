@@ -40,7 +40,7 @@ class NowPlayingScreenTest {
 
     @Test
     fun bufferingIndicatorHasVisibleTextOnlyWhileBuffering() {
-        assertEquals("Catching up...", bufferingStatusText(isBuffering = true))
+        assertEquals(CATCHING_UP_ANNOUNCEMENT, bufferingStatusText(isBuffering = true))
         assertNull(bufferingStatusText(isBuffering = false))
     }
 

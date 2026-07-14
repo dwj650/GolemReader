@@ -31,10 +31,14 @@ fun GolemThemeProvider(
     choice: ThemeChoice,
     highContrast: Boolean,
     textScale: TextScaleStep = TextScaleStep.Default,
+    reducedMotion: Boolean = false,
     content: @Composable () -> Unit,
 ) {
     val systemDark = isSystemInDarkTheme()
-    val valueSet = resolveThemeValueSet(choice, systemDark, highContrast)
+    val valueSet = applyReducedMotion(
+        resolveThemeValueSet(choice, systemDark, highContrast),
+        reducedMotion,
+    )
     val systemDensity = LocalDensity.current
     val scaledDensity = Density(
         density = systemDensity.density,
@@ -52,6 +56,24 @@ fun GolemThemeProvider(
         )
     }
 }
+
+fun applyReducedMotion(
+    valueSet: GolemThemeValueSet,
+    reducedMotion: Boolean,
+): GolemThemeValueSet =
+    if (reducedMotion) {
+        valueSet.copy(
+            motion = valueSet.motion.copy(
+                highlightScrollEnabled = false,
+                highlightTransitionMillis = 0,
+            ),
+        )
+    } else {
+        valueSet
+    }
+
+fun effectiveReducedMotion(osRemoveAnimations: Boolean, inAppEnabled: Boolean): Boolean =
+    osRemoveAnimations || inAppEnabled
 
 internal fun combinedFontScale(systemFontScale: Float, textScale: TextScaleStep): Float =
     systemFontScale * textScale.multiplier

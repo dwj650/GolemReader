@@ -374,6 +374,30 @@ if-incomplete: "Coverage policy is reference/coverage-target.md."
   clipping on all four D109 surfaces, and no playback interruption while scaling. Four
   named captures and the run log are under `archive/S15-text-scaling/`. Confidence: medium.
 
+- **T-067-P1 / T-067-B2 / T-067-B3 / T-067-P2 / T-067-B4** — S16 central JVM
+  contract verifies provider-only motion override with non-motion token blocks unchanged;
+  OS ∨ in-app composition; animated-versus-instant scroll selection; already-still flip
+  and indicator source proofs; the 500 ms one-shot announcement decision including reset
+  and no recovery utterance; polite live-region plumbing; renderer size/contrast/fade
+  defaults and forced-zero fade; fourth-row persistence and off-main write; and registry
+  order/plumbing. RED failed on missing S16 APIs and then on the old ellipsized buffering
+  wording; GREEN passed in focused runs. The fresh full `./gradlew testDebugUnitTest`,
+  `./gradlew assembleDebug`, D101 hardcode guard, and `git diff --check` passed on
+  2026-07-13. Confidence: high.
+- **T-067-C1 / T-001-C1 contributor device evidence (partial closeout)** — SM-S918U
+  showed the registered toggle, persisted On through force-stop/relaunch, and ran playback
+  under the OS animator-scale-zero composition path with the in-app preference Off. The
+  app advanced to chapter 5 sentence 7, remained alive, and the fatal/starvation log check
+  was clean. The OS setting was restored to its original default. Captures and run details
+  are under `archive/S16-reduced-motion/`. Objective confidence: medium. The operator
+  approved the archived visual evidence and guided TalkBack behavior on 2026-07-13.
+  A final-APK follow-up replayed the same chapter-5 opening passage with normal motion and
+  reduced motion; both advanced with no fatal/starvation log entry, closing the initial
+  review's AC9 documentation gap. Independent review also caught and verified fixes for
+  stored-versus-effective switch state, renderer fade consumption, and production use of
+  the tested announcement decision logic. Re-review reported no Critical or Important
+  issues and marked the branch safe to commit.
+
 ## Resolved tool versions for S2
 - KSP Gradle plugin: `com.google.devtools.ksp:2.3.5` (**D81 primary path**, no
   `gradle.properties` fallback, no TD-001).
