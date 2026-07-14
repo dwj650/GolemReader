@@ -1,15 +1,19 @@
 ---
 id: S16
 tier: state
-status: active
+status: complete
 updated: 2026-07-13
 phase: P2
 features: [F-067]
 cross-refs: [D69, D70, D76, D100, D101, D104, D107, D110, D111, D112, OB-015-2, OB-067-3, T-001-C1, PR-7, IMP-001, IMP-003]
-current-rung: Commit
+current-rung: Closeout
 if-incomplete: "Return to state/current-state.md."
 ---
 # Step S16 — Reduced motion (F-067): contract, toggle, non-motion equivalents, glow seam
+
+> **Closeout:** operator accepted 2026-07-13; implementation, tests, and evidence
+> committed on `s16-reduced-motion` at **0286ff8**. Independent review found three
+> pre-commit integration gaps; all were corrected and re-review marked the branch safe.
 
 > **Version v1.0.0** — initial approved SOW. Grounded against repo main @ 9c97aec,
 > F-067-Reduced-Motion-Requirements v1.0.0, F-016 v1.0.0+v1.0.1 delta, F-015
