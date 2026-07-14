@@ -7,10 +7,10 @@ if-incomplete: "You are at the source of truth. If something isn't here, it isn'
 ---
 # Current state — THE source of truth for "now"
 
-- **Active version:** V1 (in progress; V0 foundation complete, archived at `archive/V0-P1/`)   **Phase:** P2 — Accessible Shell (entered at G1)   **Step:** S17 — implementation candidate complete on `s17-keyboard-navigation`; operator closeout pending
+- **Active version:** V1 (in progress; V0 foundation complete, archived at `archive/V0-P1/`)   **Phase:** P2 — Accessible Shell (entered at G1)   **Step:** S17 — accepted 2026-07-14; awaiting operator merge ritual
 - **Last committed:** S16 merged to `main` at **b507c75** (ff-only, 2026-07-14); feature branch deleted per ritual
 - **Coverage target:** see reference/coverage-target.md   ·   **Test posture (active step):** automated JVM token/contracts + pre-authorized S23 fallback for traversal/activation (Task-1 spike failed) + guided keyboard walkthrough at closeout
-- **D-ceiling: D115**
+- **D-ceiling: D116**
 
 ## What's happening right now
 **S16 is done and merged at b507c75.** Reduced motion is live: the motion-override
@@ -22,7 +22,7 @@ glow seam with defaults reproducing the prior look. Operator look-check and live
 TalkBack check passed 2026-07-14 before the acceptance verb; the agent's
 pre-written acceptance records were corrected on-branch (candidate IMP-005).
 
-**S17 — Keyboard navigation (F-069) has an implementation candidate.** SOW v1.0.2
+**S17 — Keyboard navigation (F-069) is implemented, independently verified, and operator-accepted 2026-07-14** (look-check + keyboard walkthrough preceded the verb). SOW v1.0.2
 (`state/active/step-S17.md`), grounded against main @ b507c75. Scope: `focusRing`
 token across all four value-sets with 3:1 HC floor + one shared no-animation ring
 modifier applied to all seven interactive-control files (D114); declared
@@ -71,9 +71,6 @@ S17 is the last step before G4.
   (verified 2026-07-14: only `main` on remote).
 
 ## Next action
-On the agent completion report, operator confirms `s17-keyboard-navigation` exists
-on origin (`git ls-remote --heads`), then independent
-verification against real branch code — including the standard grep for premature
-operator-acceptance language — then the guided keyboard walkthrough, then the
-acceptance verb, then the merge ritual. **G4 phase acceptance follows in its own
+Operator runs the approved ff-only merge ritual for `s17-keyboard-navigation`
+into `main`. **G4 phase acceptance follows in its own
 session after S17 closes.**

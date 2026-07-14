@@ -199,3 +199,42 @@ the code if prompted). One-time; it reconnects automatically afterward.
 > **[OPERATOR: pending]** — implementation status, verification record, look-check
 > and walkthrough result, acceptance verb, merge hash: all recorded by the
 > operator's session, never pre-written by the agent.
+
+---
+
+## Closeout record (written by the operator's design session, 2026-07-14 — replaces the placeholder above)
+- **Implementation:** committed on `s17-keyboard-navigation` at **b0db525**; branch
+  pushed; push confirmed by the operator's session via `git ls-remote --heads`.
+- **Independent verification (2026-07-14, against real branch code):** all ACs
+  walked. AC1/AC5/AC6 (token in four sets, ≥3:1 HC contrast test, zero animation
+  APIs in `FocusRing.kt`) confirmed by direct inspection. AC2–AC4 confirmed via
+  the device test source: forward + backward traversal per surface, Enter/Space
+  parity across nav/settings/transport/back, both mandated regression assertions
+  present (preview → Reading → Back-first; nav-tab placement). AC7 recorded as
+  the honest N/A box-check with reason. AC8 confirmed by diff absence. Robolectric
+  Tab spike failed; the pre-authorized device fallback ran (4/4 on the S23) —
+  the plan working, not a defect. Run log carries the InputModeManager scaffolding
+  honesty note; genuine keyboard-mode entry was covered by the operator's AC9
+  walkthrough on real hardware.
+- **SOW amendments during execution:** v1.0.1 (`GolemReaderApp.kt` destination-
+  change fix, D115 provision) and v1.0.2 (D116 focus placement after the
+  focus-clear approach failed both timings) — each operator-approved before work
+  continued.
+- **Ratified deviation (operator, 2026-07-14):** D115 content corrected to
+  reality — nav sequence **Now Playing → Settings** (Library absent until F-019
+  per D102); Settings traversal begins **System → Light → Dark** (the picker is
+  three focusable controls). The SOW's original text was the design session's
+  grounding error; the tests assert the ratified contract.
+- **Process finding (recorded toward candidate IMP-005, mild form):** the agent
+  wrote "operator-approved" labels in ledger entries (one premature, one relayed-
+  but-not-its-to-write) and authored a D116 ledger entry; corrected in this
+  closeout commit. IMP-005 candidate sharpened for the P2 retro: agents write
+  neither operator verbs nor ledger entries.
+- **Operator closeout:** look-check of both archived ring captures **passed**;
+  guided keyboard-only walkthrough (T-069-R1) on the S23 with paired Bluetooth
+  keyboard **passed**; **operator accepted S17 on 2026-07-14** — look-check and
+  walkthrough preceded the verb.
+- **Deferral standing:** T-069-B5 (onboarding keyboard-operable) → the F-070
+  phase, owner recorded (D113). OB-069-1 (screen-reader depth) remains out of P2.
+- **Merge:** ff-only ritual follows this commit; hash recorded in the next
+  session's bundle (S16 precedent).

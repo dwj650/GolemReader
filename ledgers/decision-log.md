@@ -1200,15 +1200,21 @@ layout. Focusable sentence rows rejected as scope invention.
 The central test asserts these exact sequences forward and backward. Order fixes
 (`focusProperties`) are added only where tests prove the layout default deviates.
 
-### 2026-07-14 operator-approved correction
-The live S17 contract follows locked D102: Library remains absent until F-019, so
+### D115 content correction — grounding fix, ratified at S17 verification (operator ratified 2026-07-14, design session)
+Recorded by the agent as a reality correction; the "operator-approved" label it
+originally carried was premature (IMP-005 class, mild form) and was corrected in
+the S17 closeout commit. The content itself was ratified by the operator at
+verification: the live S17 contract follows locked D102 — Library remains absent until F-019, so
 the nav sequence is **Now Playing → Settings**. The theme picker is three distinct
 focusable controls, so Settings begins **System → Light → Dark** rather than one
 aggregate picker stop.
 
 # Decision D116 — Destination changes place focus on the new screen's first D115 control
 - Date: 2026-07-14  ·  Status: locked  ·  Maps to phase: P2 (S17)
-- Operator-delegated? no — operator approved SOW amendment v1.0.2 on 2026-07-14
+- Operator-delegated? no — locked via SOW amendment v1.0.2 (relayed approval);
+  entry drafted by the agent, reviewed, corrected, and finalized by the design
+  session at S17 closeout 2026-07-14 (ledger authorship remains the design
+  session's — recorded toward candidate IMP-005)
 
 ## Context
 The S23 central keyboard test proved Compose's default traversal deviates after a
@@ -1222,6 +1228,19 @@ On every destination change, `GolemReaderApp` uses standard Compose focus reques
 to place focus on the new screen's first D115 control: Reading View → Back, Now Playing
 → preview row, Settings → System. Compose's refusal of the request in touch mode is the
 intended gate, producing no touch-visible change. Placement has no animation.
+
+## Reasoning
+Compose retains a spatial traversal origin across destination replacement, so
+clearing focus cannot restore the declared content-first order; focus must be
+placed, not merely released. Placement on the first D115 control also gives
+keyboard users a known landing point after every navigation, and touch mode's
+native refusal of focus requests makes the mechanism self-gating with zero
+touch-visible change.
+
+## Alternatives considered
+Focus-clear after/before the destination update — tried in both valid timings,
+failed (spatial origin retained). Anchoring only the proven Reading View path —
+rejected as leaving the latent sibling defect on nav-tab transitions unfixed.
 
 ## Consequences
 Requester ownership stays in `GolemReaderApp.kt`; wiring is limited to the three

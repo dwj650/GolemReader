@@ -1,7 +1,7 @@
 ---
 id: S17-RUN-LOG
 tier: archive
-status: implementation-complete
+status: accepted
 updated: 2026-07-14
 ---
 # S17 keyboard-navigation run log
@@ -27,8 +27,14 @@ updated: 2026-07-14
 - Known environment notice: `androidx.test.services` has no UID on this S23
   (KI-S3-001); the targeted keyboard tests still ran and passed.
 
-## Guided closeout
-- Look-check: **[OPERATOR: pending]**
-- Keyboard walkthrough: **[OPERATOR: pending]**
-- Acceptance verb: **[OPERATOR: pending]**
-- Merge hash: **[OPERATOR: pending]**
+## Guided closeout (recorded by the operator's design session, 2026-07-14)
+- Look-check: **passed** — operator viewed both archived captures (dark ring on
+  Play; hcDark yellow ring on the High-contrast toggle) before the walkthrough.
+- Keyboard walkthrough: **passed** — full T-069-R1 script on the S23 with a
+  paired Bluetooth keyboard: traversal both directions on all surfaces,
+  Enter/Space parity, HC ring visibility, and D116 placement (Settings → System;
+  preview → Reading → Back) all confirmed by the operator.
+- Acceptance verb: **approve** — given 2026-07-14, after look-check and
+  walkthrough, in that order.
+- Merge hash: recorded in the next session's bundle after the ff-only ritual
+  (S16 precedent — the closeout commit itself becomes main's tip).
