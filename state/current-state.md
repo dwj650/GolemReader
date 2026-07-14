@@ -2,42 +2,38 @@
 id: CURRENT-STATE
 tier: state
 status: active
-updated: 2026-07-13
+updated: 2026-07-14
 if-incomplete: "You are at the source of truth. If something isn't here, it isn't current."
 ---
 # Current state — THE source of truth for "now"
 
-- **Active version:** V1 (in progress; V0 foundation complete, archived at `archive/V0-P1/`)   **Phase:** P2 — Accessible Shell (entered at G1)   **Step:** S16 — accepted 2026-07-14; awaiting operator merge ritual
-- **Last committed:** S16 implementation at **0286ff8** on `s16-reduced-motion`, accepted by the operator 2026-07-14 after look-check + TalkBack check; main remains at the S16 handoff commit **95f0e2d** until the operator merge ritual
-- **Coverage target:** see reference/coverage-target.md   ·   **Test posture (active step):** automated (JVM) + agent-run device + guided-manual look-check at closeout
+- **Active version:** V1 (in progress; V0 foundation complete, archived at `archive/V0-P1/`)   **Phase:** P2 — Accessible Shell (entered at G1)   **Step:** S17 — SOW approved 2026-07-14; awaiting agent execution
+- **Last committed:** S16 merged to `main` at **b507c75** (ff-only, 2026-07-14); feature branch deleted per ritual
+- **Coverage target:** see reference/coverage-target.md   ·   **Test posture (active step):** automated (JVM, with pre-authorized device fallback for traversal tests pending the Task-1 Robolectric spike) + agent-run device + guided keyboard walkthrough at closeout
+- **D-ceiling: D115**
 
 ## What's happening right now
-**S15 is done and merged at 9c97aec.** Text scaling is live: the five-step
-in-app multiplier at the provider seam (D108), the A−/%/A+ stepper under
-Accessibility, the third `theme_settings` KV row, the central scaling/reflow
-harness over four surfaces (D109) including the HC × scale composition that
-cleared S14's T-066-B4 deferral, and the D101 negative-proof guard test.
-Bottom-nav labels did **not** clip at 3.0× combined scale (pixel evidence in
-`archive/S15-text-scaling/run-log.md`). One recorded correction in the S15
-closeout: the agent's two test-only build.gradle.kts lines were ratified at
-verification, not approved during execution — future SOWs pre-authorize
-test-only dependency additions required by mandated tests.
+**S16 is done and merged at b507c75.** Reduced motion is live: the motion-override
+at the provider seam (D110), instant-jump highlight scroll with proven-still flip
+and static starvation indicator, the "Catching up" polite-live-region announcement
+at a 500 ms hold (D111, resolves OB-015-2), the OS-Remove-animations-OR-in-app
+default (D112, resolves OB-067-3), the fourth `theme_settings` KV row, and the D76
+glow seam with defaults reproducing the prior look. Operator look-check and live
+TalkBack check passed 2026-07-14 before the acceptance verb; the agent's
+pre-written acceptance records were corrected on-branch (candidate IMP-005).
 
-**S16 — Reduced motion (F-067) is implemented at 0286ff8, independently
-verified, and operator-accepted 2026-07-14** on the approved scope:
-motion-override at the provider seam (D110, operator-delegated), instant-jump
-scroll + proven-still flip/indicator + untouched polling with the "Catching up"
-polite-live-region announcement at a 500 ms hold threshold (D111, resolves
-OB-015-2 under its reconciled ID), OS-Remove-animations OR in-app toggle
-default (D112, resolves OB-067-3), fourth `theme_settings` KV row (D107
-applied), one D104 registry entry, the D76 glow-parameter seam with defaults
-reproducing today's look, and the central reduced-motion harness. The reduced
-highlight path is a named T-001-C1 contributor and carries device cost
-evidence. Clean automated gates are green, both-path S23 evidence is archived,
-and the operator's look-check and live TalkBack check passed 2026-07-14 before
-the acceptance verb; the agent's pre-written acceptance records were corrected
-on-branch (see the Closeout correction in `state/active/step-S16.md`). Full
-SOW: `state/active/step-S16.md`. D-ceiling: **D112**.
+**S17 — Keyboard navigation (F-069) is active.** SOW v1.0.0 approved 2026-07-14
+(`state/active/step-S17.md`), grounded against main @ b507c75. Scope: `focusRing`
+token across all four value-sets with 3:1 HC floor + one shared no-animation ring
+modifier applied to all seven interactive-control files (D114); declared
+traversal orders, content-first/nav-last, Tab/Shift-Tab contract (D115); central
+keyboard test over all four current surfaces, resolving OB-069-2 and absorbing
+T-064-B4 (D113); no stored preference (F-069 §7 — always-on, no fifth KV row, no
+D104 entry). Task 1 is the Robolectric Tab spike gating JVM-vs-device test
+placement; the device fallback is pre-authorized. T-069-B5 (onboarding) deferred
+to the F-070 phase with owner recorded. Operator has a Bluetooth keyboard; the
+closeout is a guided keyboard-only walkthrough (script in the SOW). Per D100,
+S17 is the last step before G4.
 
 ## Open items needing attention
 - T-057-C1 and T-057-C2 remain owed agent-run measurements; T-057-C3 remains a contributor
@@ -53,19 +49,30 @@ SOW: `state/active/step-S16.md`. D-ceiling: **D112**.
   survival, and resume-after-kill routing remain deferred after S8 per D92.
 - Secret scan remains intentionally skipped until configured (KI-S1-001 / D78) —
   not a defect.
-- S13 recorded deferrals: T-064-B4 → S17; T-064-R2 → G4; swipe-left → D51/D52;
-  full preview strip → F-073; Library tab → F-019 phase.
+- S13 recorded deferrals: T-064-B4 → **lands in S17 (in the active SOW)**;
+  T-064-R2 → G4; swipe-left → D51/D52; full preview strip → F-073; Library tab →
+  F-019 phase.
 - S15 carried notes: T-068-R1 full sweep → re-walked at G4 with all axes on;
   ReservedSlot dp-height trap → owned by the F-073 preview-strip family.
 - S16 recorded notes: polling-interval default params read
-  `GolemThemeValueSets.dark.motion` directly (harmless wart while motion is a
-  shared block; owner: whichever step next touches the polling seam);
-  Material-internal micro-animations covered only via the OS setting (out of
-  D70 scope, recorded); `STARVATION_ANNOUNCE_HOLD_MILLIS` = 500 is a recorded
-  tunable, revisited only with device evidence.
+  `GolemThemeValueSets.dark.motion` directly (harmless wart; owner: whichever step
+  next touches the polling seam — explicitly NOT S17); Material-internal
+  micro-animations covered only via the OS setting (out of D70 scope, recorded);
+  `STARVATION_ANNOUNCE_HOLD_MILLIS` = 500 is a recorded tunable, revisited only
+  with device evidence.
+- S17 recorded deferral: T-069-B5 (onboarding keyboard-operable, D74) → the phase
+  that builds F-070 (D113).
+- OB-069-1 (screen-reader/TalkBack depth) remains out of P2; owner: future
+  accessibility grooming.
 - p1 likely retains stale local branches — prune (`git fetch --prune` +
-  `git branch -vv` review) next time the operator is on p1.
+  `git branch -vv` review) next time the operator is on p1. Origin is clean
+  (verified 2026-07-14: only `main` on remote).
 
 ## Next action
-Operator runs the approved ff-only merge ritual for `s16-reduced-motion` into `main`.
-The feature branch remains in place. After merge: S17 (F-069 keyboard navigation), then G4.
+Operator hands `state/active/step-S17.md` to the agent (branch
+`s17-keyboard-navigation` from b507c75). On the completion report: operator
+confirms the branch exists on origin (`git ls-remote --heads`), then independent
+verification against real branch code — including the standard grep for premature
+operator-acceptance language — then the guided keyboard walkthrough, then the
+acceptance verb, then the merge ritual. **G4 phase acceptance follows in its own
+session after S17 closes.**

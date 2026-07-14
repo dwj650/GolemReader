@@ -2,7 +2,7 @@
 id: PHASE-INDEX
 tier: state
 status: active
-updated: 2026-07-13
+updated: 2026-07-14
 if-incomplete: "Return to current-state.md."
 ---
 # Phase index
@@ -47,8 +47,10 @@ IMP-004 (accessibility scoped in at next G1 — satisfied by P2's existence).*
 | S13 — done | Settings shell (thin) + navigation topology (D102) + theme picker in its home; visual contract v0.3.0 (D103); Settings Map registry (D104) (closeout: screenshots approved by operator 2026-07-13; merged at e1fe9dd) | F-064 |
 | S14 — done | High contrast: hcDark + hcLight value-sets (D106), AAA target (D105), KV-row preference (D107), toggle registered via D104, central contrast test (closeout: look-check passed post-commit pre-merge 2026-07-13; merged at a87f5be) | F-066 |
 | S15 — done | Text scaling: five-step in-app multiplier at the provider seam (D108), stepper under Accessibility, central reflow proof over four surfaces (D109), T-066-B4 scaling half cleared (closeout: look-check preceded acceptance verb 2026-07-13; merged at 9c97aec) | F-068 |
-| **S16 — active** | Reduced motion: motion-override at the provider seam (D110), semantics + starvation announcement (D111, resolves OB-015-2), OS-or-in-app default (D112, resolves OB-067-3), glow seam (D76), toggle under Accessibility | F-067 |
-| S17 | Keyboard navigation: reachability, focus order, visible focus | F-069 |
+| S16 — done | Reduced motion: motion-override at the provider seam (D110), semantics + starvation announcement (D111, resolves OB-015-2), OS-or-in-app default (D112, resolves OB-067-3), glow seam (D76), toggle under Accessibility (closeout: accepted 2026-07-14 after look-check + TalkBack; correction commit superseded the agent's pre-written acceptance records; merged at b507c75) | F-067 |
+| **S17 — active** | Keyboard navigation: reachability + activation over all four surfaces (D113, resolves OB-069-2; absorbs T-064-B4), focusRing token + shared ring mechanism (D114), traversal-order contract (D115), central keyboard test; T-069-B5 deferred to the F-070 phase | F-069 |
 | G4 | Phase acceptance: screenshots vs the D103 (v0.3.0) prototype contract; PR-7 re-scored | — |
 
-*Retro (IMP-ids): (none yet)*
+*Retro (IMP-ids): candidate IMP-005 (agents never write operator verbs; closeout
+fields stay literal placeholders; verification greps for premature acceptance
+language) — minted from the S16 correction, to be ratified at the P2 retro.*

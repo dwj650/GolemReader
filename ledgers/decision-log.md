@@ -1100,3 +1100,102 @@ opted out).
 ## Consequences
 OB-067-3 resolved. The composition is proven at the provider seam by the
 central harness, mirroring D108's proof shape.
+
+# Decision D113 — Central keyboard test covers all four current surfaces
+- Date: 2026-07-14  ·  Status: locked  ·  Maps to phase: P2 (S17)
+- Operator-delegated? no — operator approved 2026-07-14
+
+## Context
+F-069 owns the central keyboard test every surface defers to (D69). OB-069-2 left
+open which surfaces the first pass covers. T-064-B4 (keyboard traversal hits every
+Settings entry) was deferred from S13 to S17. F-070 onboarding, also covered by the
+contract (D74, T-069-B5), does not exist yet (deferred by D100).
+
+## Decision
+The S17 central keyboard test covers **all four surfaces that exist today** —
+Reading View, Now Playing, Settings, and the bottom navigation bar — for
+reachability, order, and activation. T-064-B4 folds into the Settings coverage.
+T-069-B5 is **deferred with owner: the phase that builds F-070**. This resolves
+OB-069-2.
+
+## Reasoning
+Mirrors D109's "everything that exists today" pattern, which dissolved the
+equivalent question for text scaling instead of leaving a partial list to
+re-litigate. The app has only these four surfaces; full coverage is cheap now and
+sets the precedent that new surfaces join the test when built.
+
+## Alternatives considered
+A narrower first pass (Settings only, where T-064-B4 points) was rejected: the
+other three surfaces hold roughly ten controls total, savings were negligible, and
+it would carry a fresh open boundary out of the step instead of closing one.
+
+## Consequences
+Any future surface absent from the central test is a visible gap, not a silent
+one. Onboarding's keyboard check has a recorded owner and cannot be silently
+dropped.
+
+# Decision D114 — focusRing token across all four value-sets; one shared ring mechanism
+- Date: 2026-07-14  ·  Status: locked  ·  Maps to phase: P2 (S17)
+- Operator-delegated? no — operator approved 2026-07-14
+
+## Context
+R3/D68 require a clearly visible, token-driven focus indicator that survives high
+contrast (F-066 soft-dependency). No focus token exists in GolemColors; Material's
+default focus indication is subtle, not token-driven, and can wash out in HC.
+
+## Decision
+Add one `focusRing` color token to `GolemColors`, authored in **all four
+value-sets** (dark, light, hcDark, hcLight — the D106 pattern). In the HC sets the
+value must meet the **≥ 3:1** non-text contrast floor (D105) against that set's
+background/surface colors, proven by automated contrast math. One **shared drawing
+mechanism** (a reusable modifier) renders a visible outline on the focused control
+using the token; it is applied to every control, and no control defines a custom
+focus look. The ring has **no animation by construction**, keeping it outside
+F-067's jurisdiction. The D101 no-hardcode guard extends to the new token
+automatically.
+
+## Reasoning
+Token authorship keeps the visual contract in the theme system where the whole P2
+architecture put it; the shared mechanism guarantees one consistent focus language;
+the 3:1 floor makes "survives high contrast" a testable number.
+
+## Alternatives considered
+Relying on Material's built-in focus indication was rejected: not token-driven
+(fails R3's wording), genuinely hard to see, and hands the visual contract to
+library defaults.
+
+## Consequences
+Exact ring colors are judged at the operator's closeout look-check (prototype-and-
+look, as with the S14 HC palette); the SOW ships proposed values meeting the
+contrast math. Future controls adopt the ring by wearing the shared modifier.
+
+# Decision D115 — Traversal-order contract: content first, nav last; Tab/Shift-Tab tested
+- Date: 2026-07-14  ·  Status: locked  ·  Maps to phase: P2 (S17)
+- Operator-delegated? no — operator approved 2026-07-14
+
+## Context
+R2 requires a "logical" focus order, which is untestable until concrete per-surface
+sequences are declared. Compose's default traversal follows layout (reading) order.
+
+## Decision
+Declared orders: **Settings** — theme picker → HC toggle → text-size A− → A+ →
+reduced-motion toggle; **Now Playing** — preview row → Play → Pause → Resume →
+Stop; **Reading View** — Back (sentence rows are display, not focusable). On every
+surface, **screen content precedes the nav tabs**, which come last, left-to-right
+(Library → Now Playing → Settings). The tested contract is **Tab / Shift-Tab**;
+arrow keys remain whatever Material provides natively, with nothing built or
+promised beyond that.
+
+## Reasoning
+Content-first matches top-to-bottom reading flow on screens whose nav bar sits at
+the bottom; nav-first would open every screen with "do you want to leave?" and
+visually teleport the ring. Excluding sentence rows avoids inventing an undesigned
+reading-interaction feature and hundreds of traversal stops.
+
+## Alternatives considered
+Nav-first ordering (web-menu convention) rejected as contradicting the bottom-bar
+layout. Focusable sentence rows rejected as scope invention.
+
+## Consequences
+The central test asserts these exact sequences forward and backward. Order fixes
+(`focusProperties`) are added only where tests prove the layout default deviates.

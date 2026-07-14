@@ -245,3 +245,12 @@ The full guided walk is re-run at G4 with all axes on, as SOW'd.
 "Catching up..." to "Catching up", unifying spoken and visible text per D111's
 one-truth rule. A non-goal deviation, named at verification and ratified at
 acceptance 2026-07-14.
+
+---
+
+## Merge record (appended at S17 handoff, 2026-07-14)
+The operator completed the ff-only merge ritual: `s16-reduced-motion` merged into
+`main` at **b507c75** (the correction commit — the branch tip that superseded the
+pre-written acceptance records became main directly under fast-forward). The
+feature branch was deleted from origin per the ritual; `git ls-remote --heads`
+shows only `main`. S16 is closed. Step file status: **complete**.
