@@ -988,3 +988,115 @@ belongs in the step that owns the axis).
 Future screens must join the reflow harness when built (the deferred-to
 contract, D69). S14's T-066-B4 deferral is cleared by this step. The G4 phase
 gate re-walks the guided max-scale sweep with all axes on (T-068-R1).
+
+# Decision D110 — Reduced motion is a motion-override at the provider seam
+- Date: 2026-07-13  ·  Status: locked  ·  Maps to phase: P2 (S16)
+- Operator-delegated? yes — AI chose, reasoning below
+
+## Context
+F-067 needs a mechanism for applying reduced motion app-wide. S16 grounding
+(IMP-003) found `GolemMotion` is a single shared base block across all four
+theme value-sets (not per-theme-authored data), with three of its four tokens
+consumed by nothing; the only live animation is the highlight auto-scroll.
+
+## Decision
+`GolemThemeProvider` gains a `reducedMotion: Boolean` flowing like highContrast
+and textScale. When true, the provider supplies a reduced `GolemMotion` block
+(`highlightScrollEnabled = false`, `highlightTransitionMillis = 0`; polling and
+spinner values unchanged) inside the value-set it provides. Palettes,
+typography, shapes, elevation, and spacing are untouched; screens keep reading
+`GolemTheme.tokens.motion` with zero awareness of the toggle. No value-set
+doubling.
+
+## Reasoning
+Motion reduction is a rule, not authored data — unlike the D106 HC palettes,
+which are authored and justify explicit value-sets. Overriding the shared block
+at the seam mirrors the proven D108 wrap-don't-edit pattern: central, tested,
+zero-touch for screens.
+
+## Alternatives considered
+Doubling value-sets 4→8 with reduced twins (rejected: duplicates identical
+palette data purely to vary a block that isn't theme-varying, and taxes every
+future theme with a reduced twin).
+
+## Consequences
+Any future animated surface consumes motion tokens and inherits reduction
+automatically; the provider seam remains the single composition point for
+theme-adjacent axes. The central F-067 harness proves the override.
+
+# Decision D111 — Reduced-motion semantics + starvation announcement policy
+- Date: 2026-07-13  ·  Status: locked  ·  Maps to phase: P2 (S16)
+- Operator-delegated? no — Component B and Component C each operator-approved
+  individually 2026-07-13
+- Resolves: **OB-015-2** (brief-hold announcement). ID note: F-067 §13 cites
+  this item under the stale ID "OB-015-1"; F-015 v1.0.1's delta reconciled the
+  collision — the announcement OB is OB-015-2. This entry adopts the
+  reconciled ID, as that delta recommended.
+
+## Context
+Grounding found the highlight color flip already instant, the starvation
+indicator already static text, and the auto-scroll glide the only real motion.
+OB-015-2 left open whether sub-second holds announce at all, plus wording.
+
+## Decision
+Under reduced motion: the highlight auto-scroll becomes an instant jump
+(`scrollToItem`), still tracking the same sentence; the flip stays instant and
+the indicator stays static — both proven by test, not built; the polling
+interval is untouched (state-sampling, not motion). The starvation announcement:
+a hold persisting ≥ 500 ms (named constant, recorded tunable) raises a single
+polite live-region announcement reading exactly the visible text — "Catching
+up"; shorter blips are suppressed; there is no recovery announcement; the
+visible indicator's timing is F-015's and is unchanged. The announcement is
+**always on**, not gated behind the reduced-motion toggle — a deliberate
+reading of R3, recorded: it is screen-reader semantics, not motion, and gating
+spoken feedback for blind users behind a visual-motion toggle would be a
+wrong-way valve. Reduced-motion-on still satisfies R3 literally.
+
+## Reasoning
+One truth for all senses (spoken text = visible text); suppression below the
+threshold prevents TalkBack chatter over the book; resumed audio is its own
+recovery signal. The instant jump does strictly less work than the glide,
+aligning with the T-001-C1 contributor constraint by construction.
+
+## Alternatives considered
+Announcing every hold (rejected: chatter); a distinct recovery announcement
+(rejected: talks over the resuming book); gating the announcement behind the
+toggle (rejected: accessibility wrong-way valve); wiring the 220 ms flip
+animation just to disable it (rejected: building motion to remove it).
+
+## Consequences
+OB-015-2 resolved. The 500 ms constant is revisited only with device evidence.
+The decision logic is pure and JVM-proven; the utterance itself is device
+evidence at verification.
+
+# Decision D112 — Reduced-motion default: OS "Remove animations" OR in-app toggle
+- Date: 2026-07-13  ·  Status: locked  ·  Maps to phase: P2 (S16)
+- Operator-delegated? no — approved by confirmed informed sweep 2026-07-13
+- Resolves: **OB-067-3** (reduced-motion default).
+
+## Context
+OB-067-3 left open the default and whether to honor the OS reduced-motion
+setting. S15's D108 established the OS-composed-with-in-app pattern for text
+scaling.
+
+## Decision
+Effective reduced motion = OS Remove-animations signal (animator duration scale
+== 0, re-checked on resume) OR the in-app toggle. The in-app toggle defaults
+off, so a fresh install follows the phone. Stored as a fourth key-value row
+(`reduced_motion`) in `theme_settings` per D107 — applied, not a new decision.
+
+## Reasoning
+A user who set their whole phone to no-animations should never have to find an
+in-app toggle; a user who wants stillness only here still can. The OS setting
+additionally suppresses Material-internal micro-animations at framework level —
+covering what D70's two named surfaces don't.
+
+## Alternatives considered
+In-app only (rejected: ignores the user's declared system-wide preference);
+OS-only (rejected: no per-app choice); default on (rejected: motion is the
+designed default experience and OS composition already protects those who
+opted out).
+
+## Consequences
+OB-067-3 resolved. The composition is proven at the provider seam by the
+central harness, mirroring D108's proof shape.
