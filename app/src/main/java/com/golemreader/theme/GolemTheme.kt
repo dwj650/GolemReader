@@ -12,7 +12,9 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.unit.Density
 import androidx.core.view.WindowCompat
 
 val LocalGolemTheme = staticCompositionLocalOf { GolemThemeValueSets.dark }
@@ -28,12 +30,21 @@ object GolemTheme {
 fun GolemThemeProvider(
     choice: ThemeChoice,
     highContrast: Boolean,
+    textScale: TextScaleStep = TextScaleStep.Default,
     content: @Composable () -> Unit,
 ) {
     val systemDark = isSystemInDarkTheme()
     val valueSet = resolveThemeValueSet(choice, systemDark, highContrast)
+    val systemDensity = LocalDensity.current
+    val scaledDensity = Density(
+        density = systemDensity.density,
+        fontScale = combinedFontScale(systemDensity.fontScale, textScale),
+    )
     ApplySystemBars(valueSet)
-    CompositionLocalProvider(LocalGolemTheme provides valueSet) {
+    CompositionLocalProvider(
+        LocalGolemTheme provides valueSet,
+        LocalDensity provides scaledDensity,
+    ) {
         MaterialTheme(
             colorScheme = valueSet.toMaterialColorScheme(),
             typography = MaterialTheme.typography,
@@ -41,6 +52,9 @@ fun GolemThemeProvider(
         )
     }
 }
+
+internal fun combinedFontScale(systemFontScale: Float, textScale: TextScaleStep): Float =
+    systemFontScale * textScale.multiplier
 
 @Composable
 private fun ApplySystemBars(valueSet: GolemThemeValueSet) {

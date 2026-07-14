@@ -7,7 +7,7 @@ if-incomplete: "You are at the source of truth. If something isn't here, it isn'
 ---
 # Current state — THE source of truth for "now"
 
-- **Active version:** V1 (in progress; V0 foundation complete, archived at `archive/V0-P1/`)   **Phase:** P2 — Accessible Shell (entered at G1)   **Step:** S15 — Text scaling (active; SOW approved, handoff to agent pending)   **current-rung:** Orient
+- **Active version:** V1 (in progress; V0 foundation complete, archived at `archive/V0-P1/`)   **Phase:** P2 — Accessible Shell (entered at G1)   **Step:** S15 — Text scaling (implementation complete; independent verification pending)   **current-rung:** Commit
 - **Last committed:** S15 handoff bundle on `s15-handoff` → merged ff-only to main; before that, S14 merged at a87f5be
 - **Coverage target:** see reference/coverage-target.md   ·   **Test posture (active step):** automated (JVM) + agent-run device + guided-manual look-check at closeout
 
@@ -19,15 +19,12 @@ contrast harness with its negative proof. Operator approved all four archived
 captures 2026-07-13; the actual look-check sequence is recorded in
 `state/active/step-S14.md`.
 
-**S15 — Text scaling (F-068) is active.** SOW v1.0.0 approved by the operator
-2026-07-13 (`state/active/step-S15.md`): a five-step in-app multiplier (D108)
-applied once at the theme provider via density composition — zero screen-code
-changes — a stepper control registered under Accessibility, a third
-`theme_settings` KV row (D107 applied, no migration), and the central
-scaling/reflow harness over four surfaces (D109), folding in the T-066-B4
-scaling half inherited from S14. Grounding found the OS half and the no-hardcode
-guard already exist; the named risk is the framework-fixed bottom nav height at
-max scale (explicit device evidence required). D-ceiling: **D109**.
+**S15 — Text scaling (F-068) is implemented on `s15-text-scaling`.** The five-step
+multiplier is applied only at `GolemThemeProvider`; the IO-dispatched third KV row,
+Accessibility stepper, central JVM harness, and four SM-S918U evidence captures are
+complete. At Android 2.0 × app 1.5, all D109 surfaces reflowed; bottom-nav labels did
+not clip. Final JVM, build, no-hardcode, and diff checks passed; G3 remains before push.
+D-ceiling: **D109**.
 
 ## Open items needing attention
 - T-057-C1 and T-057-C2 remain owed agent-run measurements; T-057-C3 remains a contributor
@@ -54,7 +51,5 @@ max scale (explicit device evidence required). D-ceiling: **D109**.
   `git branch -vv` review) next time the operator is on p1.
 
 ## Next action
-Hand `state/active/step-S15.md` to the coding agent on branch
-`s15-text-scaling`. Verification is against real branch code per the SOW's
-acceptance criteria; look-check precedes the commit-approval verb (S14 sequence
-lesson).
+Run fresh G3 verification, commit and push `s15-text-scaling`, then keep the branch
+for independent verification. Guided T-068-R1 look-check remains for closeout/G4.

@@ -20,6 +20,8 @@ import com.golemreader.theme.GolemThemeProvider
 import com.golemreader.theme.HighContrastToggle
 import com.golemreader.theme.ThemeChoice
 import com.golemreader.theme.ThemeChoicePicker
+import com.golemreader.theme.TextScaleStep
+import com.golemreader.theme.TextScaleStepper
 import com.golemreader.text.SentenceRecord
 import com.golemreader.transport.TransportCommands
 import com.golemreader.ui.nowplaying.NowPlayingScreen
@@ -40,8 +42,10 @@ fun GolemReaderApp(
     starvationState: StarvationState = remember { StarvationState() },
     themeChoice: ThemeChoice = ThemeChoice.FollowSystem,
     highContrast: Boolean = false,
+    textScale: TextScaleStep = TextScaleStep.Default,
     onThemeChoiceSelected: (ThemeChoice) -> Unit = {},
     onHighContrastToggled: (Boolean) -> Unit = {},
+    onTextScaleChanged: (TextScaleStep) -> Unit = {},
     transportControls: NowPlayingTransportControls = remember {
         NowPlayingTransportControls(TransportCommands())
     },
@@ -52,7 +56,11 @@ fun GolemReaderApp(
         navigation = navigation.onBack()
     }
 
-    GolemThemeProvider(choice = themeChoice, highContrast = highContrast) {
+    GolemThemeProvider(
+        choice = themeChoice,
+        highContrast = highContrast,
+        textScale = textScale,
+    ) {
         val tokens = GolemTheme.tokens
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -91,6 +99,10 @@ fun GolemReaderApp(
                                     SettingId.HighContrast -> HighContrastToggle(
                                         enabled = highContrast,
                                         onToggled = onHighContrastToggled,
+                                    )
+                                    SettingId.TextScale -> TextScaleStepper(
+                                        step = textScale,
+                                        onStepChanged = onTextScaleChanged,
                                     )
                                     else -> Unit
                                 }

@@ -23,4 +23,12 @@ class MainActivityThemeStartupTest {
         assertTrue(source.contains("highContrastFlow()"))
         assertFalse(source.contains("currentHighContrast()"))
     }
+
+    @Test
+    fun mainActivityCollectsTextScaleWithoutSynchronousDatabaseRead() {
+        val source = File("src/main/java/com/golemreader/MainActivity.kt").readText()
+
+        assertTrue(source.contains("textScaleFlow()"))
+        assertFalse(source.contains("currentTextScale()"))
+    }
 }

@@ -16,14 +16,16 @@ class NoHardcodeGuardTest {
     }
 
     @Test
-    fun guardFailsSeededUiLiteralOutsideThemePackage() {
+    fun guardFailsSeededFontSizeLiteralOutsideThemePackage() {
         val seed = File(repoRoot, "app/src/main/java/com/golemreader/ui/SeededHardcodeViolation.kt")
         try {
             seed.writeText(
                 """
                 package com.golemreader.ui
 
-                private val seededViolation = androidx.compose.ui.graphics.Color(0xFF123456)
+                import androidx.compose.ui.unit.sp
+
+                private val seededFontSizeViolation = 18.sp
                 """.trimIndent(),
             )
 

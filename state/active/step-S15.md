@@ -6,7 +6,7 @@ updated: 2026-07-13
 phase: P2
 features: [F-068]
 cross-refs: [D69, D100, D101, D104, D105, D106, D107, D108, D109, PR-7, IMP-001, IMP-003]
-current-rung: Orient
+current-rung: Commit
 if-incomplete: "Return to state/current-state.md."
 ---
 # Step S15 — Text scaling (F-068): combined multiplier, stepper control, reflow proof
@@ -170,3 +170,57 @@ its feature now exists).
 - **Agent-run device (Medium):** live scaling, persistence, HC/theme
   composition, max-scale walk with archived screenshots.
 - **Guided-manual (Medium):** operator look-check at closeout (T-068-R1).
+
+## Implementation record (2026-07-13)
+- Added the five-step `TextScaleStep` model and theme-owned A− / percentage / A+
+  stepper. The provider alone multiplies system font scale by the selected step;
+  screens and typography value-sets are unchanged.
+- Reused `theme_settings` for the third `text_scale` row. The write is suspend and
+  IO-dispatched; no schema or exported-schema file changed.
+- Registered Text size after High contrast in Accessibility and routed it through the
+  generic shell control seam. `MainActivity` collects the preference as a Flow.
+- Operator approved `app/build.gradle.kts` as a narrow changed-file addition solely
+  for the JVM Compose test dependency after the existing classpath proved insufficient.
+
+## Verification record (2026-07-13)
+- Clean baseline `./gradlew testDebugUnitTest` passed. TDD RED runs failed on missing
+  S15 APIs/registration/plumbing; focused GREEN runs then passed.
+- `TextScaleStepTest`, `ThemeSettingsRepositoryTest`, `SettingsMapTest`, startup,
+  stepper, plumbing, and `TextScalingLayoutTest` cover AC1–7. The layout harness
+  composes all four D109 surfaces at maximum density, compares token text pixels at
+  normal/raised in-app and OS scale, and proves HC + captured 3.0 font scale. Robolectric
+  does not alter final glyph bounds for font-scale changes, so device screenshots close
+  the layout-engine gap while JVM density-to-pixel assertions prove growth centrally.
+- Final fresh `./gradlew testDebugUnitTest`, `./gradlew assembleDebug`,
+  `bash guards/no-hardcode-check.sh`, and `git diff --check` passed before G3.
+- D101 negative proof is `NoHardcodeGuardTest`, which injects a temporary `18.sp` UI
+  font-size literal and requires the real guard to fail before confirming clean pass.
+
+## Device evidence (2026-07-13)
+- SM-S918U `R5CW72ZRMWP`: Android font scale 2.0 × app 1.5. Live scaling, persistence,
+  Light/Dark/HC composition, Settings/Now Playing/Reading reflow, and playback survival
+  passed. Original Android font scale 1.0 was restored afterward.
+- Bottom navigation did **not** clip. `Now Playing` remained within its item by 8px on
+  the left and 9px on the right at the tightest observed frame, so the named halt
+  condition did not trigger.
+- Evidence: `archive/S15-text-scaling/max-scale-settings.png`,
+  `max-scale-reading.png`, `bottom-nav-max-scale-close-up.png`,
+  `high-contrast-max-scale.png`, and `run-log.md`.
+
+## Acceptance evidence map
+1. AC1 — `TextScaleStepTest` + `TextScalingLayoutTest` provider capture.
+2. AC2 — provider-only source/plumbing tests + SM-S918U live-growth evidence.
+3. AC3 — four `TextScalingLayoutTest` surface tests + four archived device captures.
+4. AC4 — `NoHardcodeGuardTest` negative seed + clean guard output.
+5. AC5 — `TextScaleStepTest.providerSeamCombinesSystemAndInAppFontScaleMultiplicatively`
+   and device Android-scale observation.
+6. AC6 — `TextScalingLayoutTest.highContrastTokensAndMaximumTextScaleComposeWithoutInterference`
+   + HC/max screenshot.
+7. AC7 — repository off-thread test + `SettingsMapTest` Accessibility ordering/absence.
+8. AC8 — final fresh commands recorded at G3 below.
+9. AC9 — `archive/S15-text-scaling/run-log.md` and four named screenshots.
+
+## Closeout status
+Implementation and agent-run evidence are complete at high automated / medium device
+confidence. T-068-R1 remains the operator look-check at G4. Branch disposition is fixed
+by operator instruction: keep `s15-text-scaling` after push for independent verification.

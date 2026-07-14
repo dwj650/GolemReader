@@ -64,6 +64,8 @@ dependencies {
     ksp("androidx.room:room-compiler:2.8.4")
 
     testImplementation("androidx.room:room-testing:2.8.4")
+    testImplementation(composeBom)
+    testImplementation("androidx.compose.ui:ui-test-junit4")
     testImplementation("androidx.test:core-ktx:1.7.0")
     testImplementation("androidx.test.ext:junit-ktx:1.3.0")
     testImplementation("junit:junit:4.13.2")

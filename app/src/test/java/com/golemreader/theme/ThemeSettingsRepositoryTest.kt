@@ -95,6 +95,44 @@ class ThemeSettingsRepositoryTest {
         }
     }
 
+    @Test
+    fun textScaleDefaultsToOneHundredPercentAndPersistsIndependently() = runBlocking {
+        val database = openDatabase()
+        try {
+            val repository = ThemeSettingsRepository(database.themeSettingsDao())
+
+            assertEquals(TextScaleStep.Default, repository.textScaleFlow().first())
+
+            repository.setChoice(ThemeChoice.Light)
+            repository.setHighContrast(true)
+            repository.setTextScale(TextScaleStep.Maximum)
+
+            assertEquals(ThemeChoice.Light, repository.currentChoice())
+            assertEquals(true, repository.highContrastFlow().first())
+            assertEquals(TextScaleStep.Maximum, repository.textScaleFlow().first())
+        } finally {
+            database.close()
+        }
+    }
+
+    @Test
+    fun setTextScaleExecutesDaoWriteOffTheCallingThread() = runBlocking {
+        val callingThread = Thread.currentThread().name
+        val dao = RecordingThemeSettingsDao()
+        Executors.newSingleThreadExecutor { runnable ->
+            Thread(runnable, "text-scale-settings-io")
+        }.asCoroutineDispatcher().use { ioDispatcher ->
+            val repository = ThemeSettingsRepository(dao, ioDispatcher)
+
+            repository.setTextScale(TextScaleStep.Maximum)
+
+            assertEquals(ThemeSettingEntity.TEXT_SCALE_KEY, dao.entity?.key)
+            assertEquals(TextScaleStep.Maximum.storedValue, dao.entity?.choice)
+            assertTrue(dao.writeThread?.startsWith("text-scale-settings-io") == true)
+            assertNotEquals(callingThread, dao.writeThread)
+        }
+    }
+
     private fun openDatabase(): PreciousDatabase =
         Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),

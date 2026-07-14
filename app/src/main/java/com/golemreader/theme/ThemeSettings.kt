@@ -34,6 +34,7 @@ data class ThemeSettingEntity(
     companion object {
         const val THEME_CHOICE_KEY = "theme_choice"
         const val HIGH_CONTRAST_KEY = "high_contrast"
+        const val TEXT_SCALE_KEY = "text_scale"
     }
 }
 
@@ -63,6 +64,10 @@ class ThemeSettingsRepository(
         dao.observe(ThemeSettingEntity.HIGH_CONTRAST_KEY)
             .map { entity -> entity?.choice == true.toString() }
 
+    fun textScaleFlow(): Flow<TextScaleStep> =
+        dao.observe(ThemeSettingEntity.TEXT_SCALE_KEY)
+            .map { entity -> TextScaleStep.fromStoredValue(entity?.choice) }
+
     suspend fun setChoice(choice: ThemeChoice) = withContext(ioDispatcher) {
         dao.upsert(ThemeSettingEntity(choice = choice.storedValue))
     }
@@ -72,6 +77,16 @@ class ThemeSettingsRepository(
             ThemeSettingEntity(
                 key = ThemeSettingEntity.HIGH_CONTRAST_KEY,
                 choice = enabled.toString(),
+            ),
+        )
+    }
+
+
+    suspend fun setTextScale(step: TextScaleStep) = withContext(ioDispatcher) {
+        dao.upsert(
+            ThemeSettingEntity(
+                key = ThemeSettingEntity.TEXT_SCALE_KEY,
+                choice = step.storedValue,
             ),
         )
     }

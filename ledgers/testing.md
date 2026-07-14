@@ -349,6 +349,31 @@ if-incomplete: "Coverage policy is reference/coverage-target.md."
   `archive/S14-high-contrast/`. Objective checks: medium confidence. Guided legibility
   look-check: operator approved all four captures on 2026-07-13. Confidence: medium.
 
+- **T-068-P1 / T-068-B4** — `TextScaleStepTest` verifies all five stored values and
+  multipliers, unknown/default resolution, step boundaries, OS × in-app multiplication,
+  and a 2.0 × 1.5 combined scale of 3.0. `TextScalingLayoutTest` captures the same 3.0
+  density at the provider seam. Confidence: high.
+- **T-068-B1 / T-068-B2 / T-066-B4 scaling half** — `TextScalingLayoutTest` composes
+  Settings, Now Playing, Reading, and bottom navigation at maximum combined scale and
+  asserts their text nodes remain laid out/displayed. It compares density-resolved text
+  pixels for every surface role at normal/raised in-app scale, separately raises OS scale
+  with the app step fixed, and proves hcDark tokens coexist with font scale 3.0.
+  Robolectric 4.16 does not change final glyph bounds when `fontScale` changes, so the
+  SM-S918U screenshots close that layout-engine gap. Confidence: medium automated/device.
+- **T-068 preference / registry / control** — `ThemeSettingsRepositoryTest` proves the
+  `text_scale` row defaults independently, persists, and its suspend write runs on the
+  supplied IO dispatcher off the calling thread. `SettingsMapTest` proves Accessibility
+  lists High contrast then Text size and still omits unbuilt entries. Stepper and startup
+  tests cover labels, end disabling, routing, flow collection, and no synchronous read.
+  Confidence: high.
+- **T-068-B3 / D101** — `NoHardcodeGuardTest` is the negative proof: its temporary
+  UI `18.sp` font-size seed outside the theme package makes the real guard fail; the
+  clean guard passes. Confidence: high.
+- **T-068-C1 / S15 device proof** — SM-S918U at Android font scale 2.0 × app 1.5 showed
+  live app-wide growth, persistence through force-stop, Light/Dark/HC composition, no
+  clipping on all four D109 surfaces, and no playback interruption while scaling. Four
+  named captures and the run log are under `archive/S15-text-scaling/`. Confidence: medium.
+
 ## Resolved tool versions for S2
 - KSP Gradle plugin: `com.google.devtools.ksp:2.3.5` (**D81 primary path**, no
   `gradle.properties` fallback, no TD-001).

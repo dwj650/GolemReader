@@ -10,6 +10,7 @@ import com.golemreader.bootstrap.BookBootstrap
 import com.golemreader.storage.GolemStorageSubstrate
 import com.golemreader.theme.ThemeChoice
 import com.golemreader.theme.ThemeSettingsRepository
+import com.golemreader.theme.TextScaleStep
 import com.golemreader.ui.GolemReaderApp
 import kotlinx.coroutines.launch
 
@@ -29,6 +30,8 @@ class MainActivity : ComponentActivity() {
                 .collectAsState(initial = ThemeChoice.FollowSystem)
             val highContrast by themeRepository.highContrastFlow()
                 .collectAsState(initial = false)
+            val textScale by themeRepository.textScaleFlow()
+                .collectAsState(initial = TextScaleStep.Default)
             val themeWriteScope = rememberCoroutineScope()
             GolemReaderApp(
                 bookTitle = bootstrap.bookTitle,
@@ -37,11 +40,15 @@ class MainActivity : ComponentActivity() {
                 starvationState = bootstrap.starvationState,
                 themeChoice = themeChoice,
                 highContrast = highContrast,
+                textScale = textScale,
                 onThemeChoiceSelected = { choice ->
                     themeWriteScope.launch { themeRepository.setChoice(choice) }
                 },
                 onHighContrastToggled = { enabled ->
                     themeWriteScope.launch { themeRepository.setHighContrast(enabled) }
+                },
+                onTextScaleChanged = { step ->
+                    themeWriteScope.launch { themeRepository.setTextScale(step) }
                 },
                 transportControls = bootstrap.transportControls,
             )

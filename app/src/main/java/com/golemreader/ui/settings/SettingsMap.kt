@@ -5,6 +5,7 @@ value class SettingId(val value: String) {
     companion object {
         val Theme = SettingId("theme")
         val HighContrast = SettingId("high-contrast")
+        val TextScale = SettingId("text-scale")
         val Speed = SettingId("speed")
         val SentencePauses = SettingId("sentence-pauses")
         val Volume = SettingId("volume")
@@ -34,6 +35,7 @@ object SettingsMap {
             "F-066",
             owningFeatureBuilt = true,
         ),
+        SettingEntry(SettingId.TextScale, "Text size", "Accessibility", "F-068", owningFeatureBuilt = true),
         SettingEntry(SettingId.Speed, "Speed", "Playback", "F-005", owningFeatureBuilt = false),
         SettingEntry(
             SettingId.SentencePauses,
