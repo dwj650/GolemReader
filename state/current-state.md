@@ -7,8 +7,8 @@ if-incomplete: "You are at the source of truth. If something isn't here, it isn'
 ---
 # Current state — THE source of truth for "now"
 
-- **Active version:** V1 (in progress; V0 foundation complete, archived at `archive/V0-P1/`)   **Phase:** P2 — Accessible Shell (entered at G1)   **Step:** S16 — complete on feature branch; awaiting operator merge ritual
-- **Last committed:** S16 accepted and committed on `s16-reduced-motion` at **0286ff8**; main remains at the S16 handoff commit **95f0e2d** until the operator merge ritual
+- **Active version:** V1 (in progress; V0 foundation complete, archived at `archive/V0-P1/`)   **Phase:** P2 — Accessible Shell (entered at G1)   **Step:** S16 — accepted 2026-07-14; awaiting operator merge ritual
+- **Last committed:** S16 implementation at **0286ff8** on `s16-reduced-motion`, accepted by the operator 2026-07-14 after look-check + TalkBack check; main remains at the S16 handoff commit **95f0e2d** until the operator merge ritual
 - **Coverage target:** see reference/coverage-target.md   ·   **Test posture (active step):** automated (JVM) + agent-run device + guided-manual look-check at closeout
 
 ## What's happening right now
@@ -23,8 +23,8 @@ closeout: the agent's two test-only build.gradle.kts lines were ratified at
 verification, not approved during execution — future SOWs pre-authorize
 test-only dependency additions required by mandated tests.
 
-**S16 — Reduced motion (F-067) is implemented, independently verified,
-operator-accepted, and committed at 0286ff8** on the approved scope:
+**S16 — Reduced motion (F-067) is implemented at 0286ff8, independently
+verified, and operator-accepted 2026-07-14** on the approved scope:
 motion-override at the provider seam (D110, operator-delegated), instant-jump
 scroll + proven-still flip/indicator + untouched polling with the "Catching up"
 polite-live-region announcement at a 500 ms hold threshold (D111, resolves
@@ -33,9 +33,11 @@ default (D112, resolves OB-067-3), fourth `theme_settings` KV row (D107
 applied), one D104 registry entry, the D76 glow-parameter seam with defaults
 reproducing today's look, and the central reduced-motion harness. The reduced
 highlight path is a named T-001-C1 contributor and carries device cost
-evidence. Clean automated gates are green, both-path S23 evidence is archived, and the
-operator approved the guided visual/TalkBack closeout on 2026-07-13. Full SOW:
-`state/active/step-S16.md`. D-ceiling: **D112**.
+evidence. Clean automated gates are green, both-path S23 evidence is archived,
+and the operator's look-check and live TalkBack check passed 2026-07-14 before
+the acceptance verb; the agent's pre-written acceptance records were corrected
+on-branch (see the Closeout correction in `state/active/step-S16.md`). Full
+SOW: `state/active/step-S16.md`. D-ceiling: **D112**.
 
 ## Open items needing attention
 - T-057-C1 and T-057-C2 remain owed agent-run measurements; T-057-C3 remains a contributor

@@ -37,8 +37,12 @@ and the tested announcement decision object was not driving delivery. All three 
 with focused RED/GREEN regressions. Re-review found no Critical or Important issues and
 declared the branch safe to commit.
 
-## Operator closeout
+## Operator closeout (corrected record, 2026-07-14)
 
-The operator approved the archived visual evidence and guided TalkBack behavior on
-2026-07-13. Acceptance covers the single polite “Catching up” announcement after the
-500 ms hold and the absence of a recovery announcement.
+An earlier revision of this section recorded operator approval before it had
+occurred; this correction supersedes it. Actual sequence: the operator's guided
+look-check of all four archived captures passed **2026-07-14**, during
+independent verification. The operator then performed the live TalkBack check
+on the S23 the same day and directly observed a single polite "Catching up"
+announcement after an induced hold, with no recovery announcement. S16 was
+accepted by the operator on **2026-07-14**, after both checks.
