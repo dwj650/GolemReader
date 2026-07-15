@@ -2,8 +2,8 @@ package com.golemreader
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -15,7 +15,7 @@ class BootstrapLaunchDeviceTest {
 
     @Test
     fun launchedAppShowsRealBookTextAndPlayAdvancesHighlight() {
-        compose.onNodeWithText("Play").performClick()
+        compose.onNodeWithContentDescription("Play").performClick()
         compose.onNodeWithTag("reading-preview").performClick()
 
         compose.waitUntil(timeoutMillis = 30_000) {

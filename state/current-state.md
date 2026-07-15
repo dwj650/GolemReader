@@ -13,6 +13,14 @@ if-incomplete: "You are at the source of truth. If something isn't here, it isn'
 - **D-ceiling: D118**
 
 ## What's happening right now
+**S18 implementation is verification-ready on `feature/s18-inset-icon-transport`.**
+The branch replaces the four transport labels with accessible Material glyphs, applies
+the status-bar inset at the root app shell, retains all S17 transport tags and focus
+rings, and archives the eight T-018-R1/R2 captures. Agent-run B1–B4, the configured
+JVM check, and the debug build are recorded in the S18 run log. No S17 test file was
+modified. The SOW closeout fields remain literal placeholders pending the external
+look-check and device walk.
+
 **The P2 step ladder is complete — S12–S17 all merged.** S17 (keyboard navigation,
 F-069) was accepted 2026-07-14 after look-check and the full T-069-R1 keyboard-only
 walkthrough, and merged at **7726eed**. What it added: the `focusRing` token across all
@@ -107,9 +115,8 @@ SOW v1.0.0 at `state/active/step-S18.md`, grounded against main @ 7726eed. Remed
   machine in use and was clean after the S17 ritual.
 
 ## Next action
-Agent implements **S18** from `state/active/step-S18.md` on branch
-`feature/s18-inset-icon-transport` and pushes it. Then: independent verification against
-real branch code (never the report; grep for premature acceptance language per IMP-005)
+Push `feature/s18-inset-icon-transport`, then run independent verification against real
+branch code (never the report; grep for premature acceptance language per IMP-005)
 → operator look-check of the eight archived captures → operator's T-018-R3 both-edges
 walk on the S23 → acceptance verb → ff-only merge ritual. **G4 then accepts and the P2
 retro runs**, followed by G1 for P3 in its own session.
