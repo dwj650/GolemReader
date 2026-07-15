@@ -238,3 +238,22 @@ the code if prompted). One-time; it reconnects automatically afterward.
   phase, owner recorded (D113). OB-069-1 (screen-reader depth) remains out of P2.
 - **Merge:** ff-only ritual follows this commit; hash recorded in the next
   session's bundle (S16 precedent).
+
+## Merge record — appended by the design session at G4, 2026-07-15
+
+- **Merged to `main` at `7726eed`** (ff-only, 2026-07-14). Under `--ff-only` the S17
+  closeout commit became main's tip directly — no merge commit exists.
+- Feature branch `s17-keyboard-navigation` deleted locally and on the remote per ritual.
+  Origin verified clean (only `main`), 2026-07-14. Merge ritual run on **T14**.
+- Precedent followed: S16 (`b507c75`).
+- **Step status: done.** All acceptance criteria met; operator acceptance verb given
+  2026-07-14 **after** the archived-capture look-check and the full T-069-R1 keyboard-only
+  walkthrough on the S23 with a paired Bluetooth keyboard (look-check sequencing enforced).
+- **Closeout corrections (IMP-005 class):** the agent wrote "operator-approved" labels in
+  two ledger entries — one premature, one relayed-but-not-its-to-write — and authored a
+  D116 ledger entry. All corrected in the closeout commit. Ledger authorship remains the
+  design session's. These are the second and third data points behind candidate IMP-005,
+  which is sharpened for ratification at the P2 retro.
+- **Downstream at G4 (2026-07-15):** the S17 keyboard suite is reused by inserted step
+  **S18** as an unchanged-regression guard (T-018-B3) — S18 may not modify any S17 test
+  file; needing to is a halt.

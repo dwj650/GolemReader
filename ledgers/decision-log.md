@@ -1246,3 +1246,74 @@ rejected as leaving the latent sibling defect on nav-tab transitions unfixed.
 Requester ownership stays in `GolemReaderApp.kt`; wiring is limited to the three
 existing first-control files. The central device test permanently asserts preview →
 Reading places focus on Back and includes one nav-tab transition placement assertion.
+# Decision D117 — G4 findings F1/F2 become inserted step S18; status-bar inset contract
+- Date: 2026-07-15  ·  Status: locked  ·  Maps to phase: P2 (G4 → S18)
+- Operator-delegated? no — operator approved 2026-07-15 (Component 1)
+
+## Context
+The G4 phase acceptance gate compared the merged app (main @ 7726eed) against the
+D103 (v0.3.0) prototype visual contract and produced two findings. **F1**: screen
+titles on Now Playing and Settings render beneath the system status bar, colliding
+with the clock; the code audit found no window-inset handling anywhere in
+`app/src/main/java/` — the top inset is unhandled. **F2**: transport labels wrap
+mid-word; operator evidence at max text scale shows deeper wrapping (Resume to three
+lines) but full containment — no collision, no clipping. Both findings predate this
+gate (present in the S13 archives) and survived earlier look-checks because those were
+per-axis checks, not app-vs-contract checks — which is precisely what this gate exists
+to catch. The bottom edge was audited and is already correct: Material3
+`NavigationBar` consumes the navigation-bar inset natively.
+
+## Decision
+F1 is a **real defect** and F2 is **cosmetic**, but both are remediated together in a
+single inserted step **S18** before G4 accepts. This follows the P1 gate precedent
+(D96/D97): real defects at a gate become inserted steps by recorded decision — never
+silent fixes, never silent passes. The **inset contract**: screen content respects the
+system status-bar inset on all four surfaces; existing theme system-bar *coloring*
+(`GolemTheme.kt` lines 87–88) is untouched — colors are correct, only padding is
+missing; `GolemBottomNavigation.kt` is untouched; the bottom edge is **verified, not
+modified** (T-018-R3). The gate remains **open** until S18 merges, after which G4
+accepts and the P2 retro runs.
+
+## Rationale
+Shipping a phase named "Accessible Shell" with an unhandled status-bar inset would be
+a recorded blemish on the phase's own thesis. F2 rides along because the step overhead
+is already paid and the fix (D118) is near-zero-cost once a step is open — but it is
+fenced to wrapping only, with no transport redesign, since that surface has a
+demolition date at F-003.
+
+# Decision D118 — Transport glyph mapping: distinguish by glyph, keep four controls
+- Date: 2026-07-15  ·  Status: locked  ·  Maps to phase: P2 (S18)
+- Operator-delegated? no — operator approved 2026-07-15 (Component 2, Option A)
+
+## Context
+Replacing transport text labels with icons kills F2 permanently (glyphs cannot wrap)
+and moves the transport toward the D103 contract, whose transport is icon-based. The
+design problem: **Play and Resume share the triangle** by convention — there is no
+universal "resume" glyph — so four controls map to three familiar ideas.
+
+## Decision
+Distinguish by glyph, keeping all four controls:
+**Play → ▶** (filled triangle) · **Pause → ❚❚** (two bars) ·
+**Resume → ▶❚** (triangle-with-bar) · **Stop → ■** (square).
+Every icon carries its accessible name via `contentDescription` ("Play", "Pause",
+"Resume", "Stop"), so meaning survives for assistive tech regardless of glyph
+recognizability, and the deferred screen-reader work (OB-069-1) inherits it free. The
+four `testTag` values are **unchanged** — they are load-bearing for the S17 keyboard
+tests (`KeyboardNavigationDeviceTest` finds transport controls by tag, not text), so
+the swap is invisible to them. Exactly one repo test finds a transport control by
+visible text (`BootstrapLaunchDeviceTest` line 18); it is updated to select by
+accessible name.
+
+## Alternatives considered and rejected
+**Collapse Play and Resume into one control** — cleanest visually and closest to the
+contract's single play/pause button, but it deletes a control the app has and the
+tests exercise. That is a behavior redesign wearing an icon costume; it belongs to the
+F-003 transport work, not a fenced cosmetic step. **Icons plus small text labels** —
+safest for recognizability, but reintroduces text and therefore reintroduces wrapping,
+defeating the purpose.
+
+## Provision
+Glyph recognizability is judged by the operator at look-check on real hardware
+(T-018-R1). If ▶❚ reads poorly for Resume, the accessible name still carries the
+meaning and a glyph revision is a cheap follow-up — the contract locked here is
+"four distinct glyphs, names always present," not any specific pixel.
