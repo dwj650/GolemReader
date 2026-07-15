@@ -15,7 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.SkipNext
+import androidx.compose.material.icons.filled.PlayCircle
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -191,7 +191,7 @@ private fun TransportButtons(controls: NowPlayingTransportControls) {
             onClick = controls::resume,
             modifier = Modifier.weight(1f).golemFocusRing().testTag("transport-resume"),
         ) {
-            Icon(Icons.Filled.SkipNext, contentDescription = "Resume")
+            Icon(Icons.Filled.PlayCircle, contentDescription = "Resume")
         }
         Button(
             onClick = controls::stop,
