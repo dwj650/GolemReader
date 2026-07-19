@@ -112,3 +112,64 @@ takes effect.
 - **IMP-001 standing rule for every P2 handoff:** the operator runs
   `git branch --show-current` and reads the output before any multi-command
   paste, and stops at the first failed command in a sequence.
+
+---
+
+## G4 — Phase P2 acceptance record (design session, 2026-07-15)
+
+**Phase P2 — Accessible Shell — ACCEPTED by the operator 2026-07-15.**
+
+### Reconciliation: the visual contract
+This file's G4 definition (above) names the **D98** prototype as the gate's visual
+contract. That text predates S13, which minted **D103** and superseded D98 with the
+**v0.3.0** prototype (`foundation/prototype/golem-reader-prototype-v0_3_0.jsx`, palette
+values copied verbatim from `GolemThemeTokens.kt`). **The gate ran against v0.3.0.**
+Recorded here rather than edited above, so the drift stays visible.
+
+### Gate checks — all run 2026-07-15 with the operator
+| Check | Result |
+|---|---|
+| Contract comparison vs **D103 (v0.3.0)** | **Conforms.** Palettes match verbatim; Settings structure, two-tab topology (D102), preview strip, Reading View all match. Prototype roadmap illustration correctly absent (D68/D103). Two findings logged: **F1**, **F2** |
+| **T-064-R2** (deferred from S13) | **Pass.** Settings shell operable at max scale under HC, keyboard-only, full declared traversal both directions. **Closes at this gate** |
+| **T-068-R1** full sweep, all axes stacked (S15 carried note) | **Pass.** HC × max scale × reduced motion × keyboard, all four surfaces, including live playback; highlight jumps cleanly, focus ring survives every surface. **Closes at this gate** |
+| **PR-7** re-scored | **MET** — from *open, gap recorded (D95)* at the P1 gate. All four defined contracts built and tested. Caveats ride along, do not block: OB-069-1 screen-reader depth deferred; T-069-B5 onboarding owner recorded |
+| Coverage + confidence | **Approved.** High on all four axes; every claim carries a machine test or a dated guided walk |
+| Registers current; docs/state reconciled | **Done** — including this reconciliation, and the backfill of `ledgers/improvement-register.md`, an unfilled template through P1 and P2 |
+| Baseline archived | **`archive/V1-P2/`** |
+
+### Gate findings and their disposition
+- **F1 — status-bar collision (real defect).** Screen titles rendered beneath the system
+  status bar on Now Playing and Settings. Code audit found **no window-inset handling
+  anywhere** in `app/src/main/java/`. Predated the gate (present in S13 archives);
+  survived earlier look-checks because those were per-axis, not app-vs-contract.
+- **F2 — transport label wrapping (cosmetic).** Labels wrapped mid-word; at max scale
+  Resume wrapped to three lines, others to two, all contained — no collision, no clipping.
+- **Disposition:** both remediated by inserted step **S18** (**D117**), following the P1
+  precedent (D96/D97) that real gate defects become inserted steps by recorded decision —
+  never silent fixes, never silent passes. S18 accepted 2026-07-15. F1 fixed by a single
+  `statusBarsPadding()` at the app root; F2 killed permanently by glyphs (**D118**, with a
+  ratified correction). The **bottom edge was audited as already correct** (Material3
+  `NavigationBar` consumes its inset natively) and was **verified, not modified**.
+
+### What the phase delivered
+An app that is themed, high-contrast-capable, text-scalable, motion-optional, and
+keyboard-operable — with every claim carrying either a machine test or a dated walk on
+real hardware, and the four axes proven to work **stacked**, during live playback, not
+merely one at a time. The phase was named "Accessible Shell" and earned the name.
+
+### What it honestly does not have (deliberate, recorded)
+Screen readers (OB-069-1 → future accessibility grooming); onboarding (F-070 → the phase
+that builds library + voice import, per the deferral above and D100; T-069-B5 owner
+recorded); a Library surface (D102 → F-019 phase); non-phone geometries.
+
+### Retro outputs
+Recorded in `ledgers/improvement-register.md`: **IMP-005 ratified** (widened boundary —
+agents write no project-record content at all); **IMP-006 minted, open** (the
+docs-with-code guard structurally contradicts the authorship split; agent guard-skipping
+is now always a halt; the `STATE_PATHS` fix is P3 design work); **IMP-007 minted,
+standing** (spike-first task gating promoted to standing practice). IMP-001 and IMP-003
+carried forward as standing; IMP-002 and IMP-004 closed.
+
+### Next
+**G1 for P3** in its own session — scope likely library/sources per the phase index.
+P3's G1 must read the register's `open` and `standing` rows (IMP-006 is the only open row).

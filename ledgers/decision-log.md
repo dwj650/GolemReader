@@ -1317,3 +1317,32 @@ Glyph recognizability is judged by the operator at look-check on real hardware
 (T-018-R1). If ▶❚ reads poorly for Resume, the accessible name still carries the
 meaning and a glyph revision is a cheap follow-up — the contract locked here is
 "four distinct glyphs, names always present," not any specific pixel.
+
+### D118 correction — Resume glyph, ratified at S18 verification (design session, 2026-07-15)
+
+**The originally specified Resume glyph was wrong, and the design session authored the
+error.** D118 specified "▶❚ (triangle-with-bar)" and described it as a resume
+convention. In Material's icon set that exact shape **is `Icons.Filled.SkipNext`** — the
+glyph nearly every media application uses for "skip to next track." The agent
+implemented `SkipNext` and was **correct to do so**: it followed the SOW literally. The
+fault is the specification's.
+
+Root cause worth keeping: **there is no standard resume glyph because the concept is not
+standard.** In nearly every player, resume *is* play. The design session invented a
+convention that does not exist.
+
+**Correction, operator-approved 2026-07-15:** Resume → **`Icons.Filled.PlayCircle`**
+(triangle within a circle). It remains in the "start audio" family, is visibly distinct
+from Play's bare `PlayArrow`, and never signifies "next track." `contentDescription`
+stays "Resume"; `testTag` stays `transport-resume`; the `golemFocusRing()` modifier is
+unchanged. Corrected on branch at `d295c66`, re-verified against real branch code, and
+confirmed by the operator's look-check and T-018-R3 device walk before acceptance.
+
+The amended mapping is therefore: **Play → `PlayArrow`** · **Pause → `Pause`** ·
+**Resume → `PlayCircle`** · **Stop → `Stop`**, each carrying its accessible name.
+
+**Forward note.** That no distinct resume glyph exists is evidence — not proof — that
+Play and Resume may be one idea wearing two buttons. Collapsing them was considered and
+rejected twice (at D118's design, and again at the correction) as a behavior redesign
+out of scope for a fenced cosmetic step. **It belongs to the F-003 transport work**,
+where the control set is revisited on its own merits. Recorded, not decided.

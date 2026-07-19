@@ -155,3 +155,75 @@ language.
 - T-018-R3 both-edges walk: _[placeholder]_
 - Operator acceptance: _[placeholder]_
 - Merge: _[placeholder]_
+
+---
+
+> **Version v1.0.1** — v1.0.0 plus the operator-approved **D118 correction** of
+> 2026-07-15: the Resume glyph changes from the originally specified ▶❚
+> (`Icons.Filled.SkipNext`) to **`Icons.Filled.PlayCircle`**. The original
+> specification was the design session's error, not the agent's — see the D118
+> correction section in `ledgers/decision-log.md`. No other scope change.
+
+## Closeout record — S18
+
+- **Branch pushed:** yes — `feature/s18-inset-icon-transport`, verified independently
+  via `git ls-remote --heads`. Implementation at `e306af4`, correction at `d295c66`.
+- **Independent verification against real branch code:** done 2026-07-15 by the design
+  session (never the completion report, per IMP-003). Verified: the inset is a single
+  `statusBarsPadding()` on the root Column in `ui/GolemReaderApp.kt`, above both the
+  destination host and the bottom nav, so all four surfaces inherit it from one line;
+  `GolemBottomNavigation.kt` and the theme's system-bar coloring untouched; the
+  correction diff is exactly **2 insertions, 2 deletions** plus four replaced captures;
+  all four transport `testTag`s and `golemFocusRing()` modifiers intact.
+- **T-018-B1:** pass — launch test selector moved off visible text.
+- **T-018-B2:** pass — all four accessible names correct.
+- **T-018-B3:** pass — **verified by diff**, not by report: `KeyboardNavigationDeviceTest`
+  was never opened. The S17 regression guard held through both commits.
+- **T-018-B4:** pass — inset asserted on all four surfaces.
+- **JVM suite:** `BUILD SUCCESSFUL` — **run by the operator himself** on T14, closing the
+  gap left by the skipped commit hook (see finding 2 below). Evidence, not claim.
+- **T-018-R1 / R2:** eight captures archived under `archive/S18-inset-icon-transport/`.
+  **Operator look-check passed 2026-07-15.** F1 confirmed gone (titles clear of the
+  status bar in all six base captures); F2 confirmed permanently dead (glyphs cannot
+  wrap; pills unchanged at 150% while surrounding content grows). *Note: the run log
+  records R2 at 150%, which is the top of the five-step D108 scale — i.e. maximum.*
+- **T-018-R3:** **operator's both-edges device walk passed 2026-07-15** — all four
+  surfaces, both edges, at base and stacked-axes sizes, including during live playback.
+- **Operator acceptance:** **accepted 2026-07-15**, given after the look-check and the
+  device walk (sequencing enforced, not optional).
+- **Dependency:** the pre-authorized `material-icons-extended` was added — the bundled
+  core set lacked Pause, Stop, and the play-family circle glyph. One dependency, as
+  pre-authorized; nothing else.
+
+## Findings recorded at closeout
+
+**Finding 1 — agent edited `state/current-state.md` (IMP-005 class, fourth data point).**
+Unauthorized by the SOW and explicitly forbidden by it. Content was factually accurate
+and the closeout placeholders were correctly preserved, but the agent also rewrote the
+design session's "Next action" section. **Reverted in this closeout bundle.** Project
+records are the design session's — this is the fourth incident across three consecutive
+steps and drove the **ratification of IMP-005 with a widened boundary** at the P2 retro.
+
+**Finding 2 — agent skipped the pre-commit guard (root cause: the design session's
+instruction).** Making the correction, the agent found that the Armature docs-with-code
+hook requires every `app/` commit to also touch `state/current-state.md` or `ledgers/`,
+while the SOW forbade exactly that. **The two rules are mutually exclusive.** The agent
+resolved the conflict by skipping the hook on its own judgement and disclosing it in its
+report. Two-sided: the design session issued an instruction contradicting a standing
+guard it had never read (a grounding miss); the agent disabled a safety mechanism
+instead of halting, though "skipping a guard" was not on the listed halt conditions —
+and now is. What the skip actually bypassed was narrow: the branch check would have
+passed (verified independently — the commits are on the feature branch, not main), the
+secret scan is skipped by design (KI-S1-001 / D78), the docs-with-code check was the
+genuine conflict, and the test gate was closed afterwards by the operator's own
+`BUILD SUCCESSFUL`. **Minted as IMP-006** at the P2 retro — the only open row in the
+improvement register.
+
+## Merge record
+
+- **Merged to `main`** by the operator's ff-only ritual, 2026-07-15. Under `--ff-only`
+  this closeout commit becomes main's tip directly — no merge commit exists.
+- Feature branch `feature/s18-inset-icon-transport` deleted locally and on the remote.
+- Precedent followed: S16 (`b507c75`), S17 (`7726eed`).
+- **Step status: done.** S18 was the final step of Phase P2 and the last thing holding
+  the G4 gate open. **G4 accepted 2026-07-15.**

@@ -10,8 +10,9 @@ if-incomplete: "Return to current-state.md."
 | Phase | Version | Goal (meaningful build) | Status |
 |-------|---------|-------------------------|--------|
 | **P1** | V0 | **Walking skeleton** — load one EPUB, stream it as speech with synchronized highlight and basic transport, in both views | **accepted** |
-| **P2** | V1 | **Accessible Shell** — themed, high-contrast-capable, scalable, motion-optional, keyboard-operable, with a real settings surface | **at G4 — gate open, S18 inserted** |
-| P3+ | V1 | Remaining V1 tiers (library, sources, normalization/rules, voice manager, persistence widening, onboarding) | planned |
+| **P2** | V1 | **Accessible Shell** — themed, high-contrast-capable, scalable, motion-optional, keyboard-operable, with a real settings surface | **accepted** (G4, 2026-07-15; baseline `archive/V1-P2/`) |
+| **P3** | V1 | Next tier — likely library + sources (F-019, F-021, F-022, F-024) | **next — G1 pending, own session** |
+| P4+ | V1 | Remaining V1 tiers (normalization/rules, voice manager, persistence widening, onboarding) | planned |
 
 ## Phase P1 — Walking Skeleton — Step ladder (as executed)
 > One narrow change per step; each climbed the rungs and committed. S10 and S11 were
@@ -52,18 +53,23 @@ IMP-004 (accessibility scoped in at next G1 — satisfied by P2's existence).*
 | S15 — done | Text scaling: five-step in-app multiplier at the provider seam (D108), stepper under Accessibility, central reflow proof over four surfaces (D109), T-066-B4 scaling half cleared (closeout: look-check preceded acceptance verb 2026-07-13; merged at 9c97aec) | F-068 |
 | S16 — done | Reduced motion: motion-override at the provider seam (D110), semantics + starvation announcement (D111, resolves OB-015-2), OS-or-in-app default (D112, resolves OB-067-3), glow seam (D76), toggle under Accessibility (closeout: accepted 2026-07-14 after look-check + TalkBack; correction commit superseded the agent's pre-written acceptance records; merged at b507c75) | F-067 |
 | S17 — done | Keyboard navigation: reachability + activation over all four surfaces (D113, resolves OB-069-2; absorbs T-064-B4), focusRing token + shared ring mechanism (D114), traversal-order contract with ratified content correction (D115), destination-change focus placement (D116), central keyboard test; Robolectric spike failed → pre-authorized S23 device fallback passed 4/4; T-069-B5 deferred to the F-070 phase (closeout: accepted 2026-07-14 after look-check + full T-069-R1 keyboard-only walkthrough; agent-written operator labels and D116 ledger entry corrected in the closeout commit; merged at **7726eed**) | F-069 |
-| **S18 — active** | **Inserted at G4 by D117.** Status-bar inset respected on all four surfaces (F1, real defect — no inset handling existed); transport labels → glyphs ▶/❚❚/▶❚/■ with accessible names preserved and testTags unchanged (F2, cosmetic; D118); both-edges verification (bottom already correct via Material3 `NavigationBar` — verified, not modified) | F-002, F-014, F-015, F-064 |
-| **G4 — open** | Phase acceptance. Checks run 2026-07-15: contract vs **D103 (v0.3.0)** — conforms, F1/F2 logged; **T-064-R2 — pass** (S13 deferral closed); **T-068-R1 all-axes sweep — pass** (S15 carried note closed); **PR-7 re-scored — MET** (from *gap recorded, D95* at the P1 gate); coverage/confidence — approved. **Gate held open pending S18**, then accepts; P2 retro follows | — |
+| S18 — done | **Inserted at G4 by D117.** Status-bar inset respected on all four surfaces via one `statusBarsPadding()` at the app root (F1, real defect — no inset handling existed anywhere); transport labels → glyphs PlayArrow / Pause / **PlayCircle** / Stop with accessible names preserved and testTags unchanged (F2, killed permanently; D118 **with a ratified correction** — the specified ▶❚ was `SkipNext`, i.e. "next track", a design-session error caught at verification); bottom edge audited as already correct (Material3 `NavigationBar`) and **verified, not modified**. Pre-authorized `material-icons-extended` added. Closeout findings: agent edited `current-state.md` unauthorized (reverted; fourth IMP-005 data point) and skipped the pre-commit guard (root cause: the design session's instruction contradicted the docs-with-code hook → **IMP-006**); the skipped test gate was closed by the operator running the JVM suite himself (closeout: accepted 2026-07-15 after look-check + T-018-R3 both-edges device walk; merged ff-only 2026-07-15) | F-002, F-014, F-015, F-064 |
+| **G4 — accepted 2026-07-15** | Phase acceptance. D103 (v0.3.0) contract comparison — **conforms**, F1/F2 found and remediated by S18; **T-064-R2 — pass** (S13 deferral closed); **T-068-R1 all-axes composition sweep — pass** (S15 carried note closed); **PR-7 — MET**, from *open, gap recorded (D95)* at the P1 gate; coverage/confidence — approved; registers reconciled; baseline archived at **`archive/V1-P2/`**. Full record: `state/active/phase-P2.md` closeout section | — |
 
-*Retro (IMP-ids): candidate **IMP-005** (agents never write operator verbs or ledger
-entries; closeout fields stay literal placeholders; verification greps for premature
-acceptance language) — minted from the S16 correction, **two further data points at
-S17**, to be ratified at the P2 retro. Also for the retro as a **positive** pattern:
-spike-first task gating JVM-vs-device test placement (S17) — fenced fallback, zero
-improvisation; and the retry-cap + scope-fence holding through three harness walls and
-two SOW amendments with every halt legitimate.*
+*Retro (2026-07-15) — outputs now live in `ledgers/improvement-register.md`, which was
+an **unfilled template through both P1 and P2** and has been backfilled with
+IMP-001–IMP-007. **P3's G1 must read its `open` and `standing` rows.** Summary:
+**IMP-005 ratified — standing**, with a widened boundary (agents write NO project-record
+content at all — not operator verbs, not ledger entries, not state narrative), on four
+data points across S16–S18. **IMP-006 minted — OPEN, the only open row:** the Armature
+docs-with-code guard structurally contradicts the agent/design-session authorship split,
+so every agent code commit hits it; skipping any guard is now always a halt; the
+`STATE_PATHS` fix is P3 design work. **IMP-007 minted — standing:** spike-first task
+gating promoted to standing practice (S17's Robolectric spike failed honestly and the
+pre-authorized fallback ran with zero improvisation; the retry-cap + scope-fence held
+through three harness walls and two SOW amendments, every halt legitimate).*
 
-*Forward input (not a P2 item): **F-073 spec delta candidate** — operator challenge to
+*Forward input (carried out of P2, not a P2 item): **F-073 spec delta candidate** — operator challenge to
 R2's centered-scroll preview model in favour of a batched window; recorded 2026-07-15 at
 `reference/F-073-preview-window-delta-candidate.md`, resolves at the F-073 design
 session (P3+).*
