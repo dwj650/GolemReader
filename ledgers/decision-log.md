@@ -1346,3 +1346,156 @@ Play and Resume may be one idea wearing two buttons. Collapsing them was conside
 rejected twice (at D118's design, and again at the correction) as a behavior redesign
 out of scope for a fenced cosmetic step. **It belongs to the F-003 transport work**,
 where the control set is revisited on its own merits. Recorded, not decided.
+
+# Decision D119 — Phase P3 scope: "A Real Library"
+- Date: 2026-07-18  ·  Status: locked  ·  Maps to phase: P3
+- Operator-delegated? no — operator approved Component A 2026-07-18; fence approved as Component C
+
+## Context
+P2 closed accepted; the phase index listed P3's likely scope as F-019/F-021/F-022/
+F-024. G1 grounding (IMP-003, main @ 12fe1ad) found: no user-facing import exists
+(only the adb-pushed fixture path); the live app uses an in-memory identity DAO;
+and F-024 hard-depends on F-058 (derived states compute from position), which the
+index had tentatively parked in P4+.
+
+## Decision
+P3 is "A Real Library": import a book from your phone, see it on a shelf, search
+it, open it, and resume where you left off — and losing a file never loses the
+book. In: F-019, F-021, F-022, F-024, **F-058 (pulled in from P4+)**, the real
+import flow (F-018's import half; the "+" lives on F-019, ingestion on the
+F-018/F-021 seam), and a thin Book Details shell (S13 pattern). Out, on the
+record: F-023 (reparse — nothing in P3 upgrades the parser; T-024-B4/B5 defer
+with owner F-023); F-070 (D100's "library + voice import" condition only
+half-met — stays deferred with T-069-B5); F-062/F-063 and F-076 (V2 by existing
+decision); by-folder shelf view (Wishlist); watched-folder sync (not built —
+see D121).
+
+## Reasoning
+A library phase without import is a shelf you can't put books on; F-058 both
+resolves F-024's hard dependency and delivers the phase's biggest everyday
+payoff (resume). The fence names every exclusion with a reason and owner so
+nothing slides out silently (IMP-004's lesson, applied forward).
+
+## Consequences
+P3 = S19–S24 (D120). The bootstrap fixture path is replaced by a catalog-driven
+open. F-058 leaves the P4+ "persistence widening" bucket.
+
+# Decision D120 — Phase P3 step ladder: S19–S24
+- Date: 2026-07-18  ·  Status: locked  ·  Maps to phase: P3
+- Operator-delegated? no — operator approved Component B (approve-if, condition met by the v0.4.0 draft approval) 2026-07-18
+
+## Context
+Scope (D119) needs a dependency-ordered ladder; IMP-006 is the only open
+improvement row and every agent code commit hits it until fixed.
+
+## Decision
+S19 guard reconciliation (IMP-006, first, expected lite) → S20 book intake
+(import + records + catalog; may split at its design session — expected, not a
+scope change) → S21 shelf (Library tab activates per D102; day-1 search per
+D122) → S22 resume (F-058) → S23 states + thin Book Details (F-024) → S24
+availability/relink + source selector (F-022, F-021 UI) → G4. Step IDs flat,
+continuing from P2.
+
+## Reasoning
+Process wall first; data before UI; the shelf before the records that decorate
+it (F-019's soft-dep degrades gracefully per OB-019-3); position before the
+states derived from it; availability last, acting on records every prior step
+created. Mirrors P2's dependency-ordered shape.
+
+## Consequences
+Each new surface joins the central keyboard test (D113 pattern), reflow proof
+(D109), and no-hardcode guard (D101) in the step that builds it. G4 gates
+against the v0.4.0 contract (D123).
+
+# Decision D121 — Import model: two system-picker doors; folder import is a one-time scan
+- Date: 2026-07-18  ·  Status: locked  ·  Maps to phase: P3 (S20)
+- Operator-delegated? no — operator directed folder import day-1; approved via v0.4.0 draft 2/3
+
+## Context
+The operator wants to populate the library from a folder on day one ("watch
+folder" clarified as a one-time bulk scan, not sync). Building an in-app file
+browser would add broad storage permissions and re-implement what Android
+provides.
+
+## Decision
+Import has exactly two doors, both Android's own pickers: **Choose files**
+(multi-select ACTION_OPEN_DOCUMENT) and **Import a folder**
+(ACTION_OPEN_DOCUMENT_TREE — a one-time scan importing every EPUB found). No
+in-app file browser is built. Batch rules: progress indication; a file that
+fails to parse is skipped and reported, never fatal to the run; per file, the
+F-021 attach-don't-duplicate rule applies. Not a sync/watched folder — recorded
+explicitly to prevent future confusion.
+
+## Reasoning
+The tree picker gives folder browsing free, maintained by the OS. One-time scan
+delivers the operator's stated need (populate 10k books) without the standing
+machinery, permissions, and failure modes of a sync folder.
+
+## Consequences
+S20's design session owns two new open boundaries: the long-running-job design
+(a ~10k first import plausibly runs tens of minutes to an hour — must survive
+screen-off/app-switch and be resumable) and skipped-file reporting. Watched-
+folder *sync* remains undesigned; if ever wanted, it is a Wishlist → grooming
+path.
+
+# Decision D122 — Day-1 shelf search; operator library is ~10k books; budgets re-priced
+- Date: 2026-07-18  ·  Status: locked  ·  Maps to phase: P3 (S21)
+- Operator-delegated? no — operator directed; approved via v0.4.0 draft 3
+
+## Context
+The operator's real library is approximately 10,000 books. F-019 v1.0.1's MVP
+set (recent · title · author · state sort/filter) has no search; T-019-C1's
+proposed scroll budget said "N=hundreds."
+
+## Decision
+The Library screen ships a day-1 search field filtering by title OR author
+(case-insensitive substring over the catalog's already-stored fields), composing
+with the sort chips, with a clean no-matches state. Deliberately plain; richer
+search stays F-062/F-076 (V2). The ~10k scale is recorded as standing operator
+context: T-019-C1's budget becomes smooth scroll on a **10,000-row fixture** on
+the S23; cover images load lazily and cache. Operator input to S21's design
+session: evaluate **Paging 3** first (the operator has shipped a 10k-scale
+library with it before, in the Cedar project). An F-019 v1.0.2 delta recording
+the search requirement is produced at S21's design session.
+
+## Reasoning
+At 10k books, a shelf without search is unusable; the fields are already stored,
+so the cost is a text box over an indexed table. Honest budgets beat discovered
+jank: the scale fact is minted here so every later step inherits it rather than
+rediscovering it.
+
+## Consequences
+S21 carries the 10k fixture evidence requirement into G4. Paging 3 adoption is
+S21's decision, made against real code (the same scrutiny that rejected a nav
+library at three destinations may accept paging at 10k rows).
+
+# Decision D123 — Prototype v0.4.0 is the frozen visual contract (supersedes v0.3.0)
+- Date: 2026-07-18  ·  Status: locked  ·  Maps to phase: P3
+- Operator-delegated? no — operator approved draft 3 on 2026-07-18
+
+## Context
+D103 froze v0.3.0, which has no Library or Book Details surface — the two
+screens P3 builds. The D98/D103 principle: the contract artifact grows before
+the surface it judges is built.
+
+## Decision
+Prototype v0.4.0 (`foundation/prototype/golem-reader-prototype-v0_4_0.jsx`,
+iterated as drafts 1–3 at this G1 and approved at draft 3) supersedes v0.3.0 as
+the frozen visual contract; v0.3.0 and the drafts are retained for rollback.
+v0.4.0 adds: the live Library home tab (shelf with cover/title/author/state
+badge, day-1 title-or-author search, sort chips, "+" with the two D121 import
+doors incl. folder-scan progress and skip-and-report summary, empty state,
+unavailable-stays-listed demonstration); the thin Book Details screen (resume
+position, finished/favorite, sentence-anchored bookmarks, source list with
+active selector, relink affordance; reparse/metadata-edit drawn as roadmap);
+Settings' three P2 accessibility rows re-tagged Built. The ⓘ Details entry is
+drawn but not locked (S23 decides ⓘ vs long-press).
+
+## Reasoning
+Same as D98/D103: the operator approves what he can see; G4 compares screenshots
+against a literal artifact painted with the real S12 token values.
+
+## Consequences
+G4's visual comparison target is v0.4.0. S21 and S23 build to it. Committed at
+this G1's closeout; the DRAFT ribbon is replaced by the frozen-contract label in
+the committed copy.

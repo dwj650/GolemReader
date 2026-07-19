@@ -2,7 +2,7 @@
 id: PHASE-INDEX
 tier: state
 status: active
-updated: 2026-07-15
+updated: 2026-07-18
 if-incomplete: "Return to current-state.md."
 ---
 # Phase index
@@ -11,8 +11,8 @@ if-incomplete: "Return to current-state.md."
 |-------|---------|-------------------------|--------|
 | **P1** | V0 | **Walking skeleton** — load one EPUB, stream it as speech with synchronized highlight and basic transport, in both views | **accepted** |
 | **P2** | V1 | **Accessible Shell** — themed, high-contrast-capable, scalable, motion-optional, keyboard-operable, with a real settings surface | **accepted** (G4, 2026-07-15; baseline `archive/V1-P2/`) |
-| **P3** | V1 | Next tier — likely library + sources (F-019, F-021, F-022, F-024) | **next — G1 pending, own session** |
-| P4+ | V1 | Remaining V1 tiers (normalization/rules, voice manager, persistence widening, onboarding) | planned |
+| **P3** | V1 | **A Real Library** — import from the phone (incl. one-time folder scan), searchable ~10k shelf, open + resume, sources/availability (F-019, F-021, F-022, F-024, F-058 + import flow + thin Book Details) | **entered** (G1, 2026-07-18; D119–D123; ladder S19–S24) |
+| P4+ | V1 | Remaining V1 tiers (normalization/rules, voice manager, onboarding; persistence widening reduced — F-058 pulled into P3 by D119) | planned |
 
 ## Phase P1 — Walking Skeleton — Step ladder (as executed)
 > One narrow change per step; each climbed the rungs and committed. S10 and S11 were
@@ -73,3 +73,24 @@ through three harness walls and two SOW amendments, every halt legitimate).*
 R2's centered-scroll preview model in favour of a batched window; recorded 2026-07-15 at
 `reference/F-073-preview-window-delta-candidate.md`, resolves at the F-073 design
 session (P3+).*
+
+## Phase P3 — A Real Library — Step ladder (entered per D119/D120)
+> Dependency-ordered: the process wall first (IMP-006), data before UI, the shelf
+> before the records that decorate it, position before the states derived from it,
+> availability last. Full G1 entry: `state/active/phase-P3.md`. Visual contract:
+> **v0.4.0 (D123)**. Standing context: operator library ≈ **10,000 books** (D122).
+
+| Step | Delivers | Feature(s) |
+|---|---|---|
+| S19 — next | Guard reconciliation: agent-writable run-log path under `archive/` added to `STATE_PATHS` (IMP-006); "skipping any guard is always a halt" into agent standing instructions. Expected lite | process |
+| S20 | Book intake: two-door import via system pickers (D121 — files multi-select + one-time folder scan), identity → attach-or-new (never duplicate), metadata + cover extraction, batch progress + skip-and-report, live app moves off the in-memory DAO onto Room; long-running-job design owned here; may split at its design session | F-018 (import), F-021, F-019 (catalog) |
+| S21 | The shelf: Library tab live (D102), covers/title/author + badge slot, **day-1 title/author search** (D122), sort recent·title·author·state, empty state, tap-to-open replaces fixture bootstrap; 10k-row scroll fixture; Paging 3 evaluated first; joins keyboard/reflow/no-hardcode harnesses | F-019 |
+| S22 | Resume: position flushed at safe moments + ~10s tick, restored on open; book-level, source-independent, never-destructive | F-058 |
+| S23 | States + thin Book Details: finished/favorite stored, new/in-progress derived, sentence-anchored bookmarks, shelf badges; ⓘ-vs-long-press decided here; new surface joins harnesses | F-024 |
+| S24 | Losing a file never loses the book: availability on access, badge, auto-relink on same hash, re-prompt accepts only matching file, active-source selector | F-022, F-021 (UI) |
+| **G4** | Phase acceptance vs. the v0.4.0 contract; axes stacked on new surfaces; 10k-fixture evidence; registers reconciled; baseline `archive/V1-P3/` | — |
+
+*Fenced out on the record (D119): F-023 (reparse; T-024-B4/B5 defer with it), F-070
+(D100's "library + voice import" only half-met), F-062/F-063/F-076 (V2), by-folder
+shelf view (Wishlist), watched-folder sync (not built — folder import is a one-time
+scan, D121).*
